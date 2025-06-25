@@ -5,10 +5,12 @@ import { FaSun, FaSearch, FaBell, FaCog, FaExpand } from "react-icons/fa";
 import { MdLanguage } from "react-icons/md";
 import { Dropdown } from "react-bootstrap";
 import DarkModeSwitcher from "./DarkModeSwitcher";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
-export default function TopHeader({   manageToggleButton, setToggleButton
- }) {
+export default function TopHeader({ manageToggleButton, setToggleButton }) {
   const [collapsed, setCollapsed] = useState(false);
+  const router = useRouter(); // ← and this
 
   // Add / remove className on <body>
   // useEffect(() => {
@@ -19,22 +21,26 @@ export default function TopHeader({   manageToggleButton, setToggleButton
   //   return () => document.body.classList.remove("sidebar-collapsed");
   // }, [collapsed]);
 
-useEffect(() => {
-  document.body.classList.toggle("sidebar-collapsed", manageToggleButton);
+  useEffect(() => {
+    document.body.classList.toggle("sidebar-collapsed", manageToggleButton);
 
-  return () => {
-    document.body.classList.remove("sidebar-collapsed");
+    return () => {
+      document.body.classList.remove("sidebar-collapsed");
+    };
+  }, [manageToggleButton]);
+  const logout = () => {
+    localStorage.removeItem("token");
+    false;
+    toast.success("You have been logged out successfully!");
+    router.replace("/sign-in");
   };
-}, [manageToggleButton]);
-
   return (
     <header className="top-header d-flex justify-content-between align-items-center px-3 py-2 shadow-sm ">
       {/* Logo & Toggle Button */}
       <div className="d-flex align-items-center gap-3 cursor-pointer">
         <i
           // onClick={() => setCollapsed((c) => !c)}
-            onClick={() => setToggleButton(prev => !prev)}
-
+          onClick={() => setToggleButton((prev) => !prev)}
           className="ri-menu-2-line"
         ></i>
       </div>
@@ -76,7 +82,7 @@ useEffect(() => {
             <Dropdown.Item>
               <i className="ri-account-circle-line"></i> Profile
             </Dropdown.Item>
-            <Dropdown.Item>
+            <Dropdown.Item onClick={logout}>
               <i className="ri-logout-box-r-line"></i> Logout
             </Dropdown.Item>
           </Dropdown.Menu>

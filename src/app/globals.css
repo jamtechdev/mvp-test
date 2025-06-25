@@ -1297,6 +1297,9 @@ color: #605dff !important;
 .auth-main-content .btn.btn-primary:active span{
    color: #605dff !important;
 }
+.auth-main-content .btn.btn-primary.fw-medium span{
+  color: #fff;
+}
 .auth-main-content{
   position: relative;
 }
