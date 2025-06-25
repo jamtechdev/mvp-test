@@ -1,0 +1,534 @@
+"use client";
+import { useMemo, useState, useEffect } from "react";
+import dynamic from "next/dynamic";
+import { Card, Row, Col, Table } from "react-bootstrap";
+import {
+  FiTrendingUp,
+  FiPieChart,
+  FiShoppingCart,
+  FiActivity,
+  FiBarChart2,
+} from "react-icons/fi";
+
+import {
+  getData,
+  computeKPIs,
+  topCampaigns,
+  makeXAxis,
+  channelPie,
+  deviceBreakdown,
+  sessionChannelBreakdown,
+  browserUsage,
+  keywordStats,
+  topPages,
+} from "@/_utils/campaignUtils";
+import { n0, n2 } from "@/_utils/formatNumber";
+
+const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
+
+export default function CampaignDashboard({ channel = "all" }) {
+  const canonical = channel.toLowerCase();
+  const [mounted, setMounted] = useState(false);
+  const [pvSeries, setPvSeries] = useState([]);
+
+  useEffect(() => {
+    setMounted(true);
+    setPvSeries(
+      Array.from({ length: 24 }, () => Math.floor(Math.random() * 100))
+    );
+  }, []);
+
+  const rows = useMemo(() => getData(canonical), [canonical]);
+  const kpi = useMemo(() => computeKPIs(rows), [rows]);
+  const campaigns = useMemo(() => topCampaigns(rows), [rows]);
+  const pieClicks = useMemo(() => channelPie(rows), [rows]);
+  const devicePie = useMemo(() => deviceBreakdown(), []);
+  const sessions = useMemo(() => sessionChannelBreakdown(rows), [rows]);
+  const browsers = useMemo(() => browserUsage(), []);
+  const keywords = useMemo(() => keywordStats(rows), [rows]);
+  const pages = useMemo(() => topPages(rows), [rows]);
+
+  const Stat = ({ icon, label, value }) => (
+    <Card className="shadow-sm border-0 p-3 h-100">
+      <div className="d-flex align-items-center gap-3">
+        <span className="fs-3 text-primary">{icon}</span>
+        <div>
+          <div className="text-muted small">{label}</div>
+          <div className="fw-bold fs-5 val">{value}</div>
+        </div>
+      </div>
+    </Card>
+  );
+
+  const c = {
+    blue: "#3C50E0",
+    orange: "#F79009",
+    green: "#22C55E",
+    pink: "#EF4444",
+    yellow: "#EAB308",
+  };
+  const vibrantColors = [
+    "#FF6B6B", // Red-pink
+    "#4ECDC4", // Turquoise
+    "#FFD93D", // Yellow
+    "#1A73E8", // Bright blue
+    "#F72585", // Pink
+    "#3A0CA3", // Purple
+    "#F9844A", // Orange
+    "#43AA8B", // Teal-green
+    "#F9C74F", // Golden yellow
+    "#9D4EDD", // Violet
+  ];
+
+  const formattedPages = useMemo(() => {
+    return pages.map((p) => {
+      const raw = parseFloat(String(p.bounce).replace("%", ""));
+      const safe = isNaN(raw) ? 0 : raw;
+      return { ...p, bounceFormatted: `${safe.toFixed(1)}%` };
+    });
+  }, [pages]);
+
+  const formatCompact = (val) =>
+    val >= 1_000_000
+      ? (val / 1_000_000).toFixed(1) + "M"
+      : val >= 1_000
+      ? (val / 1_000).toFixed(1) + "K"
+      : val.toFixed(0);
+
+  return (
+    <div className="container-fluid py-4 ">
+      {/* KPI CARDS */}
+
+      <Row className="g-3 mb-0">
+        <Col xl={3} md={6}>
+          {/* <Stat icon={<FiTrendingUp />} label="Clicks" value={n0(kpi.clicks)} /> */}
+
+          <div className="card bg-white click-card border-1 rounded-3 mb-4 stats-box position-relative">
+            <div className="card-body p-4">
+              <div className="row">
+                <div className="col-lg-9">
+                  <span>Clicks</span>
+                  <div className="d-flex align-items-center mb-3">
+                    <h3 className="fs-20 mt-1 mb-0">4,500</h3>
+                    <span className="d-inline-block bg-success text-success bg-opacity-25 px-2 rounded-1 fs-12 fw-medium d-flex align-items-center ms-2">
+                      <i className="ri-arrow-up-s-fill fs-20 lh-1 me-1"></i>{" "}
+                      37.5%
+                    </span>
+                  </div>
+                  <span className="fs-12">Last 30 days</span>
+                </div>
+                <div className="col-lg-3 align-self-center">
+                  <FiTrendingUp />
+                </div>
+              </div>
+            </div>
+          </div>
+        </Col>
+        <Col xl={3} md={6}>
+          {/* <Stat icon={<FiPieChart />} label="Impressions" value={n0(kpi.impressions)} /> */}
+          <div className="card bg-white click-card border-1 rounded-3 mb-4 stats-box position-relative">
+            <div className="card-body p-4">
+              <div className="row">
+                <div className="col-lg-9">
+                  <span>Impressions</span>
+                  <div className="d-flex align-items-center mb-3">
+                    <h3 className="fs-20 mt-1 mb-0">117,883,323</h3>
+                    <span className="d-inline-block bg-danger text-danger bg-opacity-25 px-2 rounded-1 fs-12 fw-medium d-flex align-items-center ms-2">
+                      <i className="ri-arrow-down-s-fill fs-20 lh-1 me-1"></i>{" "}
+                      37.5%
+                    </span>
+                  </div>
+                  <span className="fs-12">Last 30 days</span>
+                </div>
+                <div className="col-lg-3 align-self-center">
+                  <FiPieChart />
+                </div>
+              </div>
+            </div>
+          </div>
+        </Col>
+        <Col xl={3} md={6}>
+          {/* <Stat icon={<FiShoppingCart />} label="Spend ($)" value={n0(kpi.spend)} /> */}
+          <div className="card bg-white click-card border-1 rounded-3 mb-4 stats-box position-relative">
+            <div className="card-body p-4">
+              <div className="row">
+                <div className="col-lg-9">
+                  <span>Spend ($)</span>
+                  <div className="d-flex align-items-center mb-3">
+                    <h3 className="fs-20 mt-1 mb-0">264,477</h3>
+                    <span className="d-inline-block bg-success text-success bg-opacity-25 px-2 rounded-1 fs-12 fw-medium d-flex align-items-center ms-2">
+                      <i className="ri-arrow-down-s-fill fs-20 lh-1 me-1"></i>{" "}
+                      37.5%
+                    </span>
+                  </div>
+                  <span className="fs-12">Last 30 days</span>
+                </div>
+                <div className="col-lg-3 align-self-center">
+                  <FiShoppingCart />
+                </div>
+              </div>
+            </div>
+          </div>
+        </Col>
+        <Col xl={3} md={6}>
+          {/* <Stat icon="💰" label="Avg CPC" value={`$${n2(kpi.cpc)}`} /> */}
+          <div className="card bg-white click-card border-1 rounded-3 mb-4 stats-box position-relative">
+            <div className="card-body p-4">
+              <div className="row">
+                <div className="col-lg-9">
+                  <span>Spend ($)</span>
+                  <div className="d-flex align-items-center mb-3">
+                    <h3 className="fs-20 mt-1 mb-0">264,477</h3>
+                    <span className="d-inline-block bg-success text-success bg-opacity-25 px-2 rounded-1 fs-12 fw-medium d-flex align-items-center ms-2">
+                      <i className="ri-arrow-down-s-fill fs-20 lh-1 me-1"></i>{" "}
+                      37.5%
+                    </span>
+                  </div>
+                  <span className="fs-12">Last 30 days</span>
+                </div>
+                <div className="col-lg-3 align-self-center">
+                  <span style={{ fontSize: "37px" }}>💰</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Col>
+      </Row>
+
+      {/* CAMPAIGN OVERVIEW + REALTIME USERS */}
+      <Row className="g-4 mb-4">
+        <Col xl={8} md={12}>
+          <Card className="p-3 campign-card">
+            <h6 className="fw-semibold text-muted mb-3">Campaign Overview</h6>
+            {mounted && campaigns.length ? (
+              // <Chart
+              //   className="custome-width"
+              //   type="bar"
+              //   height={330}
+              //   series={[
+              //     { name: "Clicks", data: campaigns.map((r) => r.clicks) },
+              //     { name: "Impressions", data: campaigns.map((r) => r.impressions) },
+              //     { name: "Website Clicks", data: campaigns.map((r) => r.website_clicks) },
+              //   ]}
+              //   options={{
+              //     chart: { stacked: true, toolbar: { show: false } },
+              //     plotOptions: { bar: { columnWidth: "45%", borderRadius: 4 } },
+              //     dataLabels: { enabled: false },
+              //     colors: [c.blue, c.orange, c.green],
+              //     xaxis: { categories: makeXAxis(campaigns) },
+              //     yaxis: { labels: { formatter: formatCompact } },
+              //     legend: { position: "top" },
+              //   }}
+              // />
+              <Chart
+                className="custome-width"
+                type="bar"
+                height={360}
+                series={[
+                  { name: "Clicks", data: campaigns.map((r) => r.clicks) },
+                  {
+                    name: "Impressions",
+                    data: campaigns.map((r) => r.impressions),
+                  },
+                  {
+                    name: "Website Clicks",
+                    data: campaigns.map((r) => r.website_clicks),
+                  },
+                ]}
+                options={{
+                  chart: { stacked: true, toolbar: { show: false } },
+                  plotOptions: { bar: { columnWidth: "45%", borderRadius: 4 } },
+                  dataLabels: { enabled: false },
+                  colors: vibrantColors.slice(0, 3),
+                  xaxis: {
+                    categories: makeXAxis(campaigns),
+                    labels: {
+                      rotate: -45, // Tilt for readability
+                      style: {
+                        fontSize: "12px",
+                        fontWeight: 500,
+                        colors: "#6c757d", // Bootstrap muted text style
+                      },
+                      trim: true,
+                    },
+                    axisBorder: { show: true },
+                    axisTicks: { show: true },
+                  },
+                  yaxis: {
+                    labels: {
+                      formatter: formatCompact,
+                      style: {
+                        fontSize: "11px",
+                      },
+                    },
+                  },
+                  legend: { position: "top" },
+                  tooltip: {
+                    shared: true,
+                    intersect: false,
+                  },
+                  grid: {
+                    strokeDashArray: 4,
+                  },
+                }}
+              />
+            ) : (
+              <div className="text-muted text-center py-5 ">
+                No chart data available
+              </div>
+            )}
+          </Card>
+        </Col>
+
+      <Col xl={4} md={12}>
+  <Card className="p-3 h-100 campign-card  fw-semibold text-muted">
+    <h6 className="fw-semibold text-muted mb-2">Realtime Active Users</h6>
+
+    {/* Stat display wrapped with muted text */}
+    <div className="text-muted  fw-semibold text-muted">
+      <Stat
+        icon={<FiActivity />}
+        label="Est. Active Users"
+        value={n0(kpi.clicks / 10)}
+      />
+    </div>
+
+    {mounted && (
+      <Chart
+        type="bar"
+        className="custome-width fw-semibold text-muted"
+        height={200}
+        series={[{ name: "PVs/sec", data: pvSeries }]}
+        options={{
+          chart: {
+            toolbar: { show: false },
+            animations: { easing: "easeinout", speed: 400 },
+          },
+          plotOptions: {
+            bar: {
+              columnWidth: "55%",
+              borderRadius: 4,
+              distributed: true,
+            },
+          },
+          colors: vibrantColors.slice(0, pvSeries.length),
+          dataLabels: { enabled: false },
+          xaxis: {
+            labels: { show: false },
+            axisTicks: { show: false },
+            axisBorder: { show: false },
+          },
+          yaxis: { show: false },
+          grid: { show: false },
+          tooltip: {
+            y: { formatter: (v) => v.toString() },
+          },
+        }}
+      />
+    )}
+  </Card>
+</Col>
+
+      </Row>
+
+      {/* DEVICE / SESSION / BROWSER */}
+      <Row className="g-4 mb-4">
+        {[
+          { label: "Device Sessions", data: devicePie },
+          { label: "Sessions by Channel", data: sessions },
+          { label: "Browser Used By Users", data: browsers },
+        ].map((chart) => (
+          <Col md={4} key={chart.label}>
+            <Card className="p-3 h-100 d-flex flex-column justify-content-between campign-card">
+              <h6 className="mb-3 fw-semibold text-muted text-center">
+                {chart.label}
+              </h6>
+              {mounted && chart.data.series.length ? (
+                <Chart
+                
+                  type="donut"
+                  height={260}
+                  series={chart.data.series}
+                  options={{
+                    labels: chart.data.labels,
+                    legend: {
+                      position: "bottom",
+                      horizontalAlign: "center",
+                      fontSize: "13px",
+                      itemMargin: { horizontal: 10, vertical: 4 },
+                      markers: { width: 10, height: 10 },
+                    },
+                    dataLabels: {
+                      enabled: true,
+                      formatter: (val) => `${val.toFixed(1)}%`,
+                    },
+                    tooltip: {
+                      y: { formatter: (val) => `${val.toFixed(1)}%` },
+                    },
+                    stroke: { show: false },
+                    colors: [c.blue, c.orange, c.green, c.pink, c.yellow],
+                    
+                  }}
+                />
+              ) : (
+                <div className="text-center text-muted py-5">No data</div>
+              )}
+              {chart.label === "Sessions by Channel" && (
+                <div className="text-center mt-2 fw-semibold">
+                  Total {n0(sessions.total)}
+                </div>
+              )}
+            </Card>
+          </Col>
+        ))}
+      </Row>
+
+      {/* TRENDS & TABLES */}
+      <Row className="g-4 mb-4">
+        <Col xl={4} md={12}>
+          <Card className="p-3 campign-card h-100">
+            <h6 className="mb-1 fw-semibold text-muted">Clicks – 30 days</h6>
+            <Stat
+              icon={<FiBarChart2 />}
+              label="Clicks"
+              value={n0(kpi.clicks)}
+            />
+            {mounted && campaigns.length ? (
+              <Chart
+                type="line"
+                className="custome-width"
+                height={120}
+                series={[
+                  { name: "Clicks", data: campaigns.map((c) => c.clicks) },
+                ]}
+                options={{
+                  chart: { toolbar: { show: false } },
+                  colors: [c.blue],
+                  xaxis: { show: false },
+                  yaxis: { show: false },
+                  stroke: { width: 2 },
+                }}
+              />
+            ) : (
+              <div className="text-muted text-center py-5">
+                No chart data available
+              </div>
+            )}
+          </Card>
+        </Col>
+
+        <Col xl={8} md={12}>
+          <Card className="p-3 h-100 campign-card">
+            <h6 className="mb-3 fw-semibold  table-heading">
+              Clicks/Impr. by Campaign
+            </h6>
+            <Table size="sm" hover responsive>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Campaign</th>
+                  <th className="text-end">Impr.</th>
+                  <th className="text-end">Clicks</th>
+                </tr>
+              </thead>
+              <tbody>
+                {keywords.length ? (
+                  keywords.map((k, i) => (
+                    <tr key={k.name + i}>
+                      <td>{i + 1}</td>
+                      <td>{k.name}</td>
+                      <td className="text-end">{n0(k.impressions)}</td>
+                      <td className="text-end">{n0(k.clicks)}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={4} className="text-center text-muted">
+                      No campaign data
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </Table>
+          </Card>
+        </Col>
+      </Row>
+      <Row className="g-4">
+        <Col xl={6} md={12}>
+          {/* TOP CAMPAIGNS */}
+          <Card className="p-3 mt-0 campign-card">
+            <h6 className="mb-3 fw-semibold  table-heading">
+              Top Campaigns (Clicks)
+            </h6>
+            <div style={{ maxHeight: 400, overflowY: "auto" }}>
+              <Table size="sm" hover responsive>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Campaign</th>
+                    <th className="text-end">Clicks</th>
+                    <th className="text-end">Spend</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {campaigns.length ? (
+                    campaigns.map((c, i) => (
+                      <tr key={`${c.ad_key || c.campaign_name}-${i}`}>
+                        <td>{i + 1}</td>
+                        <td>{c.campaign_name?.trim() || "Untitled"}</td>
+                        <td className="text-end">{n0(c.clicks)}</td>
+                        <td className="text-end">${n2(c.media_cost)}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={4} className="text-center text-muted">
+                        No campaign data
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </Table>
+            </div>
+          </Card>
+        </Col>
+
+        <Col xl={6} md={12}>
+          <Card className="p-3 h-100 campign-card">
+            <h6 className="mb-3 fw-semibold  table-heading">Top Pages Today</h6>
+            <Table size="sm" hover responsive>
+              <thead>
+                <tr>
+                  <th>Page</th>
+                  <th>Src</th>
+                  <th className="text-end">Views</th>
+                  <th className="text-end">Bounce</th>
+                </tr>
+              </thead>
+              <tbody>
+                {formattedPages.length ? (
+                  formattedPages.map((p, i) => (
+                    <tr key={`${p.page}-${i}`}>
+                      <td>{p.page}</td>
+                      <td>{p.source}</td>
+                      <td className="text-end">{n0(p.views)}</td>
+                      <td className="text-end">
+                        {mounted ? p.bounceFormatted : "—"}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={4} className="text-center text-muted">
+                      No page data
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </Table>
+          </Card>
+        </Col>
+      </Row>
+    </div>
+  );
+}

@@ -1,0 +1,25 @@
+:root {
+  --primary: #3C50E0;
+  --primary-light: #EEF4FF;
+  --text: #0F172A;
+  --black: #000000;
+  --white: #ffffff;
+  --bs-border-color: #E2E8F0;
+  --light-border-color: #F8FAFC;
+  --add-polls: #22C55E;   /* success green */
+  --add-reject: #EAB308;  /* amber */
+  --add-danger: #EF4444;  /* red-500 */
+}
+
+[data-theme="dark"] {
+  --primary: #3C50E0;
+  --primary-light: #1E293B;
+  --text: #F1F5F9;
+  --black: #0F172A;
+  --white: #ffffff;
+  --bs-border-color: #334155;
+  --light-border-color: #1E293B;
+  --add-polls: #4ADE80;
+  --add-reject: #FACC15;
+  --add-danger: #F87171;
+}

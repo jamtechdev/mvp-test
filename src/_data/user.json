@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1,
+    "email": "demo@gmail.com",
+    "password": "123456"
+  },
+  {
+    "id": 2,
+    "email": "john.doe@example.com",
+    "password": "pass1234"
+  },
+  {
+    "id": 3,
+    "email": "jane.smith@example.com",
+    "password": "securepass"
+  },
+  {
+    "id": 4,
+    "email": "test.user@example.com",
+    "password": "testpass"
+  },
+  {
+    "id": 5,
+    "email": "alex.raj@example.com",
+    "password": "raj@123"
+  }
+]

@@ -1,0 +1,227 @@
+[data-theme="dark"] body {
+  /* background: var(--black); */
+  background-color: #0a0e19;
+  color: var(--white);
+}
+
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6,
+[data-theme="dark"] p,
+[data-theme="dark"] a,
+[data-theme="dark"] .user-detail .user-info span,
+[data-theme="dark"] .nav-option li.nav-option-item:not(.active):not(:hover) a {
+  color: var(--white);
+}
+
+[data-theme="dark"] .text-muted {
+  color: #aaa !important;
+}
+
+[data-theme="dark"] .btn-text {
+  background: var(--primary);
+  color: var(--black);
+  border: 1px solid var(--primary) !important;
+}
+
+[data-theme="dark"] .btn-text:hover {
+  color: var(--primary);
+}
+
+[data-theme="dark"] .btn-outlined {
+  border: 1px solid var(--white);
+  color: var(--white);
+}
+
+[data-theme="dark"] .btn-outlined:hover {
+  border-color: var(--primary);
+  background-color: var(--primary);
+  color: var(--black);
+}
+
+[data-theme="dark"] .nav-option li:hover a,
+[data-theme="dark"] .nav-option li.active a {
+  background: var(--primary);
+  border: 2px solid var(--primary);
+  color: var(--black);
+}
+
+[data-theme="dark"] .form-floating > .form-control,
+[data-theme="dark"] .form-floating > .form-select,
+[data-theme="dark"] .edit-form .form-control,
+[data-theme="dark"] .react-select,
+[data-theme="dark"] .react-select__control,
+[data-theme="dark"] .react-select__menu {
+  background: var(--light-border-color);
+  color: var(--white);
+}
+
+[data-theme="dark"] .form-floating > label,
+[data-theme="dark"] .react-select__single-value {
+  color: var(--white);
+}
+
+[data-theme="dark"] .modal .modal-dialog .modal-content,
+[data-theme="dark"] .card {
+  background: var(--light-border-color);
+}
+
+[data-theme="dark"] .dark-light-mode .form-check-input:checked {
+  background-color: var(--primary) !important;
+  border-color: var(--primary) !important;
+}
+
+[data-theme="dark"] .hover-container label,
+[data-theme="dark"] .searchbar-section input,
+[data-theme="dark"] .searchbar-section input::placeholder {
+  color: var(--white);
+}
+[data-theme="dark"] .top-header {
+  background:#0c1427;
+  border-bottom: 1px solid var(--light-border-color);
+}
+
+[data-theme="dark"] .search-bar input {
+  background: var(--black);
+  border-color: var(--light-border-color);
+  color: var(--white);
+}
+
+[data-theme="dark"] .search-bar input::placeholder,
+[data-theme="dark"] .icon {
+  color: var(--white);
+}
+
+[data-theme="dark"] .icon:hover,
+[data-theme="dark"] .search-icon {       /* keep primary accent */
+  color: var(--primary);
+}
+
+[data-theme="dark"] .dropdown-menu {
+  background: var(--light-border-color);
+  color: var(--white);
+}
+
+[data-theme="dark"] .dropdown-item       { color: var(--white); }
+[data-theme="dark"] .dropdown-item:hover {
+  background: var(--primary);
+  color: var(--black);
+}
+
+[data-theme="dark"] .dashboard-sidebar{
+  background: #0c1427;
+}
+/* Apply to all tables when dark mode is on */
+[data-theme="dark"] .table {
+  /* background-color: #1e1e1e !important; */
+  color: #ffffff !important;
+    background-color: transparent !important;
+}
+
+[data-theme="dark"] .table thead {
+  /* background-color: #2a2a2a !important; */
+  background-color: transparent !important;
+}
+
+[data-theme="dark"] .table td,
+[data-theme="dark"] .table th {
+  /* background-color: #1e1e1e !important; */
+    background-color: #00000000 !important;
+  color: #ffffff !important;
+  border-color: rgba(233, 233, 233, 0.048) !important;
+}
+[data-theme="dark"] .sidebar-area{
+background-color: #0c1427;
+}
+[data-theme="dark"] .sidebar-area .logo{
+  border-color: #444 !important;
+}
+[data-theme="dark"] .sidebar-area .logo-text{
+  color: #ffffff !important;
+  margin-left: 10px;
+}
+
+[data-theme="dark"] .sidebar-area .menu-inner .menu-item .menu-link{
+  color: #ffffff;
+}
+[data-theme="dark"]  .menu-inner .menu-item .menu-link.active,[data-theme="dark"]  .menu-inner .menu-item .menu-link:hover{
+  background-color: #15203c;
+      color: #ffffff !important;
+}
+
+[data-theme="dark"] .dashboard-content main{
+  background-color: #0a0e19;
+}
+
+[data-theme="dark"] .card.bg-white{
+  background-color: #0c1427 !important;
+}
+[data-theme="dark"] .card.click-card span{
+  color: #8695aa;
+
+}
+
+[data-theme="dark"] .campign-card h6{
+  color: #ffffff !important;
+}
+[data-theme="dark"] .campign-card.card{
+ background-color: #0c1427 !important;
+}
+
+[data-theme="dark"] .top-header .icon-dropdown span,
+[data-theme="dark"] .top-header .icon-dropdown div i{
+  color: #ffffff !important;
+}
+[data-theme="dark"] .dropdown-menu.show{
+ background-color: #0c1427 !important;
+}
+[data-theme="dark"] .profile-dropdown a.dropdown-item:hover {
+    color: #ffffff;
+}
+
+[data-theme="dark"] .table th{
+  color: #64748b !important;
+}
+
+[data-theme="dark"] .ri-menu-2-line{
+  color: #ffffff;
+}
+[data-theme="dark"] .dashboard-wrapper{
+background-color: #0c1427;
+}
+[data-theme="dark"] .sidebar-collapsed .dashboard-sidebar:hover button.sidebar-burger-menu i{
+ color: #ffffff;
+        }
+        [data-theme="dark"] button.sidebar-burger-menu i{
+ color: #ffffff;
+        }
+         [data-theme="dark"] .auth-main-content .logotxt{
+ color: #ffffff;
+        }
+
+        [data-theme="dark"] .fw-medium{
+    color: #64748b !important;
+        }
+           [data-theme="dark"] .label,     [data-theme="dark"] .form-label{
+ color: #ffffff !important;
+        }
+
+        [data-theme="dark"] .form-control{
+          background-color: #0a0e19;
+         color: #ffffff !important;
+         border-color:#172036;
+        }
+
+           [data-theme="dark"]  .text-primary{
+              color: #605dff !important;
+           }
+                    [data-theme="dark"] .auth-main-content .btn.btn-primary span{
+              color: #ffffff !important;
+           }
+              [data-theme="dark"]  .auth-main-content .btn.btn-primary:hover span,    [data-theme="dark"] .auth-main-content .btn.btn-primary:focus span,
+    [data-theme="dark"] .auth-main-content .btn.btn-primary:active span{
+   color: #605dff !important;
+}
