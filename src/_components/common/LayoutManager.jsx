@@ -1,5 +1,5 @@
 import AppLayout from "./AppLayout";
-import AuthLayout from "./AuthLAyout";
+import AuthLayout from './AuthLayout'; // Correct casing
 
 export default function LayoutManager({ children, includeAuthLayout = false }) {
   return (
