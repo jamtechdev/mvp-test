@@ -94,7 +94,11 @@ export default function CampaignDashboard({ channel = "all" }) {
       : val >= 1_000
       ? (val / 1_000).toFixed(1) + "K"
       : val.toFixed(0);
-
+  const xCats = makeXAxis(campaigns); // reuse in two places
+  /* ── helper utilities (declare once near the top of the file) ── */
+  /* ── helpers (declare once) ── */
+  const shorten = (lbl) => (lbl.length > 14 ? `${lbl.slice(0, 11)}…` : lbl);
+  const pct = (val, tot) => ((val / tot) * 100).toFixed(1);
   return (
     <div className="container-fluid py-4 ">
       {/* KPI CARDS */}
@@ -197,142 +201,153 @@ export default function CampaignDashboard({ channel = "all" }) {
 
       {/* CAMPAIGN OVERVIEW + REALTIME USERS */}
       <Row className="g-4 mb-4">
-        <Col xl={8} md={12}>
-          <Card className="p-3 campign-card">
+        {/* ---------- Campaign Overview ---------- */}
+        <Col xl={8} md={12} className="d-flex">
+          <Card className="p-3 campign-card h-100 flex-fill">
             <h6 className="fw-semibold text-muted mb-3">Campaign Overview</h6>
-            {mounted && campaigns.length ? (
-              // <Chart
-              //   className="custome-width"
-              //   type="bar"
-              //   height={330}
-              //   series={[
-              //     { name: "Clicks", data: campaigns.map((r) => r.clicks) },
-              //     { name: "Impressions", data: campaigns.map((r) => r.impressions) },
-              //     { name: "Website Clicks", data: campaigns.map((r) => r.website_clicks) },
-              //   ]}
-              //   options={{
-              //     chart: { stacked: true, toolbar: { show: false } },
-              //     plotOptions: { bar: { columnWidth: "45%", borderRadius: 4 } },
-              //     dataLabels: { enabled: false },
-              //     colors: [c.blue, c.orange, c.green],
-              //     xaxis: { categories: makeXAxis(campaigns) },
-              //     yaxis: { labels: { formatter: formatCompact } },
-              //     legend: { position: "top" },
-              //   }}
-              // />
+
+            {/* fixed-height wrapper keeps card tall even when empty */}
+            <div style={{ minHeight: 360 }}>
+              {mounted && campaigns.length ? (
+                <Chart
+                  type="bar"
+                  height={360}
+                  className="custome-width"
+                  series={[
+                    { name: "Clicks", data: campaigns.map((r) => r.clicks) },
+                    {
+                      name: "Impressions",
+                      data: campaigns.map((r) => r.impressions),
+                    },
+                    {
+                      name: "Website Clicks",
+                      data: campaigns.map((r) => r.website_clicks),
+                    },
+                  ]}
+                  options={{
+                    chart: {
+                      stacked: true,
+                      toolbar: { show: false },
+                      foreColor: "#6c757d",
+                      animations: { easing: "easeinout", speed: 700 },
+                    },
+                    plotOptions: {
+                      bar: {
+                        columnWidth: "50%",
+                        borderRadius: 6,
+                        borderRadiusApplication: "end", // only top corners rounded
+                      },
+                    },
+                    fill: { opacity: 0.85 },
+                    stroke: { show: true, width: 1, colors: ["#fff"] },
+                    dataLabels: { enabled: false },
+                    colors: vibrantColors.slice(0, 3),
+                    xaxis: {
+                      categories: xCats,
+                      tickPlacement: "between",
+                      tickAmount: Math.min(xCats.length, 7), // ≤7 labels
+                      labels: {
+                        rotate: -20,
+                        hideOverlappingLabels: true,
+                        formatter: (val) =>
+                          val.length > 12 ? `${val.slice(0, 9)}…` : val,
+                        style: { fontSize: "11px", fontWeight: 500 },
+                      },
+                      axisBorder: { show: false },
+                      axisTicks: { show: false },
+                    },
+                    yaxis: {
+                      labels: {
+                        formatter: formatCompact,
+                        style: { fontSize: "11px" },
+                      },
+                    },
+                    legend: {
+                      position: "top",
+                      fontSize: "12px",
+                      markers: { radius: 4 },
+                      itemMargin: { horizontal: 12 },
+                    },
+                    tooltip: { shared: true, intersect: false },
+                    grid: {
+                      strokeDashArray: 3,
+                      padding: { left: 12, right: 12 },
+                    },
+                    responsive: [
+                      {
+                        breakpoint: 1200,
+                        options: { xaxis: { labels: { rotate: -35 } } },
+                      },
+                      {
+                        breakpoint: 768,
+                        options: {
+                          plotOptions: { bar: { columnWidth: "60%" } },
+                          xaxis: { labels: { show: false } },
+                        },
+                      },
+                    ],
+                  }}
+                />
+              ) : (
+                <div className="d-flex align-items-center justify-content-center h-100 text-muted">
+                  No chart data available
+                </div>
+              )}
+            </div>
+          </Card>
+        </Col>
+        {/* ---------- Realtime Active Users ---------- */}
+        <Col xl={4} md={12} className="d-flex">
+          <Card className="p-3 h-100 campign-card flex-fill">
+            <h6 className="fw-semibold text-muted mb-2">
+              Realtime Active Users
+            </h6>
+
+            <div className="text-muted fw-semibold">
+              <Stat
+                icon={<FiActivity />}
+                label="Est. Active Users"
+                value={n0(kpi.clicks / 10)}
+              />
+            </div>
+
+            {mounted && (
               <Chart
-                className="custome-width"
                 type="bar"
-                height={360}
-                series={[
-                  { name: "Clicks", data: campaigns.map((r) => r.clicks) },
-                  {
-                    name: "Impressions",
-                    data: campaigns.map((r) => r.impressions),
-                  },
-                  {
-                    name: "Website Clicks",
-                    data: campaigns.map((r) => r.website_clicks),
-                  },
-                ]}
+                height={200}
+                className="custome-width"
+                series={[{ name: "PVs/sec", data: pvSeries }]}
                 options={{
-                  chart: { stacked: true, toolbar: { show: false } },
-                  plotOptions: { bar: { columnWidth: "45%", borderRadius: 4 } },
+                  chart: {
+                    toolbar: { show: false },
+                    animations: { easing: "easeinout", speed: 400 },
+                  },
+                  plotOptions: {
+                    bar: {
+                      columnWidth: "55%",
+                      borderRadius: 4,
+                      distributed: true,
+                    },
+                  },
+                  colors: vibrantColors.slice(0, pvSeries.length),
                   dataLabels: { enabled: false },
-                  colors: vibrantColors.slice(0, 3),
                   xaxis: {
-                    categories: makeXAxis(campaigns),
-                    labels: {
-                      rotate: -45, // Tilt for readability
-                      style: {
-                        fontSize: "12px",
-                        fontWeight: 500,
-                        colors: "#6c757d", // Bootstrap muted text style
-                      },
-                      trim: true,
-                    },
-                    axisBorder: { show: true },
-                    axisTicks: { show: true },
+                    labels: { show: false },
+                    axisTicks: { show: false },
+                    axisBorder: { show: false },
                   },
-                  yaxis: {
-                    labels: {
-                      formatter: formatCompact,
-                      style: {
-                        fontSize: "11px",
-                      },
-                    },
-                  },
-                  legend: { position: "top" },
-                  tooltip: {
-                    shared: true,
-                    intersect: false,
-                  },
-                  grid: {
-                    strokeDashArray: 4,
-                  },
+                  yaxis: { show: false },
+                  grid: { show: false },
+                  tooltip: { y: { formatter: (v) => v.toString() } },
                 }}
               />
-            ) : (
-              <div className="text-muted text-center py-5 ">
-                No chart data available
-              </div>
             )}
           </Card>
         </Col>
-
-      <Col xl={4} md={12}>
-  <Card className="p-3 h-100 campign-card  fw-semibold text-muted">
-    <h6 className="fw-semibold text-muted mb-2">Realtime Active Users</h6>
-
-    {/* Stat display wrapped with muted text */}
-    <div className="text-muted  fw-semibold text-muted">
-      <Stat
-        icon={<FiActivity />}
-        label="Est. Active Users"
-        value={n0(kpi.clicks / 10)}
-      />
-    </div>
-
-    {mounted && (
-      <Chart
-        type="bar"
-        className="custome-width fw-semibold text-muted"
-        height={200}
-        series={[{ name: "PVs/sec", data: pvSeries }]}
-        options={{
-          chart: {
-            toolbar: { show: false },
-            animations: { easing: "easeinout", speed: 400 },
-          },
-          plotOptions: {
-            bar: {
-              columnWidth: "55%",
-              borderRadius: 4,
-              distributed: true,
-            },
-          },
-          colors: vibrantColors.slice(0, pvSeries.length),
-          dataLabels: { enabled: false },
-          xaxis: {
-            labels: { show: false },
-            axisTicks: { show: false },
-            axisBorder: { show: false },
-          },
-          yaxis: { show: false },
-          grid: { show: false },
-          tooltip: {
-            y: { formatter: (v) => v.toString() },
-          },
-        }}
-      />
-    )}
-  </Card>
-</Col>
-
       </Row>
 
       {/* DEVICE / SESSION / BROWSER */}
-      <Row className="g-4 mb-4">
+      {/* <Row className="g-4 mb-4">
         {[
           { label: "Device Sessions", data: devicePie },
           { label: "Sessions by Channel", data: sessions },
@@ -347,7 +362,7 @@ export default function CampaignDashboard({ channel = "all" }) {
                 <Chart
                 
                   type="donut"
-                  height={260}
+                  height={360}
                   series={chart.data.series}
                   options={{
                     labels: chart.data.labels,
@@ -381,8 +396,163 @@ export default function CampaignDashboard({ channel = "all" }) {
             </Card>
           </Col>
         ))}
-      </Row>
+      </Row> */}
+      <Row className="g-4 mb-4">
+        {[
+          { label: "Device Sessions", data: devicePie },
+          { label: "Sessions by Channel", data: sessions },
+          { label: "Browser Used By Users", data: browsers },
+        ].map(({ label, data }) => {
+          const hasData = mounted && data.series.length;
+          const height = 360;
 
+          /* solid palette (works in dark & light) */
+          const colors = [
+            "#4e79ff", // blue
+            "#ffaf40", // orange
+            "#28c76f", // green
+            "#ff5b5c", // red-pink
+            "#ffc048", // yellow
+            "#9358ff", // purple  –- google-ads now shows!
+            "#20c997", // cyan
+          ];
+
+          const total = data.series.reduce((a, b) => a + b, 0);
+
+          const options = {
+            chart: {
+              animations: { easing: "easeinout", speed: 600 },
+              toolbar: { show: false },
+              foreColor: "var(--bs-body-color)", // auto-switch text colours
+            },
+            labels: data.labels.map((lbl) => {
+              const map = {
+                snapchat: "Snapchat",
+                tiktok: "TikTok",
+                pinterest: "Pinterest",
+                x: "X",
+                linkedin: "LinkedIn",
+                "google ads": "Google Ads",
+              };
+              const fixed =
+                map[lbl.toLowerCase()] ||
+                lbl.replace(/\b\w/g, (c) => c.toUpperCase());
+
+              return shorten(fixed); // still trims to 14 chars max
+            }),
+
+            legend: {
+              position: "bottom",
+              horizontalAlign: "center",
+              fontSize: "13px",
+              itemMargin: { horizontal: 10, vertical: 4 },
+              markers: { width: 10, height: 10, radius: 2 },
+              formatter: (name, opts) => {
+                const percent = (
+                  (opts.w.globals.series[opts.seriesIndex] / total) *
+                  100
+                ).toFixed(1);
+                return `<span class="fw-bold text-muted">${name} (${percent}%)</span>`;
+              },
+            },
+
+            colors,
+            stroke: { show: false },
+            fill: { opacity: 0.92 },
+            legend: {
+              position: "bottom",
+              horizontalAlign: "center",
+              fontSize: "13px",
+              itemMargin: { horizontal: 10, vertical: 4 },
+              markers: { width: 10, height: 10, radius: 2 },
+              formatter: (name, opts) => {
+                const percent = (
+                  (opts.w.globals.series[opts.seriesIndex] / total) *
+                  100
+                ).toFixed(1);
+                return `<span class="fw-bold text-muted">${name} (${percent}%)</span>`;
+              },
+            },
+            dataLabels: {
+              enabled: true,
+              formatter: (v) => `${v.toFixed(1)}%`,
+              dropShadow: { enabled: false },
+              style: { fontWeight: 700 }, // fw-bold inside the slices
+            },
+            tooltip: { y: { formatter: (v) => `${v.toFixed(1)}%` } },
+            states: {
+              hover: { filter: { type: "darken", value: 0.8 } },
+              active: { filter: { type: "none" } },
+            },
+            responsive: [
+              { breakpoint: 576, options: { legend: { show: false } } },
+            ],
+          };
+
+          /* centre-label only for Sessions-by-Channel */
+          if (label === "Sessions by Channel") {
+            options.plotOptions = {
+              pie: {
+                donut: {
+                  size: "72%",
+                  name: {
+                    show: true,
+                    offsetY: -12,
+                    fontSize: "0.8rem",
+                    className: "text-muted fw-bold",
+                  },
+                  value: {
+                    show: true,
+                    fontSize: "1.25rem",
+                    className: "fw-bold",
+                    formatter: () => total.toLocaleString(),
+                  },
+                  total: {
+                    show: true,
+                    showAlways: true,
+                    fontSize: "0.8rem",
+                    label: "Total",
+                    className: "text-muted fw-bold",
+                    formatter: () => total.toLocaleString(),
+                  },
+                },
+              },
+            };
+          }
+
+          return (
+            <Col md={4} key={label}>
+              <Card className="p-3 h-100 d-flex flex-column campign-card">
+                {/* <h6 className="mb-3 fw-semibold text-muted text-center">
+                  {label}
+                </h6> */}
+                <h6 className="mb-3 fw-bold text-muted text-center">{label}</h6>
+
+                <div
+                  className="flex-grow-1 d-flex align-items-center justify-content-center"
+                  style={{ minHeight: height }}
+                >
+                  {hasData ? (
+                    <Chart
+                      type="donut"
+                      height={height}
+                      series={data.series}
+                      options={options}
+                    />
+                  ) : (
+                    <div className="empty-state w-100 h-100 d-flex flex-column align-items-center justify-content-center text-center">
+                      <FiPieChart size={38} className="text-primary mb-2" />
+                      <span className="small text-muted">
+                        No data available
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </Card>
+            </Col>
+          );
+        })}
+      </Row>
       {/* TRENDS & TABLES */}
       <Row className="g-4 mb-4">
         <Col xl={4} md={12}>
