@@ -10,6 +10,7 @@ import {
   Col,
   Form as BootstrapForm,
   Image,
+  Card,
 } from "react-bootstrap";
 import { toast } from "react-toastify";
 import Link from "next/link";
@@ -41,17 +42,21 @@ export default function SignIn() {
     <div className="auth-main-content m-auto m-1230 px-0">
       <Container className="ps-xl-0">
         <Row className="align-items-center">
-          <Col lg={6} className="d-none d-lg-block px-0">
-            <Image
-              src="/images/campaign.jpg"
-              className="rounded-3 sign-in-banner"
-              alt="login"
-              width={646}
-              height={804}
-            />
+          <Col lg={7} className="d-none d-lg-block px-0">
+            <Card className="border-0 shadow-sm rounded-3 overflow-hidden h-100">
+              <Image
+                // src="/images/authpage.png"
+                //  src="/images/authpage2.jpg"
+                 src="/images/authpage-2.jpg"
+                className="rounded-3 sign-in-banner"
+                alt="login"
+                width={646}
+                height={804}
+              />
+            </Card>
           </Col>
 
-          <Col lg={6}>
+          <Col lg={5}>
             <div className="mw-480 ms-lg-auto">
               {/* Logo */}
               <div className="d-flex align-items-center gap-2 mb-4">
@@ -66,10 +71,12 @@ export default function SignIn() {
               </div>
 
               {/* Heading */}
-              <h3 className="fs-28 mb-2">Welcome back to Umbrella Performance!</h3>
-              <p className="fw-medium fs-16 mb-4">
+              <h3 className="fs-28 mb-2">
+                Welcome back to Umbrella Performance!
+              </h3>
+              {/* <p className="fw-medium fs-16 mb-4">
                 Sign In with social account or enter your details
-              </p>
+              </p> */}
 
               {/* Formik Form */}
               <Formik

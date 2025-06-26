@@ -41,9 +41,10 @@ export default function SignUp() {
     <div className="auth-main-content m-auto m-1230 px-0">
       <Container className="ps-xl-0">
         <Row className="align-items-center">
-          <Col lg={6} className="d-none d-lg-block px-0">
+          <Col lg={7} className="d-none d-lg-block px-0">
             <Image
-              src="/images/campaign.jpg"
+              // src="/images/authpage.png"
+              src="/images/authpage-2.jpg"
               className="rounded-3 sign-in-banner"
               alt="signup"
               width={646}
@@ -51,7 +52,7 @@ export default function SignUp() {
             />
           </Col>
 
-          <Col lg={6}>
+          <Col lg={5}>
             <div className="mw-480 ms-lg-auto">
               {/* Logo */}
               <div className="d-flex align-items-center gap-2 mb-4">
@@ -67,9 +68,9 @@ export default function SignUp() {
 
               {/* Heading */}
               <h3 className="fs-28 mb-2">Create your account</h3>
-              <p className="fw-medium fs-16 mb-4">
+              {/* <p className="fw-medium fs-16 mb-4">
                 Register with social account or enter your details
-              </p>
+              </p> */}
 
               {/* Formik Form */}
               <Formik
