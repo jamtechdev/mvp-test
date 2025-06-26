@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import { Card, Row, Col, Table } from "react-bootstrap";
 import {
@@ -23,10 +23,11 @@ import {
   topPages,
 } from "@/_utils/campaignUtils";
 import { n0, n2 } from "@/_utils/formatNumber";
+import InfoPopover from "@/_components/common/InsightModel";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
-
 export default function CampaignDashboard({ channel = "all" }) {
+  /* ---------- state ---------- */
   const canonical = channel.toLowerCase();
   const [mounted, setMounted] = useState(false);
   const [pvSeries, setPvSeries] = useState([]);
@@ -38,6 +39,7 @@ export default function CampaignDashboard({ channel = "all" }) {
     );
   }, []);
 
+  /* ---------- data ---------- */
   const rows = useMemo(() => getData(canonical), [canonical]);
   const kpi = useMemo(() => computeKPIs(rows), [rows]);
   const campaigns = useMemo(() => topCampaigns(rows), [rows]);
@@ -48,66 +50,42 @@ export default function CampaignDashboard({ channel = "all" }) {
   const keywords = useMemo(() => keywordStats(rows), [rows]);
   const pages = useMemo(() => topPages(rows), [rows]);
 
-  const Stat = ({ icon, label, value }) => (
-    <Card className="shadow-sm border-0 p-3 h-100">
-      <div className="d-flex align-items-center gap-3">
-        <span className="fs-3 text-primary">{icon}</span>
-        <div>
-          <div className="text-muted small">{label}</div>
-          <div className="fw-bold fs-5 val">{value}</div>
-        </div>
-      </div>
-    </Card>
-  );
+  /* ---------- helpers ---------- */
+  const xCats = makeXAxis(campaigns);
+  const formatCompact = (v) =>
+    v >= 1_000_000
+      ? `${(v / 1_000_000).toFixed(1)}M`
+      : v >= 1_000
+      ? `${(v / 1_000).toFixed(1)}K`
+      : v.toFixed(0);
+  const shorten = (s) => (s.length > 14 ? `${s.slice(0, 11)}…` : s);
 
-  const c = {
-    blue: "#3C50E0",
-    orange: "#F79009",
-    green: "#22C55E",
-    pink: "#EF4444",
-    yellow: "#EAB308",
-  };
   const vibrantColors = [
-    "#FF6B6B", // Red-pink
-    "#4ECDC4", // Turquoise
-    "#FFD93D", // Yellow
-    "#1A73E8", // Bright blue
-    "#F72585", // Pink
-    "#3A0CA3", // Purple
-    "#F9844A", // Orange
-    "#43AA8B", // Teal-green
-    "#F9C74F", // Golden yellow
-    "#9D4EDD", // Violet
+    "#FF6B6B",
+    "#4ECDC4",
+    "#FFD93D",
+    "#1A73E8",
+    "#F72585",
+    "#3A0CA3",
+    "#F9844A",
+    "#43AA8B",
+    "#F9C74F",
+    "#9D4EDD",
   ];
-
-  const formattedPages = useMemo(() => {
-    return pages.map((p) => {
-      const raw = parseFloat(String(p.bounce).replace("%", ""));
-      const safe = isNaN(raw) ? 0 : raw;
-      return { ...p, bounceFormatted: `${safe.toFixed(1)}%` };
-    });
-  }, [pages]);
-
-  const formatCompact = (val) =>
-    val >= 1_000_000
-      ? (val / 1_000_000).toFixed(1) + "M"
-      : val >= 1_000
-      ? (val / 1_000).toFixed(1) + "K"
-      : val.toFixed(0);
-  const xCats = makeXAxis(campaigns); // reuse in two places
-  /* ── helper utilities (declare once near the top of the file) ── */
-  /* ── helpers (declare once) ── */
-  const shorten = (lbl) => (lbl.length > 14 ? `${lbl.slice(0, 11)}…` : lbl);
-  const pct = (val, tot) => ((val / tot) * 100).toFixed(1);
+  const [showInsight, setShowInsight] = useState(false);
+  const infoRef = useRef(null);
   return (
-    <div className="container-fluid py-4 ">
-      {/* KPI CARDS */}
-
+    <div className="container-fluid py-4">
+      {/* ================= KPI CARDS ================= */}
       <Row className="g-3 mb-0">
+        {/* Clicks */}
         <Col xl={3} md={6}>
-          {/* <Stat icon={<FiTrendingUp />} label="Clicks" value={n0(kpi.clicks)} /> */}
-
           <div className="card bg-white click-card border-1 rounded-3 mb-4 stats-box position-relative">
+            <InfoPopover
+              title="Clicks – AI Insight"
+              description="When AI analysis is ready, this will include performance evaluation and recommendations to improve your campaign."
+              placement="bottom"
+            />
             <div className="card-body p-4">
               <div className="row">
                 <div className="col-lg-9">
@@ -128,9 +106,14 @@ export default function CampaignDashboard({ channel = "all" }) {
             </div>
           </div>
         </Col>
+        {/* Impressions */}
         <Col xl={3} md={6}>
-          {/* <Stat icon={<FiPieChart />} label="Impressions" value={n0(kpi.impressions)} /> */}
           <div className="card bg-white click-card border-1 rounded-3 mb-4 stats-box position-relative">
+            <InfoPopover
+              title="Impressions – AI Insight"
+              description="Impression share dropped – broaden match types or raise bids."
+              placement="bottom"
+            />
             <div className="card-body p-4">
               <div className="row">
                 <div className="col-lg-9">
@@ -151,9 +134,14 @@ export default function CampaignDashboard({ channel = "all" }) {
             </div>
           </div>
         </Col>
+        {/* Spend */}
         <Col xl={3} md={6}>
-          {/* <Stat icon={<FiShoppingCart />} label="Spend ($)" value={n0(kpi.spend)} /> */}
           <div className="card bg-white click-card border-1 rounded-3 mb-4 stats-box position-relative">
+            <InfoPopover
+              title="Spend – AI Insight"
+              description="Spend efficiency improved. Keep monitoring CPA."
+              placement="bottom"
+            />
             <div className="card-body p-4">
               <div className="row">
                 <div className="col-lg-9">
@@ -174,9 +162,14 @@ export default function CampaignDashboard({ channel = "all" }) {
             </div>
           </div>
         </Col>
+        {/* Avg CPC */}
         <Col xl={3} md={6}>
-          {/* <Stat icon="💰" label="Avg CPC" value={`$${n2(kpi.cpc)}`} /> */}
           <div className="card bg-white click-card border-1 rounded-3 mb-4 stats-box position-relative">
+            <InfoPopover
+              title="CPC – AI Insightt"
+              description="CPC trending down 5 %. Keep testing creatives."
+              placement="bottom"
+            />
             <div className="card-body p-4">
               <div className="row">
                 <div className="col-lg-9">
@@ -199,14 +192,21 @@ export default function CampaignDashboard({ channel = "all" }) {
         </Col>
       </Row>
 
-      {/* CAMPAIGN OVERVIEW + REALTIME USERS */}
+      {/* ================= Campaign Overview & Realtime ================= */}
       <Row className="g-4 mb-4">
-        {/* ---------- Campaign Overview ---------- */}
+        {/* Campaign Overview */}
         <Col xl={8} md={12} className="d-flex">
           <Card className="p-3 campign-card h-100 flex-fill">
-            <h6 className="fw-semibold text-muted mb-3">Campaign Overview</h6>
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <h6 className="fw-semibold text-muted mb-0">Campaign Overview</h6>
 
-            {/* fixed-height wrapper keeps card tall even when empty */}
+              <InfoPopover
+                title="Campaign Overview – AI Insight"
+                description="Shift budget from low-CTR campaigns; expand high-CTR segments."
+                placement="bottom"
+              />
+            </div>
+
             <div style={{ minHeight: 360 }}>
               {mounted && campaigns.length ? (
                 <Chart
@@ -235,7 +235,7 @@ export default function CampaignDashboard({ channel = "all" }) {
                       bar: {
                         columnWidth: "50%",
                         borderRadius: 6,
-                        borderRadiusApplication: "end", // only top corners rounded
+                        borderRadiusApplication: "end",
                       },
                     },
                     fill: { opacity: 0.85 },
@@ -245,13 +245,13 @@ export default function CampaignDashboard({ channel = "all" }) {
                     xaxis: {
                       categories: xCats,
                       tickPlacement: "between",
-                      tickAmount: Math.min(xCats.length, 7), // ≤7 labels
+                      tickAmount: Math.min(xCats.length, 7),
                       labels: {
                         rotate: -20,
                         hideOverlappingLabels: true,
                         formatter: (val) =>
                           val.length > 12 ? `${val.slice(0, 9)}…` : val,
-                        style: { fontSize: "11px", fontWeight: 500 },
+                        style: { fontSize: 11, fontWeight: 500 },
                       },
                       axisBorder: { show: false },
                       axisTicks: { show: false },
@@ -259,12 +259,12 @@ export default function CampaignDashboard({ channel = "all" }) {
                     yaxis: {
                       labels: {
                         formatter: formatCompact,
-                        style: { fontSize: "11px" },
+                        style: { fontSize: 11 },
                       },
                     },
                     legend: {
                       position: "top",
-                      fontSize: "12px",
+                      fontSize: 12,
                       markers: { radius: 4 },
                       itemMargin: { horizontal: 12 },
                     },
@@ -296,12 +296,21 @@ export default function CampaignDashboard({ channel = "all" }) {
             </div>
           </Card>
         </Col>
-        {/* ---------- Realtime Active Users ---------- */}
+
+        {/* Realtime Active Users */}
         <Col xl={4} md={12} className="d-flex">
           <Card className="p-3 h-100 campign-card flex-fill">
-            <h6 className="fw-semibold text-muted mb-2">
-              Realtime Active Users
-            </h6>
+            <div className="d-flex justify-content-between align-items-center mb-2">
+              <h6 className="fw-semibold text-muted mb-0">
+                Realtime Active Users
+              </h6>
+
+              <InfoPopover
+                title="Realtime Users – AI Insight"
+                description="Traffic peaks 12-2 PM; schedule posts then."
+                placement="bottom"
+              />
+            </div>
 
             <div className="text-muted fw-semibold">
               <Stat
@@ -346,57 +355,7 @@ export default function CampaignDashboard({ channel = "all" }) {
         </Col>
       </Row>
 
-      {/* DEVICE / SESSION / BROWSER */}
-      {/* <Row className="g-4 mb-4">
-        {[
-          { label: "Device Sessions", data: devicePie },
-          { label: "Sessions by Channel", data: sessions },
-          { label: "Browser Used By Users", data: browsers },
-        ].map((chart) => (
-          <Col md={4} key={chart.label}>
-            <Card className="p-3 h-100 d-flex flex-column justify-content-between campign-card">
-              <h6 className="mb-3 fw-semibold text-muted text-center">
-                {chart.label}
-              </h6>
-              {mounted && chart.data.series.length ? (
-                <Chart
-                
-                  type="donut"
-                  height={360}
-                  series={chart.data.series}
-                  options={{
-                    labels: chart.data.labels,
-                    legend: {
-                      position: "bottom",
-                      horizontalAlign: "center",
-                      fontSize: "13px",
-                      itemMargin: { horizontal: 10, vertical: 4 },
-                      markers: { width: 10, height: 10 },
-                    },
-                    dataLabels: {
-                      enabled: true,
-                      formatter: (val) => `${val.toFixed(1)}%`,
-                    },
-                    tooltip: {
-                      y: { formatter: (val) => `${val.toFixed(1)}%` },
-                    },
-                    stroke: { show: false },
-                    colors: [c.blue, c.orange, c.green, c.pink, c.yellow],
-                    
-                  }}
-                />
-              ) : (
-                <div className="text-center text-muted py-5">No data</div>
-              )}
-              {chart.label === "Sessions by Channel" && (
-                <div className="text-center mt-2 fw-semibold">
-                  Total {n0(sessions.total)}
-                </div>
-              )}
-            </Card>
-          </Col>
-        ))}
-      </Row> */}
+      {/* ================= Donut Charts ================= */}
       <Row className="g-4 mb-4">
         {[
           { label: "Device Sessions", data: devicePie },
@@ -405,25 +364,23 @@ export default function CampaignDashboard({ channel = "all" }) {
         ].map(({ label, data }) => {
           const hasData = mounted && data.series.length;
           const height = 360;
-
-          /* solid palette (works in dark & light) */
-          const colors = [
-            "#4e79ff", // blue
-            "#ffaf40", // orange
-            "#28c76f", // green
-            "#ff5b5c", // red-pink
-            "#ffc048", // yellow
-            "#9358ff", // purple  –- google-ads now shows!
-            "#20c997", // cyan
-          ];
-
           const total = data.series.reduce((a, b) => a + b, 0);
+
+          const colors = [
+            "#4e79ff",
+            "#ffaf40",
+            "#28c76f",
+            "#ff5b5c",
+            "#ffc048",
+            "#9358ff",
+            "#20c997",
+          ];
 
           const options = {
             chart: {
               animations: { easing: "easeinout", speed: 600 },
               toolbar: { show: false },
-              foreColor: "var(--bs-body-color)", // auto-switch text colours
+              foreColor: "var(--bs-body-color)",
             },
             labels: data.labels.map((lbl) => {
               const map = {
@@ -438,9 +395,8 @@ export default function CampaignDashboard({ channel = "all" }) {
                 map[lbl.toLowerCase()] ||
                 lbl.replace(/\b\w/g, (c) => c.toUpperCase());
 
-              return shorten(fixed); // still trims to 14 chars max
+              return shorten(fixed);
             }),
-
             legend: {
               position: "bottom",
               horizontalAlign: "center",
@@ -455,29 +411,14 @@ export default function CampaignDashboard({ channel = "all" }) {
                 return `<span class="fw-bold text-muted">${name} (${percent}%)</span>`;
               },
             },
-
             colors,
             stroke: { show: false },
             fill: { opacity: 0.92 },
-            legend: {
-              position: "bottom",
-              horizontalAlign: "center",
-              fontSize: "13px",
-              itemMargin: { horizontal: 10, vertical: 4 },
-              markers: { width: 10, height: 10, radius: 2 },
-              formatter: (name, opts) => {
-                const percent = (
-                  (opts.w.globals.series[opts.seriesIndex] / total) *
-                  100
-                ).toFixed(1);
-                return `<span class="fw-bold text-muted">${name} (${percent}%)</span>`;
-              },
-            },
             dataLabels: {
               enabled: true,
               formatter: (v) => `${v.toFixed(1)}%`,
               dropShadow: { enabled: false },
-              style: { fontWeight: 700 }, // fw-bold inside the slices
+              style: { fontWeight: 700 },
             },
             tooltip: { y: { formatter: (v) => `${v.toFixed(1)}%` } },
             states: {
@@ -489,29 +430,16 @@ export default function CampaignDashboard({ channel = "all" }) {
             ],
           };
 
-          /* centre-label only for Sessions-by-Channel */
           if (label === "Sessions by Channel") {
             options.plotOptions = {
               pie: {
                 donut: {
                   size: "72%",
-                  name: {
-                    show: true,
-                    offsetY: -12,
-                    fontSize: "0.8rem",
-                    className: "text-muted fw-bold",
-                  },
-                  value: {
-                    show: true,
-                    fontSize: "1.25rem",
-                    className: "fw-bold",
-                    formatter: () => total.toLocaleString(),
-                  },
                   total: {
                     show: true,
                     showAlways: true,
-                    fontSize: "0.8rem",
                     label: "Total",
+                    fontSize: "0.8rem",
                     className: "text-muted fw-bold",
                     formatter: () => total.toLocaleString(),
                   },
@@ -523,10 +451,17 @@ export default function CampaignDashboard({ channel = "all" }) {
           return (
             <Col md={4} key={label}>
               <Card className="p-3 h-100 d-flex flex-column campign-card">
-                {/* <h6 className="mb-3 fw-semibold text-muted text-center">
-                  {label}
-                </h6> */}
-                <h6 className="mb-3 fw-bold text-muted text-center">{label}</h6>
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                  <h6 className="fw-semibold text-muted mb-0 flex-grow-1 text-center">
+                    {label}
+                  </h6>
+
+                  <InfoPopover
+                    title={`${label} – AI Insight`}
+                    description={`Dummy insight for ${label.toLowerCase()}.`}
+                    placement="bottom"
+                  />
+                </div>
 
                 <div
                   className="flex-grow-1 d-flex align-items-center justify-content-center"
@@ -540,11 +475,8 @@ export default function CampaignDashboard({ channel = "all" }) {
                       options={options}
                     />
                   ) : (
-                    <div className="empty-state w-100 h-100 d-flex flex-column align-items-center justify-content-center text-center">
-                      <FiPieChart size={38} className="text-primary mb-2" />
-                      <span className="small text-muted">
-                        No data available
-                      </span>
+                    <div className="text-center text-muted">
+                      No data available
                     </div>
                   )}
                 </div>
@@ -553,11 +485,21 @@ export default function CampaignDashboard({ channel = "all" }) {
           );
         })}
       </Row>
-      {/* TRENDS & TABLES */}
+
+      {/* ================= 30-day Trend & Keyword Table ================= */}
       <Row className="g-4 mb-4">
+        {/* Click trend */}
         <Col xl={4} md={12}>
           <Card className="p-3 campign-card h-100">
-            <h6 className="mb-1 fw-semibold text-muted">Clicks – 30 days</h6>
+            <div className="d-flex justify-content-between align-items-center mb-2">
+              <h6 className="fw-semibold text-muted mb-0">Clicks – 30 days</h6>
+
+              <InfoPopover
+                title="Clicks Trend – AI Insight"
+                description="Clicks stable with small uptick – add new creatives."
+                placement="bottom"
+              />
+            </div>
             <Stat
               icon={<FiBarChart2 />}
               label="Clicks"
@@ -573,7 +515,7 @@ export default function CampaignDashboard({ channel = "all" }) {
                 ]}
                 options={{
                   chart: { toolbar: { show: false } },
-                  colors: [c.blue],
+                  colors: ["#3C50E0"],
                   xaxis: { show: false },
                   yaxis: { show: false },
                   stroke: { width: 2 },
@@ -587,11 +529,18 @@ export default function CampaignDashboard({ channel = "all" }) {
           </Card>
         </Col>
 
+        {/* Keyword table */}
         <Col xl={8} md={12}>
           <Card className="p-3 h-100 campign-card">
-            <h6 className="mb-3 fw-semibold  table-heading">
-              Clicks/Impr. by Campaign
-            </h6>
+            <div className="d-flex justify-content-between align-items-center mb-2">
+              <h6 className="fw-semibold mb-0">Clicks/Impr. by Campaign</h6>
+
+              <InfoPopover
+                title="Clicks vs Impressions – AI Insight"
+                description="Campaign D has high impressions but low clicks – improve ad copy."
+                placement="bottom"
+              />
+            </div>
             <Table size="sm" hover responsive>
               <thead>
                 <tr>
@@ -623,13 +572,22 @@ export default function CampaignDashboard({ channel = "all" }) {
           </Card>
         </Col>
       </Row>
+
+      {/* ================= Top Campaigns & Pages ================= */}
       <Row className="g-4">
+        {/* Top campaigns */}
         <Col xl={6} md={12}>
-          {/* TOP CAMPAIGNS */}
-          <Card className="p-3 mt-0 campign-card">
-            <h6 className="mb-3 fw-semibold  table-heading">
-              Top Campaigns (Clicks)
-            </h6>
+          <Card className="p-3 campign-card">
+            <div className="d-flex justify-content-between align-items-center mb-2">
+              <h6 className="fw-semibold mb-0">Top Campaigns (Clicks)</h6>
+
+              <InfoPopover
+                title="Top Campaigns – AI Insight"
+                description="Replicate Campaign A's targeting in under-performers."
+                placement="bottom"
+              />
+            </div>
+
             <div style={{ maxHeight: 400, overflowY: "auto" }}>
               <Table size="sm" hover responsive>
                 <thead>
@@ -643,7 +601,7 @@ export default function CampaignDashboard({ channel = "all" }) {
                 <tbody>
                   {campaigns.length ? (
                     campaigns.map((c, i) => (
-                      <tr key={`${c.ad_key || c.campaign_name}-${i}`}>
+                      <tr key={`${c.campaign_name}-${i}`}>
                         <td>{i + 1}</td>
                         <td>{c.campaign_name?.trim() || "Untitled"}</td>
                         <td className="text-end">{n0(c.clicks)}</td>
@@ -663,9 +621,18 @@ export default function CampaignDashboard({ channel = "all" }) {
           </Card>
         </Col>
 
+        {/* Top pages */}
         <Col xl={6} md={12}>
           <Card className="p-3 h-100 campign-card">
-            <h6 className="mb-3 fw-semibold  table-heading">Top Pages Today</h6>
+            <div className="d-flex justify-content-between align-items-center mb-2">
+              <h6 className="fw-semibold mb-0">Top Pages Today</h6>
+
+              <InfoPopover
+                title="Top Pages – AI Insight"
+                description="Page X bounce rate high – improve on-page content."
+                placement="bottom"
+              />
+            </div>
             <Table size="sm" hover responsive>
               <thead>
                 <tr>
@@ -676,14 +643,14 @@ export default function CampaignDashboard({ channel = "all" }) {
                 </tr>
               </thead>
               <tbody>
-                {formattedPages.length ? (
-                  formattedPages.map((p, i) => (
+                {pages.length ? (
+                  pages.map((p, i) => (
                     <tr key={`${p.page}-${i}`}>
                       <td>{p.page}</td>
                       <td>{p.source}</td>
                       <td className="text-end">{n0(p.views)}</td>
                       <td className="text-end">
-                        {mounted ? p.bounceFormatted : "—"}
+                        {mounted ? `${parseFloat(p.bounce).toFixed(1)}%` : "—"}
                       </td>
                     </tr>
                   ))
@@ -700,5 +667,20 @@ export default function CampaignDashboard({ channel = "all" }) {
         </Col>
       </Row>
     </div>
+  );
+}
+
+/* ---------------- Tiny Stat helper ---------------- */
+function Stat({ icon, label, value }) {
+  return (
+    <Card className="shadow-sm border-0 p-3 h-100">
+      <div className="d-flex align-items-center gap-3">
+        <span className="fs-3 text-primary">{icon}</span>
+        <div>
+          <div className="text-muted small">{label}</div>
+          <div className="fw-bold fs-5 val">{value}</div>
+        </div>
+      </div>
+    </Card>
   );
 }

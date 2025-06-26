@@ -1336,3 +1336,36 @@ color: #605dff !important;
  }
  
 }
+
+.sidebar-collapsed .dashboard-sidebar:hover .logo a.d-block{
+  display: flex !important;
+}
+
+
+ .sidebar-collapsed .dashboard-sidebar:hover span.logo-text{
+  white-space: nowrap;
+ }
+
+
+ #clicks-insight{
+  background-color: #eaebf1;
+  border: 1px solid #3C50E0;
+ }
+
+ .popover-arrow::after,.popover-arrow::after {
+    border-left-color: #605dff !important;
+}
+
+#clicks-insight button.btn.btn-outline-primary{
+   background-color: #eaebf1 !important;
+  border: 1px solid #3C50E0 !important;
+  color: #3C50E0;
+}
+#clicks-insight button.btn.btn-primary{
+    background-color: #3C50E0;
+  border: 1px solid  #eaebf1;
+}
+
+.info-icon svg{
+  font-size: 22px;
+}
