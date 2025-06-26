@@ -62,11 +62,11 @@ export default function SignIn() {
                   width={25}
                   height={25}
                 />
-                <span className="logotxt">Ad Tracker</span>
+                <span className="logotxt">Umbrella Performance</span>
               </div>
 
               {/* Heading */}
-              <h3 className="fs-28 mb-2">Welcome back to Ad Tracker!</h3>
+              <h3 className="fs-28 mb-2">Welcome back to Umbrella Performance!</h3>
               <p className="fw-medium fs-16 mb-4">
                 Sign In with social account or enter your details
               </p>
@@ -142,7 +142,7 @@ export default function SignIn() {
                       <Field
                         name="email"
                         type="email"
-                        placeholder="example@trezo.com"
+                        placeholder="example@umbrellaperformance.com"
                         className="form-control h-55"
                       />
                       <ErrorMessage
@@ -171,7 +171,7 @@ export default function SignIn() {
                     {/* Forgot Password */}
                     <BootstrapForm.Group className="mb-4">
                       <Link
-                        href="/authentication/forgot-password/"
+                        href="/"
                         className="fw-medium text-primary text-decoration-none"
                       >
                         Forgot Password?

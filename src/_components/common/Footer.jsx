@@ -73,7 +73,7 @@ export default function Footer() {
         <Row className="border-top mt-5">
           <Col className="text-center mt-4">
             <small>
-              © {new Date().getFullYear()} Ad Tracker. All Rights Reserved.
+              © {new Date().getFullYear()} Umbrella Performance. All Rights Reserved.
             </small>
           </Col>
         </Row>

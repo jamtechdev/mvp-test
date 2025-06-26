@@ -62,7 +62,7 @@ export default function SignUp() {
                   width={25}
                   height={25}
                 />
-                <span className="logotxt">Ad Tracker</span>
+                <span className="logotxt">Umbrella Performance</span>
               </div>
 
               {/* Heading */}
@@ -138,7 +138,7 @@ export default function SignUp() {
                       <Field
                         name="email"
                         type="email"
-                        placeholder="example@trezo.com"
+                        placeholder="example@umbrellaperformance.com"
                         className="form-control h-55"
                       />
                       <ErrorMessage

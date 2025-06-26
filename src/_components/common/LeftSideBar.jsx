@@ -68,10 +68,10 @@ export default function LeftSidebar({ manageToggleButton, setToggleButton }) {
           <Image
             src="/images/sample-logo.jpg"
             alt="Logo"
-            width={32}
-            height={32}
+            width={25}
+            height={25}
           />
-          <span className="logo-text fw-bold text-dark">Ad Tracker</span>
+          <span className="logo-text fw-bold text-dark">Umbrella Performance</span>
         </Link>
         <Button
           className="sidebar-burger-menu bg-transparent p-0 border-0 opacity-0 z-n1 position-absolute top-50 end-0 translate-middle-y"
