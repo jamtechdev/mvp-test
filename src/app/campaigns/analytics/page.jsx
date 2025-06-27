@@ -5,7 +5,7 @@ import CampaignDashboard from "../../_components/CampaignDashboard";
 export default function AnalyticsPage() {
   return (
     <LayoutManager includeAuthLayout={true}>
-      <CampaignDashboard channel="all" />
+      <CampaignDashboard channel1="all" />
     </LayoutManager>
   );
 }

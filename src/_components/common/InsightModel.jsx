@@ -15,7 +15,7 @@ export default function InfoPopover({
     <span 
     className="position-absolute top-0 end-0 m-2 text-muted info-icon"
     >
-      <FiInfo
+      {/* <FiInfo
         ref={ref}
         role="button"
         className="text-muted"
@@ -23,7 +23,22 @@ export default function InfoPopover({
         onMouseLeave={() => setShow(false)}
         onFocus={() => setShow(true)}
         onBlur={() => setShow(false)}
-      />
+      /> */}
+        {/* Badge that triggers the overlay */}
+      <span
+        ref={ref}
+        role="button"
+        aria-label="AI insight"
+        className="badge bg-warning text-dark fw-bold"
+        style={{ cursor: "pointer", fontSize: "0.65rem", letterSpacing: 0.5 }}
+        onMouseEnter={() => setShow(true)}
+        onMouseLeave={() => setShow(false)}
+        onFocus={() => setShow(true)}
+        onBlur={() => setShow(false)}
+      >
+        AI
+      </span>
+
       <Overlay target={ref.current} show={show} placement={placement} flip>
         {(props) => (
           <Popover id="info-popover" {...props}>

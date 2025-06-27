@@ -1,7 +1,16 @@
 "use client";
 import { useMemo, useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
-import { Card, Row, Col, Table } from "react-bootstrap";
+import {
+  Card,
+  Row,
+  Col,
+  Table,
+  Form,
+  Button,
+  Overlay,
+  Popover,
+} from "react-bootstrap";
 import {
   FiTrendingUp,
   FiPieChart,
@@ -21,17 +30,35 @@ import {
   browserUsage,
   keywordStats,
   topPages,
+  channels,
+  revenueByChannel,
 } from "@/_utils/campaignUtils";
 import { n0, n2 } from "@/_utils/formatNumber";
 import InfoPopover from "@/_components/common/InsightModel";
-
+import DateRangePicker from "@/_components/common/DateRangePicker";
+import { format } from "date-fns";
+import DateInput from "@/_components/common/DateRangePicker";
+import DateRangeDropdown from "@/_components/common/DateRangePicker";
+import DateRangeInput from "@/_components/common/DateRangePicker";
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
-export default function CampaignDashboard({ channel = "all" }) {
+export default function CampaignDashboard({ channel1 = "all" }) {
   /* ---------- state ---------- */
-  const canonical = channel.toLowerCase();
+  const canonical = channel1.toLowerCase();
+  /* date state as Date objects for the picker */
+  /* state */
+  const [range, setRange] = useState({
+    start: new Date(Date.now() - 7 * 864e5),
+    end: new Date(),
+  });
   const [mounted, setMounted] = useState(false);
   const [pvSeries, setPvSeries] = useState([]);
-
+  const [metric, setMetric] = useState("spend");
+  const [channel, setChan] = useState("All");
+  /* keep string copies if your API expects yyyy-MM-dd */
+  const stringRange = {
+    start: format(range.start, "yyyy-MM-dd"),
+    end: format(range.end, "yyyy-MM-dd"),
+  };
   useEffect(() => {
     setMounted(true);
     setPvSeries(
@@ -40,6 +67,16 @@ export default function CampaignDashboard({ channel = "all" }) {
   }, []);
 
   /* ---------- data ---------- */
+
+  /* hydration-safe last-updated time  */
+  const [lastUpdated, setLastUpdated] = useState(""); // string only
+  useEffect(() => setLastUpdated(new Date().toLocaleTimeString()), []);
+
+  const refreshData = () => {
+    setLastUpdated(new Date().toLocaleTimeString());
+    // any future data-fetch goes here
+  };
+
   const rows = useMemo(() => getData(canonical), [canonical]);
   const kpi = useMemo(() => computeKPIs(rows), [rows]);
   const campaigns = useMemo(() => topCampaigns(rows), [rows]);
@@ -47,9 +84,12 @@ export default function CampaignDashboard({ channel = "all" }) {
   const devicePie = useMemo(() => deviceBreakdown(), []);
   const sessions = useMemo(() => sessionChannelBreakdown(rows), [rows]);
   const browsers = useMemo(() => browserUsage(), []);
+  const revenue = useMemo(() => revenueByChannel(), []);
+
   const keywords = useMemo(() => keywordStats(rows), [rows]);
   const pages = useMemo(() => topPages(rows), [rows]);
-
+  const fmtDate = (d) =>
+    new Date(d).toLocaleDateString("en-CA", { month: "short", day: "numeric" });
   /* ---------- helpers ---------- */
   const xCats = makeXAxis(campaigns);
   const formatCompact = (v) =>
@@ -74,8 +114,65 @@ export default function CampaignDashboard({ channel = "all" }) {
   ];
   const [showInsight, setShowInsight] = useState(false);
   const infoRef = useRef(null);
+  // Utils – define once (outside render body is fine)
+  /* ─── utilities (define once) ────────────────────────────── */
+  /* ─── helpers (define once) ──────────────────────────────── */
+  const fmtNumber = (v = 0) => Number(v).toLocaleString();
+  const fmtCurrency = (v = 0) =>
+    new Intl.NumberFormat(undefined, {
+      style: "currency",
+      currency: "USD",
+    }).format(v);
+
+  /* ─── card definitions ───────────────────────────────────── */
+  const CARDS = [
+    { label: "Device Sessions", data: devicePie, formatter: fmtNumber },
+    { label: "Sessions by Channel", data: sessions, formatter: fmtNumber },
+    { label: "Revenue per Channel", data: revenue, formatter: fmtCurrency },
+  ];
+  const handleRangeChange = ({ startDate, endDate }) =>
+    setRange({
+      start: format(startDate, "yyyy-MM-dd"),
+      end: format(endDate, "yyyy-MM-dd"),
+    });
+  const [show, setShow] = useState(false);
+
+  const target = useRef(null);
   return (
     <div className="container-fluid py-4">
+      {/* ============ TOP FILTER BAR ============ */}
+      <Row className="align-items-end g-3 mb-4">
+        <Col md={5} lg={4}>
+          <Form.Group>
+            <Form.Label className="small fw-semibold">Date range</Form.Label>
+            <DateRangeInput value={range} onChange={setRange} />
+          </Form.Group>
+        </Col>
+
+        <Col md={3} lg={2}>
+          <Form.Group>
+            <Form.Label className="small fw-semibold">Channel</Form.Label>
+            <Form.Select
+              value={channel}
+              onChange={(e) => setChan(e.target.value)}
+            >
+              {channels.map((c) => (
+                <option key={c}>{c}</option>
+              ))}
+            </Form.Select>
+          </Form.Group>
+        </Col>
+
+        <Col className="text-md-end">
+          {lastUpdated && (
+            <small className="text-muted me-2">Updated {lastUpdated}</small>
+          )}
+          <Button size="sm" variant="outline-secondary" onClick={refreshData}>
+            ⟳ Refresh
+          </Button>
+        </Col>
+      </Row>
+
       {/* ================= KPI CARDS ================= */}
       <Row className="g-3 mb-0">
         {/* Clicks */}
@@ -356,7 +453,7 @@ export default function CampaignDashboard({ channel = "all" }) {
       </Row>
 
       {/* ================= Donut Charts ================= */}
-      <Row className="g-4 mb-4">
+      {/* <Row className="g-4 mb-4">
         {[
           { label: "Device Sessions", data: devicePie },
           { label: "Sessions by Channel", data: sessions },
@@ -484,8 +581,179 @@ export default function CampaignDashboard({ channel = "all" }) {
             </Col>
           );
         })}
-      </Row>
+      </Row> */}
+      {/* <Row className="g-4 mb-4">
+  {[
+    
+     { label: "Device Sessions", data: devicePie },
+          { label: "Sessions by Channel", data: sessions },
+          { label: "Revenue per Channel", data: revenue },
+  ].map(({ label, data, formatter }) => {
+    const hasData = mounted && data.series.length;
+    const height = 360;
+    const total = data.series.reduce((a, b) => a + b, 0);
 
+    const colors = [
+      "#4e79ff",
+      "#ffaf40",
+      "#28c76f",
+      "#ff5b5c",
+      "#ffc048",
+      "#9358ff",
+      "#20c997",
+    ];
+
+    const options = {
+      chart: {
+        type: "bar",
+        animations: { easing: "easeinout", speed: 600 },
+        toolbar: { show: false },
+        foreColor: "var(--bs-body-color)",
+      },
+      plotOptions: {
+        bar: {
+          horizontal: true,
+          barHeight: "60%",
+          distributed: true,
+        },
+      },
+      labels: data.labels.map((l) =>
+        l.replace(/\b\w/g, (c) => c.toUpperCase())
+      ),
+      colors,
+      dataLabels: {
+        enabled: true,
+        formatter: (v, opts) =>
+          formatter(opts.w.globals.series[opts.seriesIndex]),
+        dropShadow: { enabled: false },
+        style: { fontWeight: 700 },
+      },
+      tooltip: {
+        y: { formatter },
+      },
+      legend: {
+        position: "bottom",
+        horizontalAlign: "center",
+        fontSize: "13px",
+        itemMargin: { horizontal: 10, vertical: 4 },
+        markers: { width: 10, height: 10, radius: 2 },
+        formatter: (name, opts) => {
+          const raw = opts.w.globals.series[opts.seriesIndex];
+          const percent = ((raw / total) * 100).toFixed(1);
+          return `<span class="fw-bold text-muted">${name}: ${formatter(raw)} (${percent}%)</span>`;
+        },
+      },
+      states: {
+        hover: { filter: { type: "darken", value: 0.8 } },
+        active: { filter: { type: "none" } },
+      },
+      responsive: [
+        { breakpoint: 576, options: { legend: { show: false } } },
+      ],
+    };
+
+    return (
+      <Col md={4} key={label}>
+        <Card className="p-3 h-100 d-flex flex-column campign-card">
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <h6 className="fw-semibold text-muted mb-0 flex-grow-1 text-center">
+              {label}
+            </h6>
+            <InfoPopover
+              title={`${label} – AI Insight`}
+              description={`Dummy insight for ${label.toLowerCase()}.`}
+              placement="bottom"
+            />
+          </div>
+
+          <div
+            className="flex-grow-1 d-flex align-items-center justify-content-center"
+            style={{ minHeight: height }}
+          >
+            {hasData ? (
+              <Chart
+                type="bar"
+                height={height}
+                series={data.series}
+                options={options}
+              />
+            ) : (
+              <div className="text-center text-muted">No data available</div>
+            )}
+          </div>
+        </Card>
+      </Col>
+    );
+  })}
+</Row> */}
+      {/* ─── card renderer ────────────────────────────────────────  */}
+      <Row className="g-4 mb-4">
+        {CARDS.map(({ label, data, formatter }) => {
+          const height = 360;
+          const total = data.series.reduce((a, b) => a + b, 0);
+
+          /* bar-specific payload */
+          const barSeries = [{ data: data.series }];
+          const categories = data.labels.map((l) =>
+            l.replace(/\b\w/g, (c) => c.toUpperCase())
+          );
+
+          const options = {
+            chart: { type: "bar", toolbar: { show: false } },
+            plotOptions: {
+              bar: { horizontal: true, distributed: true, barHeight: "60%" },
+            },
+            xaxis: { categories },
+            labels: categories, // keeps legend text aligned
+            dataLabels: { enabled: true, formatter },
+            tooltip: { y: { formatter } },
+            colors: [
+              "#4e79ff",
+              "#ffaf40",
+              "#28c76f",
+              "#ff5b5c",
+              "#ffc048",
+              "#9358ff",
+              "#20c997",
+            ],
+            legend: {
+              position: "bottom",
+              formatter: (_name, opts) => {
+                const raw = data.series[opts.seriesIndex] ?? 0;
+                const pct = total ? ((raw / total) * 100).toFixed(1) : "0.0";
+                const txt = categories[opts.seriesIndex];
+                return `<span class="fw-bold text-muted">${txt}: ${formatter(
+                  raw
+                )} (${pct}%)</span>`;
+              },
+            },
+          };
+
+          return (
+            <Col md={4} key={label}>
+              <Card className="p-3 h-100 d-flex flex-column campign-card">
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                  <h6 className="fw-semibold text-muted mb-0 flex-grow-1 text-center">
+                    {label}
+                  </h6>
+                  <InfoPopover
+                    title={`${label} – AI Insight`}
+                    description={`Quick insight for ${label.toLowerCase()}.`}
+                    placement="bottom"
+                  />
+                </div>
+
+                <Chart
+                  type="bar"
+                  height={height}
+                  series={barSeries}
+                  options={options}
+                />
+              </Card>
+            </Col>
+          );
+        })}
+      </Row>
       {/* ================= 30-day Trend & Keyword Table ================= */}
       <Row className="g-4 mb-4">
         {/* Click trend */}
