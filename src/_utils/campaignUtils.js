@@ -75,7 +75,7 @@ export const sessionChannelBreakdown = (rows) => {
 };
 export const revenueByChannel = () => ({
   labels: ["Google Ads", "Facebook Ads", "LinkedIn", "Email"],
-  series: [120000, 95000, 40000, 15000], // revenue (₹ or $)
+  series: [120000, 95000, 40000, 55000], // revenue (₹ or $)
 });
 
 /* Trezo-style extra widgets  ----------------------------- */
@@ -135,4 +135,3 @@ export const getFunnelData = (rows) => {
     };
   });
 };
-
