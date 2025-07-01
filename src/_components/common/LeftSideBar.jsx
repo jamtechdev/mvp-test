@@ -20,24 +20,24 @@ import { toast } from "react-toastify";
 import { Button } from "react-bootstrap";
 
 const nav = [
-  {
-    label: "Instagram",
-    icon: <RiInstagramLine />,
-    path: "/campaigns/instagram",
-  },
-  {
-    label: "Facebook",
-    icon: <RiFacebookBoxLine />,
-    path: "/campaigns/facebook",
-  },
-  { label: "Twitter", icon: <RiTwitterLine />, path: "/campaigns/twitter" },
-  { label: "Snapchat", icon: <RiSnapchatLine />, path: "/campaigns/snapchat" },
-  { label: "TikTok", icon: <RiTiktokLine />, path: "/campaigns/tiktok" },
-  {
-    label: "Pinterest",
-    icon: <RiPinterestLine />,
-    path: "/campaigns/pinterest",
-  },
+  // {
+  //   label: "Instagram",
+  //   icon: <RiInstagramLine />,
+  //   path: "/campaigns/instagram",
+  // },
+  // {
+  //   label: "Facebook",
+  //   icon: <RiFacebookBoxLine />,
+  //   path: "/campaigns/facebook",
+  // },
+  // { label: "Twitter", icon: <RiTwitterLine />, path: "/campaigns/twitter" },
+  // { label: "Snapchat", icon: <RiSnapchatLine />, path: "/campaigns/snapchat" },
+  // { label: "TikTok", icon: <RiTiktokLine />, path: "/campaigns/tiktok" },
+  // {
+  //   label: "Pinterest",
+  //   icon: <RiPinterestLine />,
+  //   path: "/campaigns/pinterest",
+  // },
   {
     label: "Analytics",
     icon: <RiBarChartLine />,
@@ -71,7 +71,9 @@ export default function LeftSidebar({ manageToggleButton, setToggleButton }) {
             width={25}
             height={25}
           />
-          <span className="logo-text fw-bold text-dark">Umbrella Performance</span>
+          <span className="logo-text fw-bold text-dark">
+            Umbrella Performance
+          </span>
         </Link>
         <Button
           className="sidebar-burger-menu bg-transparent p-0 border-0 opacity-0 z-n1 position-absolute top-50 end-0 translate-middle-y"
