@@ -31,11 +31,12 @@ export default function KPIStatCards({
                 {/* header row */}
                 <div className="d-flex justify-content-between align-items-start mb-2">
                   <div>
-                    <small className="text-muted">{label}</small>
+                    <small className="text-muted fw-semibold">{label}</small>
                     <h3 className="fs-20 mb-0">
                       {n0(value)}
                       <span
-                        className={`badge bg-${variant} bg-opacity-25 ms-2 fs-12`}
+                        className={`badge text-bg-${variant} ms-2`}
+                        style={{ fontSize: 13 }}
                       >
                         {pct.toFixed(0)}%
                       </span>

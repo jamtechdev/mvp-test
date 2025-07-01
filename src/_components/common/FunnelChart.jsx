@@ -18,7 +18,7 @@ const stages = [
 
 export default function CampaignFunnel() {
   return (
-    <div className="d-flex gap-4">
+    <div className="d-flex gap-4 mt-5">
       <div className="flex-grow-1">
         <ResponsiveContainer width="100%" height={350}>
           <FunnelChart>

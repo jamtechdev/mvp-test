@@ -37,11 +37,11 @@ function buildSeries(days, base, swing = 0.15) {
 }
 
 const STATIC_SERIES = {
-  spend:       buildSeries(30,  5000),
+  spend: buildSeries(30, 5000),
   impressions: buildSeries(30, 90000),
-  clicks:      buildSeries(30,  8000),
-  leads:       buildSeries(30,  1200),
-  revenue:     buildSeries(30,   600),
+  clicks: buildSeries(30, 8000),
+  leads: buildSeries(30, 1200),
+  revenue: buildSeries(30, 600),
 };
 
 export default function KPITrendCard() {
@@ -56,20 +56,33 @@ export default function KPITrendCard() {
   const pctToday = best ? Math.round((todayVal / best) * 100) : 0;
 
   const options = {
-    chart: { type: "line", toolbar: { show: false }, fontFamily: "Inter, sans-serif" },
+    chart: {
+      type: "line",
+      toolbar: { show: false },
+      fontFamily: "Inter, sans-serif",
+    },
     stroke: { width: 3, curve: "smooth", colors: [color] },
     fill: {
       type: "gradient",
-      gradient: { shadeIntensity: 0.35, opacityFrom: 0.25, opacityTo: 0, stops: [0, 90, 100], colorStops: [{ offset: 0, color }] },
+      gradient: {
+        shadeIntensity: 0.35,
+        opacityFrom: 0.25,
+        opacityTo: 0,
+        stops: [0, 90, 100],
+        colorStops: [{ offset: 0, color }],
+      },
     },
     xaxis: {
       type: "datetime",
       labels: { format: "dd MMM", style: { colors: "#6b7280" } },
       axisBorder: { show: true, color: "#d1d5db" },
-      axisTicks:  { show: true, color: "#d1d5db" },
+      axisTicks: { show: true, color: "#d1d5db" },
     },
     yaxis: {
-      labels: { formatter: (v) => v.toLocaleString("en-US"), style: { colors: "#6b7280" } },
+      labels: {
+        formatter: (v) => v.toLocaleString("en-US"),
+        style: { colors: "#6b7280" },
+      },
     },
     grid: { strokeDashArray: 3, padding: { left: 12, right: 12, bottom: -6 } },
     tooltip: {
@@ -94,14 +107,17 @@ export default function KPITrendCard() {
         </div>
 
         {/* headline total */}
-        <div className="mb-3">
-          <Stat icon={<FiTrendingUp />} label={`Total ${metric}`} value={total} />
+        <div className="mb-3 text-muted fw-semibold">
+          <Stat
+            icon={<FiTrendingUp />}
+            label={`Total ${metric}`}
+            value={total}
+          />
         </div>
 
         {/* metric selector */}
         <ButtonGroup className="mb-3 flex-wrap">
-          {
-          (Object.keys(METRIC_COLORS)).map((m) => (
+          {Object.keys(METRIC_COLORS).map((m) => (
             <ToggleButton
               key={m}
               id={`metric-${m}`}
@@ -113,7 +129,8 @@ export default function KPITrendCard() {
               onChange={() => setMetric(m)}
               style={{
                 borderColor: METRIC_COLORS[m],
-                backgroundColor: metric === m ? METRIC_COLORS[m] : "transparent",
+                backgroundColor:
+                  metric === m ? METRIC_COLORS[m] : "transparent",
                 color: metric === m ? "#fff" : METRIC_COLORS[m],
                 marginRight: 6,
                 marginBottom: 6,
@@ -151,11 +168,7 @@ export default function KPITrendCard() {
   );
 }
 
-function Stat({
-  icon,
-  label,
-  value,
-}) {
+function Stat({ icon, label, value }) {
   return (
     <Card className="shadow-sm border-0 p-3 h-100">
       <div className="d-flex align-items-center gap-3">
