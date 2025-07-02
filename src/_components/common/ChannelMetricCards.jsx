@@ -1,5 +1,4 @@
 "use client";
-
 import { Row, Col, Card } from "react-bootstrap";
 import dynamic from "next/dynamic";
 import InfoPopover from "./InsightModel";
@@ -17,11 +16,8 @@ const fmtShort = (v = 0) =>
     ? `${(v / 1_000).toFixed(0)} k`
     : v.toString();
 
-const fmtCurrency = (v = 0) =>
-  new Intl.NumberFormat(undefined, {
-    style: "currency",
-    currency: "USD",
-  }).format(v);
+/* NEW: axis tick formatter ➜ 0, 50k, 100k … 200k */
+const fmtAxis = (v = 0) => (v >= 1_000 ? `${v / 1_000}k` : v.toString());
 
 /* consistent palette */
 const COLORS = [
@@ -35,14 +31,21 @@ const COLORS = [
 ];
 
 export default function ChannelMetricCards({ devicePie, sessions, revenue }) {
+  const fmtCurrencyShort = (v = 0) =>
+    v >= 1_000_000
+      ? `$${(v / 1_000_000).toFixed(1)} M`
+      : v >= 1_000
+      ? `$${(v / 1_000).toFixed(0)}k`
+      : `$${v}`;
+
   const CARDS = [
     { label: "Device Sessions", data: devicePie, formatter: fmtNumber },
+    { label: "Sessions by Channel", data: sessions, formatter: fmtShort },
     {
-      label: "Sessions by Channel",
-      data: sessions,
-      formatter: fmtShort, // short form for bar labels
+      label: "Revenue per Channel",
+      data: revenue,
+      formatter: fmtCurrencyShort,
     },
-    { label: "Revenue per Channel", data: revenue, formatter: fmtCurrency },
   ];
 
   return (
@@ -109,7 +112,14 @@ export default function ChannelMetricCards({ devicePie, sessions, revenue }) {
               barHeight: "40%", // slimmer bars
             },
           },
-          xaxis: { categories },
+          /* axis now fixed from 0 → 200 000 with “k” labels */
+          xaxis: {
+            categories,
+            min: 0,
+            max: 200_000,
+            tickAmount: 4, // 0, 50k, 100k, 150k, 200k
+            labels: { formatter: fmtAxis },
+          },
           colors: COLORS,
           dataLabels: {
             enabled: true,
