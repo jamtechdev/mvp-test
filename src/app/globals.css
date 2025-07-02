@@ -479,6 +479,12 @@ body.sidebar-collapsed {
   white-space: nowrap;
 }
 
+.sidebar-area .logo a{
+  align-items: center;
+  justify-content: center;
+
+}
+
 .sidebar-area .logo a img {
   width: 40px;
   height: 40px;
