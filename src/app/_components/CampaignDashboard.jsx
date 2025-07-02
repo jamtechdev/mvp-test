@@ -16,9 +16,7 @@ import CampaignAnalytics from "@/_components/common/CampaignAnalytics";
 import CampaignFilterBar from "@/_components/common/CampaignFilterBar";
 import KPIStatCards from "@/_components/common/KPIStatCards";
 import ChannelMetricCards from "@/_components/common/ChannelMetricCards";
-const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 export default function CampaignDashboard({ channel1 = "all" }) {
-  /* ---------- state ---------- */
   const canonical = channel1.toLowerCase();
   const [range, setRange] = useState({
     start: new Date(Date.now() - 7 * 864e5),
@@ -26,23 +24,18 @@ export default function CampaignDashboard({ channel1 = "all" }) {
   });
   const [metric, setMetric] = useState("spend");
   const [selectedChannel, setSelectedChannel] = useState("All");
-  /* ---------- data ---------- */
 
-  /* hydration-safe last-updated time  */
-  const [lastUpdated, setLastUpdated] = useState(""); // string only
+  const [lastUpdated, setLastUpdated] = useState("");
   useEffect(() => setLastUpdated(new Date().toLocaleTimeString()), []);
 
   const refreshData = () => {
     setLastUpdated(new Date().toLocaleTimeString());
-    // any future data-fetch goes here
   };
 
   const rows = useMemo(() => getData(canonical), [canonical]);
-  // const kpi = useMemo(() => computeKPIs(rows), [rows]);
   const devicePie = useMemo(() => deviceBreakdown(), []);
   const sessions = useMemo(() => sessionChannelBreakdown(rows), [rows]);
   const revenue = useMemo(() => revenueByChannel(), []);
-  // ↓ NEW
   const campaignOptions = useMemo(() => {
     const names = Array.from(
       new Set(rows.map((r) => r.campaign_name?.trim()).filter(Boolean))
@@ -51,7 +44,6 @@ export default function CampaignDashboard({ channel1 = "all" }) {
   }, [rows]);
   const [selectedCampaign, setSelectedCampaign] = useState("All");
 
-  // ✦ KPI trend series based on the same rows array you already have
   const trendSeries = useMemo(() => {
     const byDate = {};
     rows.forEach((r) => {
@@ -77,7 +69,7 @@ export default function CampaignDashboard({ channel1 = "all" }) {
   const goals = { spend: 4000, impressions: 100000, leads: 800, revenue: 3000 };
   return (
     <div className="container-fluid py-4">
-      {/* ============ TOP FILTER BAR ============ */}
+      {/*--------------- TOP FILTER BAR----------------------- */}
       <CampaignFilterBar
         range={range}
         onRangeChange={setRange}
@@ -90,11 +82,11 @@ export default function CampaignDashboard({ channel1 = "all" }) {
         lastUpdated="3 min ago"
         onRefresh={refreshData}
       />
-      {/* ================= KPI CARDS ================= */}
+      {/* -------------------------KPI CARDS------------------------ */}
       <KPIStatCards kpi={kpi} targets={goals} />
 
       <Row className="g-4 mb-4">
-        {/* ◀────────── FUNNEL ──────────▶ */}
+        {/*----------------------- FUNNEL ------------------------*/}
         <Col xl={8} md={12} className="d-flex">
           <Card className="p-3 campign-card h-100 flex-fill">
             <div className="d-flex justify-content-between align-items-center mb-3">
@@ -109,11 +101,10 @@ export default function CampaignDashboard({ channel1 = "all" }) {
           </Card>
         </Col>
 
-        {/* ◀────────── KPI TREND DROPDOWN ──────────▶ */}
+        {/*-------------- KPI TREND DROPDOWN ------------------------*/}
         <KpiTrendCard trendSeries={trendSeries} />
       </Row>
-      {/* ================= Donut Charts ================= */}
-
+      {/*-------------------------- DONUT CHARTS--------------------------- */}
       <ChannelMetricCards
         devicePie={devicePie}
         sessions={sessions}

@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { Card } from "react-bootstrap";
 import InfoPopover from "./InsightModel";
 import Image from "next/image";
+import Link from "next/link";
 
 const PLACEHOLDER = "/images/img-placeholder.jpg";
 
@@ -87,14 +88,14 @@ export default function TopAdCreative({ ad = [] }) {
             </div>
 
             {creative.preview_url && (
-              <a
+              <Link
                 href={creative.preview_url}
                 target="_blank"
-                rel="noopener noreferrer"
                 className="btn btn-sm btn-outline-primary d-flex align-items-center"
               >
-                <i className="bi bi-box-arrow-up-right me-1" /> View
-              </a>
+                <i className="bi bi-box-arrow-up-right me-1" />
+                View
+              </Link>
             )}
           </div>
         );
