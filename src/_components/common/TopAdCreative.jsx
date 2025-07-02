@@ -32,7 +32,7 @@ export default function TopAdCreative({ ad }) {
           ? ((ad.clicks / ad.impressions) * 100).toFixed(2)
           : "—";
         return (
-          <div className="d-flex gap-3 align-items-start" key={index}>
+          <div className="d-flex gap-3 align-items-start performing-card" key={index}>
             {/* thumbnail (120 × 120) */}
             <Image
               src={src}
@@ -52,7 +52,7 @@ export default function TopAdCreative({ ad }) {
                 {ad.platform} • {ad.objective}
               </div>
 
-              <div className="d-flex flex-wrap gap-4 small">
+              <div className="d-flex flex-wrap gap-4 small value-text">
                 <span>
                   <strong>{ad.clicks.toLocaleString()}</strong> clicks
                 </span>
