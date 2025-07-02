@@ -175,7 +175,7 @@ function Stat({ icon, label, value }) {
         <span className="fs-3 text-primary">{icon}</span>
         <div>
           <div className="text-muted small">{label}</div>
-          <div className="fw-bold fs-5">{value}</div>
+          <div className="fw-bold text-muted fs-5">{value}</div>
         </div>
       </div>
     </Card>

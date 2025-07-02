@@ -18,10 +18,24 @@ const clickTrend = Array.from({ length: 30 }).map((_, i) => {
 
 const kpi = { clicks: clickTrend.reduce((t, p) => t + p.y, 0) };
 
-const campaigns = [
-  { campaign_name: "Campaign A", clicks: 8276, media_cost: 2345.12 },
-  { campaign_name: "Campaign B", clicks: 5120, media_cost: 1880.5 },
-  { campaign_name: "Campaign C", clicks: 3901, media_cost: 1220.99 },
+export const campaigns = [
+  { campaign_name: "Campaign P", clicks: 9_642, media_cost: 4_112.68 },
+  { campaign_name: "Campaign G", clicks: 9_015, media_cost: 3_210.44 },
+  { campaign_name: "Campaign F", clicks: 8_767, media_cost: 1_520.78 },
+  { campaign_name: "Campaign A", clicks: 8_276, media_cost: 2_345.12 },
+  { campaign_name: "Campaign N", clicks: 8_103, media_cost: 3_480.91 },
+  { campaign_name: "Campaign I", clicks: 7_498, media_cost: 2_978.35 },
+  { campaign_name: "Campaign D", clicks: 6_567, media_cost: 2_541.87 },
+  { campaign_name: "Campaign K", clicks: 6_121, media_cost: 2_640.27 },
+  { campaign_name: "Campaign E", clicks: 5_688, media_cost: 7_847.6 },
+  { campaign_name: "Campaign O", clicks: 5_437, media_cost: 2_233.07 },
+  { campaign_name: "Campaign B", clicks: 5_120, media_cost: 1_880.5 },
+  { campaign_name: "Campaign M", clicks: 4_955, media_cost: 1_925.49 },
+  { campaign_name: "Campaign H", clicks: 4_332, media_cost: 1_145.2 },
+  { campaign_name: "Campaign C", clicks: 3_901, media_cost: 1_220.99 },
+  { campaign_name: "Campaign L", clicks: 3_582, media_cost: 1_399.13 },
+  { campaign_name: "Campaign Q", clicks: 2_998, media_cost: 1_087.54 },
+  { campaign_name: "Campaign J", clicks: 2_764, media_cost: 1_012.0 },
 ];
 
 const ads = [
@@ -87,7 +101,7 @@ function Stat({ icon, label, value }) {
         <span className="fs-3 text-primary">{icon}</span>
         <div>
           <div className="text-muted small">{label}</div>
-          <div className="fw-bold fs-5">{value}</div>
+          <div className="fw-bold text-muted fs-5">{value}</div>
         </div>
       </div>
     </Card>
@@ -163,7 +177,9 @@ export default function CampaignAnalytics() {
               />
             </div>
 
-            <div style={{ maxHeight: 400, overflowY: "auto" }}>
+            <div
+            // style={{ maxHeight: 400, overflowY: "auto" }}
+            >
               <table className="table table-sm table-hover">
                 <thead>
                   <tr>

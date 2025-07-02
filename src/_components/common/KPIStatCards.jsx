@@ -52,7 +52,7 @@ export default function KPIStatCards({
                   style={{ height: 6 }}
                 />
 
-                <div className="fs-12 mt-1">Target {n0(target)}</div>
+                <div className="fs-12 mt-1 text-muted fw-semibold">Target {n0(target)}</div>
               </div>
             </div>
           </Col>
