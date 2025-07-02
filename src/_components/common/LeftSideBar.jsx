@@ -68,8 +68,9 @@ export default function LeftSidebar({ manageToggleButton, setToggleButton }) {
           <Image
             src="/images/sample-logo.jpg"
             alt="Logo"
-            width={25}
-            height={25}
+            width={0}
+            height={0}
+            sizes="100%"
           />
           <span className="logo-text fw-bold text-dark">
             Umbrella Performance
