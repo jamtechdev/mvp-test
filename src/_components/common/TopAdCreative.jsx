@@ -6,7 +6,7 @@ import Image from "next/image";
 const PLACEHOLDER = "/images/img-placeholder.jpg";
 
 export default function TopAdCreative({ ad }) {
-  if (!ad) {
+  if (!ad?.length) {
     return (
       <Card className="p-3 h-100 campign-card d-flex justify-content-center">
         <div className="text-center text-muted">No ad creative data</div>
@@ -15,9 +15,6 @@ export default function TopAdCreative({ ad }) {
   }
 
   const [src, setSrc] = useState(ad.thumbnail_url || PLACEHOLDER);
-  const ctr = ad.impressions
-    ? ((ad.clicks / ad.impressions) * 100).toFixed(2)
-    : "—";
 
   return (
     <Card className="p-3 h-100 campign-card d-flex flex-column">
@@ -30,53 +27,58 @@ export default function TopAdCreative({ ad }) {
           placement="bottom"
         />
       </div>
+      {ad?.map((ad, index) => {
+        const ctr = ad.impressions
+          ? ((ad.clicks / ad.impressions) * 100).toFixed(2)
+          : "—";
+        return (
+          <div className="d-flex gap-3 align-items-start" key={index}>
+            {/* thumbnail (120 × 120) */}
+            <Image
+              src={src}
+              alt={ad.ad_name}
+              width={120}
+              height={120}
+              className="rounded"
+              style={{ objectFit: "cover" }}
+              placeholder="blur"
+              blurDataURL={PLACEHOLDER}
+              onError={() => setSrc(PLACEHOLDER)}
+            />
 
-      {/* content */}
-      <div className="d-flex gap-3 align-items-start">
-        {/* thumbnail (120 × 120) */}
-        <Image
-          src={src}
-          alt={ad.ad_name}
-          width={120}
-          height={120}
-          className="rounded"
-          style={{ objectFit: "cover" }}
-          placeholder="blur"
-          blurDataURL={PLACEHOLDER}
-          onError={() => setSrc(PLACEHOLDER)}
-        />
+            <div className="flex-grow-1">
+              <h6 className="fw-semibold mb-1">{ad.ad_name}</h6>
+              <div className="small text-muted mb-2">
+                {ad.platform} • {ad.objective}
+              </div>
 
-        <div className="flex-grow-1">
-          <h6 className="fw-semibold mb-1">{ad.ad_name}</h6>
-          <div className="small text-muted mb-2">
-            {ad.platform} • {ad.objective}
+              <div className="d-flex flex-wrap gap-4 small">
+                <span>
+                  <strong>{ad.clicks.toLocaleString()}</strong> clicks
+                </span>
+                <span>
+                  <strong>{ad.impressions.toLocaleString()}</strong> impr.
+                </span>
+                <span>
+                  CTR&nbsp;
+                  <strong>{ctr}%</strong>
+                </span>
+              </div>
+            </div>
+
+            {ad.preview_url && (
+              <a
+                href={ad.preview_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-sm btn-outline-primary d-flex align-items-center"
+              >
+                <i className="bi bi-box-arrow-up-right me-1" /> View
+              </a>
+            )}
           </div>
-
-          <div className="d-flex flex-wrap gap-4 small">
-            <span>
-              <strong>{ad.clicks.toLocaleString()}</strong> clicks
-            </span>
-            <span>
-              <strong>{ad.impressions.toLocaleString()}</strong> impr.
-            </span>
-            <span>
-              CTR&nbsp;
-              <strong>{ctr}%</strong>
-            </span>
-          </div>
-        </div>
-
-        {ad.preview_url && (
-          <a
-            href={ad.preview_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn-sm btn-outline-primary d-flex align-items-center"
-          >
-            <i className="bi bi-box-arrow-up-right me-1" /> View
-          </a>
-        )}
-      </div>
+        );
+      })}
     </Card>
   );
 }
