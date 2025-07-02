@@ -474,8 +474,9 @@ body.sidebar-collapsed {
 }
 
 .sidebar-area .logo {
-  padding: 21.5px 22px;
+  padding: 21.5px 10px;
   border-bottom: 1px solid #ecf0ff;
+  white-space: nowrap;
 }
 
 .sidebar-area .logo a img {
