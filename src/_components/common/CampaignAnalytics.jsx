@@ -30,8 +30,8 @@ const ads = [
     ad_name: "Summer Flash Sale",
     platform: "facebook",
     objective: "Traffic",
-    impressions: 82450,
-    clicks: 3214,
+    impressions: 82_450,
+    clicks: 3_214,
     thumbnail_url: "https://via.placeholder.com/120x120.png?text=Summer+Sale",
     preview_url: "https://facebook.com/ads/fb-001",
   },
@@ -40,8 +40,8 @@ const ads = [
     ad_name: "Free Trial – Search",
     platform: "google",
     objective: "Leads",
-    impressions: 91320,
-    clicks: 5876,
+    impressions: 91_320,
+    clicks: 5_876,
     thumbnail_url: "https://via.placeholder.com/120x120.png?text=Free+Trial",
     preview_url: "https://ads.google.com/gg-002",
   },
@@ -50,14 +50,35 @@ const ads = [
     ad_name: "Whitepaper Download",
     platform: "linkedin",
     objective: "Conversions",
-    impressions: 25900,
-    clicks: 1120,
+    impressions: 25_900,
+    clicks: 1_120,
     thumbnail_url: "https://via.placeholder.com/120x120.png?text=Whitepaper",
     preview_url: "https://linkedin.com/ads/li-003",
   },
+  {
+    ad_id: "tt‑004",
+    ad_name: "Back‑to‑School Promo",
+    platform: "tiktok",
+    objective: "Engagement",
+    impressions: 45_000,
+    clicks: 3_500,
+    thumbnail_url: "https://via.placeholder.com/120x120.png?text=Back+2+School",
+    preview_url: "https://tiktok.com/ads/tt-004",
+  },
+  {
+    ad_id: "tw‑005",
+    ad_name: "Webinar Registration",
+    platform: "twitter",
+    objective: "Leads",
+    impressions: 38_400,
+    clicks: 2_450,
+    thumbnail_url: "https://via.placeholder.com/120x120.png?text=Webinar",
+    preview_url: "https://twitter.com/ads/tw-005",
+  },
 ];
 
-const topAd = ads.reduce((best, ad) => (ad.clicks > best.clicks ? ad : best));
+// const topAd = ads.reduce((best, ad) => (ad.clicks > best.clicks ? ad : best));
+const topAd = ads;
 
 function Stat({ icon, label, value }) {
   return (
