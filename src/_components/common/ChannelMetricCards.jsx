@@ -132,7 +132,7 @@ export default function ChannelMetricCards({ devicePie, sessions, revenue }) {
         };
 
         return (
-          <Col md={4} key={label}>
+          <Col xs={12} sm={6} lg={4} key={label}>
             <Card className="p-3 h-100 d-flex flex-column campign-card">
               {/* header */}
               <div className="d-flex justify-content-between align-items-center mb-3">
