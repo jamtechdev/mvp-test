@@ -1440,10 +1440,10 @@ table {
   color: #3a4252;
 }
 
-.form-control {
+.form-control, .form-select {
   background-color: #fff;
   border: 1px solid #d5d9e2;
-  height: 50px;
+  min-height: 50px;
   color: #3a4252 !important;
   font-size: 15px;
   padding: 14px 16px;
@@ -1549,4 +1549,29 @@ table {
 
 .info-icon > span {
   background-color: #37beb0 !important;
+}
+
+.campign-card {
+    height: 100%;
+}
+
+.performing-card {
+    padding: 12px;
+    border: 1px solid #ddd !important;
+    border-radius: 8px;
+    background: #fafafa !important;
+    margin: 0 0 12px;
+}
+
+.performing-card .value-text {
+    color: #37beb0;
+}
+
+.performing-card > img {
+    width: 100%;
+    max-width: 100px;
+    min-width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
 }
