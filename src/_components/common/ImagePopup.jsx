@@ -25,7 +25,6 @@ export default function ImagePopup({
         backgroundColor: "rgba(0,0,0,0.25)",
       }}
     >
-      {/* ── Header ── */}
       <Modal.Header
         closeButton={false}
         style={{
@@ -66,7 +65,6 @@ export default function ImagePopup({
         </button>
       </Modal.Header>
 
-      {/* ── Body ── */}
       <Modal.Body
         className="d-flex justify-content-center align-items-center"
         style={{

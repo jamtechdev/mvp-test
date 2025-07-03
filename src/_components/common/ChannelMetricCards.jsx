@@ -5,7 +5,6 @@ import InfoPopover from "./InsightModel";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-/* ────────── helpers ────────── */
 const fmtNumber = (v = 0) => Number(v).toLocaleString();
 
 /* shorter “88 k / 2.3 M” for cramped bars */
@@ -19,7 +18,6 @@ const fmtShort = (v = 0) =>
 /* NEW: axis tick formatter ➜ 0, 50k, 100k … 200k */
 const fmtAxis = (v = 0) => (v >= 1_000 ? `${v / 1_000}k` : v.toString());
 
-/* consistent palette */
 const COLORS = [
   "#4e79ff",
   "#ffaf40",
@@ -60,7 +58,6 @@ export default function ChannelMetricCards({ devicePie, sessions, revenue }) {
           l.replace(/\b\w/g, (c) => c.toUpperCase())
         );
 
-        /* ---------- pie options ---------- */
         const pieOptions = {
           chart: { type: "donut", toolbar: { show: false } },
           labels: categories,
@@ -102,7 +99,6 @@ export default function ChannelMetricCards({ devicePie, sessions, revenue }) {
           },
         };
 
-        /* ---------- bar options ---------- */
         const barOptions = {
           chart: { type: "bar", toolbar: { show: false } },
           plotOptions: {
@@ -124,7 +120,7 @@ export default function ChannelMetricCards({ devicePie, sessions, revenue }) {
           dataLabels: {
             enabled: true,
             formatter,
-            offsetX: 6, // push label out of bar
+            offsetX: 6, 
             style: { fontSize: "12px", fontWeight: 500 },
           },
           tooltip: { y: { formatter } },
@@ -134,7 +130,6 @@ export default function ChannelMetricCards({ devicePie, sessions, revenue }) {
         return (
           <Col xs={12} sm={6} lg={4} key={label}>
             <Card className="p-3 h-100 d-flex flex-column campign-card">
-              {/* header */}
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <h6 className="fw-semibold text-muted mb-0 flex-grow-1 text-center">
                   {label}
@@ -146,7 +141,6 @@ export default function ChannelMetricCards({ devicePie, sessions, revenue }) {
                 />
               </div>
 
-              {/* chart */}
               <Chart
                 type={isPie ? "donut" : "bar"}
                 height={height}

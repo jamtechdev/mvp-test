@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { Modal, Button } from "react-bootstrap";
-import "plyr-react/plyr.css"; // required for styling controls
+import "plyr-react/plyr.css"; 
 
 const ACCENT = "#A4E5DF";
 const ACCENT_DARK = "#04524A";
@@ -86,7 +86,6 @@ export default function VideoPopup({ show, onClose, file }) {
         </button>
       </Modal.Header>
 
-      {/* ── Body ── */}
       <Modal.Body
         className="d-flex justify-content-center align-items-center"
         style={{
@@ -116,7 +115,6 @@ export default function VideoPopup({ show, onClose, file }) {
         )}
       </Modal.Body>
 
-      {/* ── Footer ── */}
       <Modal.Footer
         style={{
           borderTop: "none",

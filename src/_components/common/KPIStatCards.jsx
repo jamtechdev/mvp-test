@@ -19,16 +19,13 @@ export default function KPIStatCards({
         return (
           <Col xl={3} md={6} key={key}>
             <div className="card bg-white click-card border-1 rounded-3 mb-4 stats-box position-relative">
-              {/* popover */}
               <InfoPopover
                 title={`${label} – Target ${n0(target)}`}
                 description="Progress toward target"
                 placement="bottom"
               />
 
-              {/* body */}
               <div className="card-body p-4">
-                {/* header row */}
                 <div className="d-flex justify-content-between align-items-start mb-2">
                   <div>
                     <small className="text-muted fw-semibold">{label}</small>
@@ -45,7 +42,6 @@ export default function KPIStatCards({
                   <div style={{ fontSize: 28 }}>{icon}</div>
                 </div>
 
-                {/* progress bar */}
                 <ProgressBar
                   now={Math.min(pct, 100)}
                   variant={variant}
@@ -62,7 +58,6 @@ export default function KPIStatCards({
   );
 }
 
-/* ---------- default meta (customise if needed) ---------- */
 import {
   FiSend,
   FiMousePointer,

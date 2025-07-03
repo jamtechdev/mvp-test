@@ -28,7 +28,6 @@ export default function CampaignFunnel() {
               dataKey="value"
               cx="50%"
               cy="50%"
-              /* use numbers, not "%" strings 👇 */
               neckWidth={0}
               neckHeight={0}
               gap={6}

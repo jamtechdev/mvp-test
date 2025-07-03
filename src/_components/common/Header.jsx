@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 
 export default function TopHeader({ manageToggleButton, setToggleButton }) {
   const [collapsed, setCollapsed] = useState(false);
-  const router = useRouter(); // ← and this
+  const router = useRouter(); 
 
   // Add / remove className on <body>
   // useEffect(() => {

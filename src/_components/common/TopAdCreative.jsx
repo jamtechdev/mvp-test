@@ -17,7 +17,6 @@ export default function TopAdCreative({ ad = [] }) {
   const [imageSrc, setImageSrc] = useState("");
   const [imageAlt, setImageAlt] = useState("");
 
-  /* early‑exit card */
   if (!ad.length) {
     return (
       <Card className="p-3 h-100 campign-card d-flex justify-content-center">
@@ -26,7 +25,6 @@ export default function TopAdCreative({ ad = [] }) {
     );
   }
 
-  /* clicks → CTR sort */
   const sortedAds = useMemo(() => {
     return [...ad].sort((a, b) => {
       if (b.clicks !== a.clicks) return b.clicks - a.clicks;
@@ -36,7 +34,6 @@ export default function TopAdCreative({ ad = [] }) {
     });
   }, [ad]);
 
-  /* helpers */
   const openVideo = (url) => {
     setVideoUrl(url);
     setShowVideoModal(true);
@@ -84,7 +81,6 @@ export default function TopAdCreative({ ad = [] }) {
               style={{ position: "relative", cursor: "pointer" }}
               onClick={open}
             >
-              {/* permanent mint chip */}
               <div
                 style={{
                   position: "absolute",
@@ -112,7 +108,6 @@ export default function TopAdCreative({ ad = [] }) {
                 />
               </div>
 
-              {/* thumbnail */}
               <div
                 style={{
                   width: 120,
@@ -133,7 +128,6 @@ export default function TopAdCreative({ ad = [] }) {
                 />
               </div>
 
-              {/* metrics/info */}
               <div className="flex-grow-1">
                 <h6 className="fw-semibold mb-1">{creative.ad_name}</h6>
 
@@ -164,7 +158,6 @@ export default function TopAdCreative({ ad = [] }) {
         })}
       </Card>
 
-      {/* video modal */}
       <VideoPopup
         show={showVideoModal}
         file={videoUrl}
@@ -174,7 +167,6 @@ export default function TopAdCreative({ ad = [] }) {
         }}
       />
 
-      {/* image modal */}
       <ImagePopup
         show={showImageModal}
         src={imageSrc}

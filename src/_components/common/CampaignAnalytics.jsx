@@ -1,6 +1,6 @@
 "use client";
 import { useMemo } from "react";
-import { Row, Col, Card } from "react-bootstrap";
+import { Row, Col, Card, Table } from "react-bootstrap";
 import { FiBarChart2 } from "react-icons/fi";
 import dynamic from "next/dynamic";
 import InfoPopover from "./InsightModel";
@@ -189,7 +189,7 @@ export default function CampaignAnalytics() {
             <div
             // style={{ maxHeight: 400, overflowY: "auto" }}
             >
-              <table className="table table-sm table-hover">
+              <Table className="table table-sm table-hover">
                 <thead>
                   <tr>
                     <th>#</th>
@@ -216,7 +216,7 @@ export default function CampaignAnalytics() {
                     </tr>
                   )}
                 </tbody>
-              </table>
+              </Table>
             </div>
           </Card>
         </Col>
