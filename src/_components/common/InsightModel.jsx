@@ -29,7 +29,7 @@ export default function InfoPopover({
         ref={ref}
         role="button"
         aria-label="AI insight"
-        className="badge bg-warning text-dark fw-bold"
+        className="badge bg-warning text-white fw-bold"
         style={{ cursor: "pointer", fontSize: "0.65rem", letterSpacing: 0.5 }}
         onMouseEnter={() => setShow(true)}
         onMouseLeave={() => setShow(false)}
