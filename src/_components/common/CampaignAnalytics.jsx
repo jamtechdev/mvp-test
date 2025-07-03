@@ -46,7 +46,8 @@ const ads = [
     objective: "Traffic",
     impressions: 82450,
     clicks: 3214,
-    spend: 1500, // dollars
+    spend: 1500,
+    thumbnail_url: "/images/advertisement-1.jpg", // replace with actual image path
   },
   {
     ad_id: "gg‑002",
@@ -57,6 +58,8 @@ const ads = [
     clicks: 5876,
     spend: 3200,
     leads: 250,
+    video_url: "advertisement-vdo-2.mp4", // sample video URL
+    thumbnail_url: "/images/advertisement-2.jpg", // replace with actual image path
   },
   {
     ad_id: "li‑003",
@@ -67,6 +70,7 @@ const ads = [
     clicks: 1120,
     spend: 2400,
     conversions: 70,
+    thumbnail_url: "/images/advertisement-3.webp",
   },
   {
     ad_id: "tt‑004",
@@ -77,6 +81,8 @@ const ads = [
     clicks: 3500,
     spend: 800,
     engagements: 2800,
+    thumbnail_url: "/images/advertisement-4.webp",
+    video_url: "advertisement-vdo.mp4", // sample video URL // sample video URL
   },
   {
     ad_id: "tw‑005",
@@ -87,10 +93,11 @@ const ads = [
     clicks: 2450,
     spend: 1600,
     leads: 120,
+
+    thumbnail_url: "/images/advertisement-5.jpg",
   },
 ];
 
-// const topAd = ads.reduce((best, ad) => (ad.clicks > best.clicks ? ad : best));
 const topAd = ads;
 
 function Stat({ icon, label, value }) {
