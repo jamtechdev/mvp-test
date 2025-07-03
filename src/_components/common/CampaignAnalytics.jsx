@@ -17,7 +17,8 @@ const clickTrend = Array.from({ length: 30 }).map((_, i) => {
 });
 
 const kpi = { clicks: clickTrend.reduce((t, p) => t + p.y, 0) };
-
+const minY = Math.min(...clickTrend.map(p => p.y));
+const maxY = Math.max(...clickTrend.map(p => p.y));
 export const campaigns = [
   { campaign_name: "Campaign P", clicks: 9_642, media_cost: 4_112.68 },
   { campaign_name: "Campaign G", clicks: 9_015, media_cost: 3_210.44 },
@@ -155,7 +156,9 @@ export default function CampaignAnalytics() {
                 colors: ["#3C50E0"],
                 xaxis: { show: false, type: "datetime" },
                 yaxis: { show: false },
-                stroke: { width: 2, curve: "smooth" },
+                // stroke: { width: 2, curve: "smooth" },
+                stroke: { width: 4, curve: "smooth" },
+
                 grid: { show: false },
                 tooltip: { enabled: false },
               }}
