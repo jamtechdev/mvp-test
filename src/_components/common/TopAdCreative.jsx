@@ -8,8 +8,7 @@ import VideoPopup from "./VideoModal";
 const PLACEHOLDER = "/images/img-placeholder.jpg";
 const ACCENT = "#A4E5DF";
 const ACCENT_DARK = "#04524A";
-const CHIP_SIZE = 28; // easy to tweak once
-
+const CHIP_SIZE = 28;
 export default function TopAdCreative({ ad = [] }) {
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [videoUrl, setVideoUrl] = useState("");
@@ -44,6 +43,22 @@ export default function TopAdCreative({ ad = [] }) {
     setShowImageModal(true);
   };
 
+  /* play button overlay style (centre of thumbnail) */
+  const thumbOverlay = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 36,
+    height: 36,
+    borderRadius: 36,
+    backgroundColor: "rgba(0,0,0,0.6)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    pointerEvents: "none",
+  };
+
   return (
     <>
       <Card className="p-3 h-100 campign-card d-flex flex-column">
@@ -59,6 +74,7 @@ export default function TopAdCreative({ ad = [] }) {
         {sortedAds.map((creative, idx) => {
           const isVideo = !!creative.video_url;
           const thumbnail = creative.thumbnail_url || PLACEHOLDER;
+
           const ctr = creative.impressions
             ? ((creative.clicks / creative.impressions) * 100).toFixed(2)
             : "—";
@@ -81,6 +97,7 @@ export default function TopAdCreative({ ad = [] }) {
               style={{ position: "relative", cursor: "pointer" }}
               onClick={open}
             >
+              {/* corner badge (always visible) */}
               <div
                 style={{
                   position: "absolute",
@@ -110,6 +127,7 @@ export default function TopAdCreative({ ad = [] }) {
 
               <div
                 style={{
+                  position: "relative",
                   width: 120,
                   height: 120,
                   flexShrink: 0,
@@ -123,14 +141,19 @@ export default function TopAdCreative({ ad = [] }) {
                   width={120}
                   height={120}
                   style={{ objectFit: "cover" }}
-                  placeholder="blur"
-                  blurDataURL={PLACEHOLDER}
                 />
+                {isVideo && (
+                  <div style={thumbOverlay}>
+                    <i
+                      className="ri-play-fill"
+                      style={{ color: "#fff", fontSize: 18 }}
+                    />
+                  </div>
+                )}
               </div>
 
               <div className="flex-grow-1">
                 <h6 className="fw-semibold mb-1">{creative.ad_name}</h6>
-
                 <div className="small text-muted mb-2">
                   {creative.platform} • {creative.objective}
                 </div>
@@ -166,7 +189,6 @@ export default function TopAdCreative({ ad = [] }) {
           setVideoUrl("");
         }}
       />
-
       <ImagePopup
         show={showImageModal}
         src={imageSrc}
