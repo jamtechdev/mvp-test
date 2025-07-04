@@ -97,7 +97,6 @@ export default function TopAdCreative({ ad = [] }) {
               style={{ position: "relative", cursor: "pointer" }}
               onClick={open}
             >
-              {/* corner badge (always visible) */}
               <div
                 style={{
                   position: "absolute",
