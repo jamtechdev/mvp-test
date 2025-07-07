@@ -185,8 +185,8 @@ export default function CampaignAnalytics() {
                       Rank
                     </th>
                     <th>Campaign</th>
-                    <th className="text-end">Clicks</th>
-                    <th className="text-end">Spend</th>
+                    <th className="text-center">Clicks</th>
+                    <th className="text-center">Spend</th>
                   </tr>
                 </thead>
                 <tbody>
