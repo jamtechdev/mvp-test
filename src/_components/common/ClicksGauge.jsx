@@ -1,10 +1,11 @@
 "use client";
 
 import { Card } from "react-bootstrap";
-import GaugeChart from "react-gauge-chart";
+import GaugeComponent from "react-gauge-component"; // ⬅️ new gauge lib
 import { FiArrowUpRight } from "react-icons/fi";
 import InfoPopover from "./InsightModel";
 
+/* number formatters */
 const n0 = (n) => n.toLocaleString("en-US");
 const n2 = (n) =>
   n.toLocaleString("en-US", {
@@ -13,7 +14,7 @@ const n2 = (n) =>
   });
 
 export default function ClicksGauge({ kpi, cpa, maxClicks = 150_000 }) {
-  /* gauge maths & colours ------------------------------------------- */
+  /* gauge maths & active colour */
   const percent = Math.min(kpi.clicks / maxClicks, 1);
   const palette = ["#FF5160", "#FFC107", "#12C99B"]; // red | amber | teal
   const active =
@@ -22,6 +23,7 @@ export default function ClicksGauge({ kpi, cpa, maxClicks = 150_000 }) {
 
   return (
     <Card className="p-4 shadow-sm h-100 d-flex flex-column">
+      {/* header */}
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h6 className="fw-semibold text-secondary mb-0">Clicks – 30 days</h6>
         <InfoPopover
@@ -31,54 +33,46 @@ export default function ClicksGauge({ kpi, cpa, maxClicks = 150_000 }) {
         />
       </div>
 
-      {/* ── gauge zone ── */}
-      <div className="d-flex justify-content-center align-items-center position-relative">
-        <GaugeChart
-          id="clicks-gauge"
-          animate
-          nrOfLevels={120}
-          arcsLength={[0.33, 0.33, 0.34]}
-          colors={palette}
-          percent={percent}
-          arcWidth={0.18}
-          arcPadding={0.008}
-          needleWidth={2}
-          needleHeightRatio={0.6} /* short enough to clear bottom edge */
-          needleColor={active}
-          needleBaseColor="#272B30"
-          hideText
+      {/* dial */}
+      <div className="d-flex justify-content-center align-items-center">
+        <GaugeComponent
+          type="semicircle"
+          value={percent * 100}
+          minValue={0}
+          maxValue={100}
+          /* arc shape & colours */
+          arc={{
+            width: 0.18,
+            padding: 0.008,
+            cornerRadius: 3,
+            subArcs: [
+              { limit: 33, color: palette[0] },
+              { limit: 66, color: palette[1] },
+              { limit: 100, color: palette[2] },
+            ],
+          }}
+          /* neat, slender needle */
+          pointer={{
+            type: "needle", // cleaner than "arrow" in a half‑dial
+            color: active, // inherits zone colour
+            baseColor: "#272B30",
+            length: 0.7, // 70 % of radius
+            width: 4, // slim shaft
+            baseSize: 12, // small hub disc
+          }}
+          /* hide ALL library labels */
+          labels={{
+            valueLabel: { formatTextValue: () => "" }, // no centre % text
+            tickLabels: {
+              defaultTickLabelConfig: { formatTextValue: () => "" },
+            },
+            minMaxLabel: { show: false }, // suppress “0 / 100”
+          }}
           style={{ width: "clamp(180px, 45vw, 320px)" }}
         />
-
-        {/* endpoint labels */}
-        {/* <small style={{ ...labelSty, position: "absolute", left: "6%", bottom: "12%" }}>
-          0
-        </small>
-        <small
-          style={{
-            ...labelSty,
-            position: "absolute",
-            left: "50%",
-            top: "7%",
-            transform: "translateX(-50%)",
-          }}
-        >
-          {n0(maxClicks / 2)}
-        </small>
-        <small
-          style={{
-            ...labelSty,
-            position: "absolute",
-            right: "1%",
-            bottom: "12%",
-            textAlign: "right",
-          }}
-        >
-          {n0(maxClicks)}
-        </small> */}
       </div>
 
-      {/* ── KPI number & label BELOW the dial ── */}
+      {/* KPI number & label (below dial) */}
       <div className="text-center mt-2">
         <div
           style={{
@@ -90,10 +84,12 @@ export default function ClicksGauge({ kpi, cpa, maxClicks = 150_000 }) {
         >
           {n0(kpi.clicks)}
         </div>
-        <small style={{ ...labelSty }}>Clicks</small>
+        <small style={{ ...labelSty, marginTop: 6, display: "block" }}>
+          Clicks
+        </small>
       </div>
 
-      {/* ── CPA badge ── */}
+      {/* CPA badge */}
       <div className="text-center mt-3">
         <span
           className="d-inline-flex align-items-center gap-1 px-3 py-2 fw-medium"
