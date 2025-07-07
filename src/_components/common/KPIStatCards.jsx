@@ -48,7 +48,9 @@ export default function KPIStatCards({
                   style={{ height: 6 }}
                 />
 
-                <div className="fs-12 mt-1 text-muted fw-semibold">Target {n0(target)}</div>
+                <div className="fs-12 mt-1 text-muted fw-semibold">
+                  Target {n0(target)}
+                </div>
               </div>
             </div>
           </Col>
@@ -59,16 +61,16 @@ export default function KPIStatCards({
 }
 
 import {
-  FiCreditCard, // credit‑card icon for Spend
-  FiUsers,      // audience icon for Impressions
-  FiFilter,     // funnel‑shaped filter icon for Leads
-  FiPocket      // wallet‑style pocket icon for Revenue
-} from "react-icons/fi";
+  RiBankCardFill, // credit card → Spend
+  RiGroupLine, // audience → Impressions
+  RiFilterLine, // funnel → Leads
+  RiWallet3Line, // wallet  → Revenue
+} from "react-icons/ri";
 import { n0 } from "@/_utils/formatNumber";
 
 const DEFAULT_META = [
-  { key: "spend", label: "Spend", icon: <FiCreditCard /> },
-  { key: "impressions", label: "Impressions", icon: <FiUsers /> },
-  { key: "leads", label: "Leads", icon: <FiFilter /> },
-  { key: "revenue", label: "Revenue", icon: <FiPocket /> },
+  { key: "spend", label: "Spend", icon: <RiBankCardFill size={26} /> },
+  { key: "impressions", label: "Impressions", icon: <RiGroupLine size={26} /> },
+  { key: "leads", label: "Leads", icon: <RiFilterLine size={26} /> },
+  { key: "revenue", label: "Revenue", icon: <RiWallet3Line size={26} /> },
 ];
