@@ -1,11 +1,41 @@
 "use client";
 import { useMemo } from "react";
-import { Row, Col, Card, Table } from "react-bootstrap";
-import { FiBarChart2 } from "react-icons/fi";
+
+import {
+  Row,
+  Col,
+  Card,
+  Table,
+  ProgressBar,
+  OverlayTrigger,
+  Tooltip,
+} from "react-bootstrap";
 import dynamic from "next/dynamic";
+
 import InfoPopover from "./InsightModel";
 import TopAdCreative from "./TopAdCreative";
 import AdPerformanceTable from "./AdPerformanceTable";
+import ClicksGauge from "./ClicksGauge";
+const n0 = (n) => n.toLocaleString("en-US");
+
+const n2 = (n) =>
+  n.toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
+const bar = (value, max, variant) => (
+  <ProgressBar
+    now={Math.round((value / max) * 100)}
+    variant={variant}
+    className="rounded-pill"
+    striped
+    animated
+    style={{ width: 100, height: 8 }}
+  />
+);
+
+const medal = (idx) => ["🥇", "🥈", "🥉"][idx] ?? idx + 1;
 
 const today = new Date();
 today.setHours(0, 0, 0, 0);
@@ -16,27 +46,28 @@ const clickTrend = Array.from({ length: 30 }).map((_, i) => {
   return { x: d, y: 3000 + Math.round(300 * Math.sin(i / 3)) };
 });
 
-const kpi = { clicks: clickTrend.reduce((t, p) => t + p.y, 0) };
-const minY = Math.min(...clickTrend.map(p => p.y));
-const maxY = Math.max(...clickTrend.map(p => p.y));
-export const campaigns = [
-  { campaign_name: "Campaign P", clicks: 9_642, media_cost: 4_112.68 },
-  { campaign_name: "Campaign G", clicks: 9_015, media_cost: 3_210.44 },
-  { campaign_name: "Campaign F", clicks: 8_767, media_cost: 1_520.78 },
-  { campaign_name: "Campaign A", clicks: 8_276, media_cost: 2_345.12 },
-  { campaign_name: "Campaign N", clicks: 8_103, media_cost: 3_480.91 },
-  { campaign_name: "Campaign I", clicks: 7_498, media_cost: 2_978.35 },
-  { campaign_name: "Campaign D", clicks: 6_567, media_cost: 2_541.87 },
-  { campaign_name: "Campaign K", clicks: 6_121, media_cost: 2_640.27 },
-  { campaign_name: "Campaign E", clicks: 5_688, media_cost: 7_847.6 },
-  { campaign_name: "Campaign O", clicks: 5_437, media_cost: 2_233.07 },
-  { campaign_name: "Campaign B", clicks: 5_120, media_cost: 1_880.5 },
-  { campaign_name: "Campaign M", clicks: 4_955, media_cost: 1_925.49 },
-  { campaign_name: "Campaign H", clicks: 4_332, media_cost: 1_145.2 },
-  { campaign_name: "Campaign C", clicks: 3_901, media_cost: 1_220.99 },
-  { campaign_name: "Campaign L", clicks: 3_582, media_cost: 1_399.13 },
-  { campaign_name: "Campaign Q", clicks: 2_998, media_cost: 1_087.54 },
-  { campaign_name: "Campaign J", clicks: 2_764, media_cost: 1_012.0 },
+const kpi = {
+  clicks: clickTrend.reduce((t, p) => t + p.y, 0),
+};
+
+const campaigns = [
+  { campaign_name: "Campaign P", clicks: 9642, media_cost: 4112.68 },
+  { campaign_name: "Campaign G", clicks: 9015, media_cost: 3210.44 },
+  { campaign_name: "Campaign F", clicks: 8767, media_cost: 1520.78 },
+  { campaign_name: "Campaign A", clicks: 8276, media_cost: 2345.12 },
+  { campaign_name: "Campaign N", clicks: 8103, media_cost: 3480.91 },
+  { campaign_name: "Campaign I", clicks: 7498, media_cost: 2978.35 },
+  { campaign_name: "Campaign D", clicks: 6567, media_cost: 2541.87 },
+  { campaign_name: "Campaign K", clicks: 6121, media_cost: 2640.27 },
+  { campaign_name: "Campaign E", clicks: 5688, media_cost: 7847.6 },
+  { campaign_name: "Campaign O", clicks: 5437, media_cost: 2233.07 },
+  { campaign_name: "Campaign B", clicks: 5120, media_cost: 1880.5 },
+  { campaign_name: "Campaign M", clicks: 4955, media_cost: 1925.49 },
+  { campaign_name: "Campaign H", clicks: 4332, media_cost: 1145.2 },
+  { campaign_name: "Campaign C", clicks: 3901, media_cost: 1220.99 },
+  // { campaign_name: "Campaign L", clicks: 3582, media_cost: 1399.13 },
+  // { campaign_name: "Campaign Q", clicks: 2998, media_cost: 1087.54 },
+  // { campaign_name: "Campaign J", clicks: 2764, media_cost: 1012.0 },
 ];
 
 const ads = [
@@ -48,7 +79,7 @@ const ads = [
     impressions: 82450,
     clicks: 3214,
     spend: 1500,
-    thumbnail_url: "/images/advertisement-1.jpg", // replace with actual image path
+    thumbnail_url: "/images/advertisement-1.jpg",
   },
   {
     ad_id: "gg‑002",
@@ -59,8 +90,8 @@ const ads = [
     clicks: 5876,
     spend: 3200,
     leads: 250,
-    video_url: "advertisement-vdo-2.mp4", // sample video URL
-    thumbnail_url: "/images/advertisement-2.jpg", // replace with actual image path
+    video_url: "advertisement-vdo-2.mp4",
+    thumbnail_url: "/images/advertisement-2.jpg",
   },
   {
     ad_id: "li‑003",
@@ -83,7 +114,7 @@ const ads = [
     spend: 800,
     engagements: 2800,
     thumbnail_url: "/images/advertisement-4.webp",
-    video_url: "advertisement-vdo.mp4", // sample video URL // sample video URL
+    video_url: "advertisement-vdo.mp4",
   },
   {
     ad_id: "tw‑005",
@@ -94,134 +125,110 @@ const ads = [
     clicks: 2450,
     spend: 1600,
     leads: 120,
-
     thumbnail_url: "/images/advertisement-5.jpg",
   },
 ];
 
 const topAd = ads;
-
-function Stat({ icon, label, value }) {
-  return (
-    <Card className="shadow-sm border-0 p-3 h-100">
-      <div className="d-flex align-items-center gap-3">
-        <span className="fs-3 text-primary">{icon}</span>
-        <div>
-          <div className="text-muted small">{label}</div>
-          <div className="fw-bold text-muted fs-5">{value}</div>
-        </div>
-      </div>
-    </Card>
-  );
-}
-
-const ApexLine = dynamic(() => import("react-apexcharts"), { ssr: false });
-
-const n0 = (n) => n.toLocaleString("en-US");
-const n2 = (n) => n.toLocaleString("en-US", { minimumFractionDigits: 2 });
+const totalConversions = ads.reduce(
+  (sum, ad) => sum + (ad.conversions || 0),
+  0
+);
+const totalSpend = ads.reduce((sum, ad) => sum + ad.spend, 0);
+const cpa = totalConversions > 0 ? totalSpend / totalConversions : 0;
 
 export default function CampaignAnalytics() {
   const clickSeries = useMemo(() => [{ name: "Clicks", data: clickTrend }], []);
 
+  const maxClicks = Math.max(...campaigns.map((c) => c.clicks));
+  const maxSpend = Math.max(...campaigns.map((c) => c.media_cost));
+
   return (
     <div className="container-fluid py-4">
-      {/* ============= 30‑day Trend & Ad Table ============= */}
+      {/* Click Trend + Ads Table */}
       <Row className="g-4 mb-4">
-        {/* Click trend spark‑line */}
         <Col xl={4} md={12}>
-          <Card className="p-3 campign-card h-100">
-            <div className="d-flex justify-content-between align-items-center mb-2">
-              <h6 className="fw-semibold text-muted mb-0">Clicks – 30 days</h6>
-
-              <InfoPopover
-                title="Clicks Trend – AI Insight"
-                description="Clicks stable with slight uptick – refresh creatives."
-                placement="bottom"
-              />
-            </div>
-
-            <Stat
-              icon={<FiBarChart2 />}
-              label="Clicks"
-              value={n0(kpi.clicks)}
-            />
-
-            <ApexLine
-              type="line"
-              className="custome-width"
-              height={250}
-              series={clickSeries}
-              options={{
-                chart: { toolbar: { show: false } },
-                colors: ["#3C50E0"],
-                xaxis: { show: false, type: "datetime" },
-                yaxis: { show: false },
-                stroke: { width: 2, curve: "smooth" },
-                // stroke: { width: 4, curve: "smooth" },
-
-                grid: { show: false },
-                tooltip: { enabled: false },
-              }}
-            />
-          </Card>
+          <ClicksGauge kpi={kpi} cpa={cpa} />
         </Col>
-
-        {/* Ad‑level table */}
         <Col xl={8} md={12}>
           <AdPerformanceTable ads={ads} />
         </Col>
       </Row>
 
-      {/* ============= Top Campaigns & Top Ad ============= */}
+      {/* Campaign Table + Top Ads */}
       <Row className="g-4">
-        <Col xl={6} md={12}>
-          <Card className="p-3 campign-card">
-            <div className="d-flex justify-content-between align-items-center mb-2">
-              <h6 className="fw-semibold mb-0">Top Campaigns (Clicks)</h6>
-
+        <Col xl={7}>
+          <Card className="p-3 campign-card h-100">
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <h6 className="fw-semibold mb-0">Top Campaigns (Clicks)</h6>
               <InfoPopover
                 title="Top Campaigns – AI Insight"
-                description="Replicate Campaign A's targeting in weaker campaigns."
+                description="Replicate Campaign A's targeting in weaker campaigns."
                 placement="bottom"
               />
             </div>
 
             <div
-            // style={{ maxHeight: 400, overflowY: "auto" }}
+            // style={{ maxHeight: 560, overflowY: "auto" }}
             >
-              <Table className="table table-sm table-hover">
-                <thead>
+              <Table
+                hover
+                responsive
+                className="align-middle mb-0 small table-borderless"
+              >
+                <thead className="text-uppercase bg-light sticky-top">
                   <tr>
-                    <th>#</th>
+                    <th
+                      className="ps-3"
+                      //  style={{ width: 60 }}
+                    >
+                      Rank
+                    </th>
                     <th>Campaign</th>
                     <th className="text-end">Clicks</th>
                     <th className="text-end">Spend</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {campaigns.length ? (
-                    campaigns.map((c, i) => (
-                      <tr key={c.campaign_name + i}>
-                        <td>{i + 1}</td>
-                        <td>{c.campaign_name}</td>
-                        <td className="text-end">{n0(c.clicks)}</td>
-                        <td className="text-end">${n2(c.media_cost)}</td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan={4} className="text-center text-muted">
-                        No campaign data
+                  {campaigns.map((c, i) => (
+                    <tr key={c.campaign_name}>
+                      <td className="ps-3 fw-semibold">{medal(i)}</td>
+                      <td className="fw-semibold">{c.campaign_name}</td>
+
+                      <td className="text-end">
+                        <div className="d-flex align-items-center gap-2 justify-content-end">
+                          <span className="fw-semibold">{n0(c.clicks)}</span>
+                          <OverlayTrigger
+                            overlay={<Tooltip>{n0(c.clicks)} clicks</Tooltip>}
+                          >
+                            {bar(c.clicks, maxClicks, "warning")}
+                          </OverlayTrigger>
+                        </div>
+                      </td>
+
+                      <td className="text-end">
+                        <div className="d-flex align-items-center gap-2 justify-content-end">
+                          <span className="fw-semibold">
+                            ${n2(c.media_cost)}
+                          </span>
+                          <OverlayTrigger
+                            overlay={
+                              <Tooltip>${n2(c.media_cost)} spent</Tooltip>
+                            }
+                          >
+                            {bar(c.media_cost, maxSpend, "info")}
+                          </OverlayTrigger>
+                        </div>
                       </td>
                     </tr>
-                  )}
+                  ))}
                 </tbody>
               </Table>
             </div>
           </Card>
         </Col>
 
-        <Col xl={6} md={12}>
+        <Col xl={5}>
           <TopAdCreative ad={topAd} />
         </Col>
       </Row>
