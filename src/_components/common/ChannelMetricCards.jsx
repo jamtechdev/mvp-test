@@ -38,7 +38,21 @@ export default function ChannelMetricCards({ devicePie, sessions, revenue }) {
 
   const CARDS = [
     { label: "Device Sessions", data: devicePie, formatter: fmtNumber },
-    { label: "Sessions by Channel", data: sessions, formatter: fmtShort },
+    {
+      label: "Sessions by Channel",
+      data: {
+        labels: [
+          "Snapchat",
+          "TikTok",
+          "X",
+          "Pinterest",
+          "LinkedIn",
+          "Google Ads",
+        ],
+        series: [176_400, 149_250, 121_850, 94_600, 73_300, 42_150],
+      },
+      formatter: fmtShort,
+    },
     {
       label: "Revenue per Channel",
       data: revenue,
@@ -120,7 +134,7 @@ export default function ChannelMetricCards({ devicePie, sessions, revenue }) {
           dataLabels: {
             enabled: true,
             formatter,
-            offsetX: 6, 
+            offsetX: 6,
             style: { fontSize: "12px", fontWeight: 500 },
           },
           tooltip: { y: { formatter } },

@@ -59,16 +59,16 @@ export default function KPIStatCards({
 }
 
 import {
-  FiSend,
-  FiMousePointer,
-  FiShoppingCart,
-  FiTrendingUp,
+  FiCreditCard, // credit‑card icon for Spend
+  FiUsers,      // audience icon for Impressions
+  FiFilter,     // funnel‑shaped filter icon for Leads
+  FiPocket      // wallet‑style pocket icon for Revenue
 } from "react-icons/fi";
 import { n0 } from "@/_utils/formatNumber";
 
 const DEFAULT_META = [
-  { key: "spend", label: "Spend", icon: <FiSend /> },
-  { key: "impressions", label: "Impressions", icon: <FiMousePointer /> },
-  { key: "leads", label: "Leads", icon: <FiShoppingCart /> },
-  { key: "revenue", label: "Revenue", icon: <FiTrendingUp /> },
+  { key: "spend", label: "Spend", icon: <FiCreditCard /> },
+  { key: "impressions", label: "Impressions", icon: <FiUsers /> },
+  { key: "leads", label: "Leads", icon: <FiFilter /> },
+  { key: "revenue", label: "Revenue", icon: <FiPocket /> },
 ];
