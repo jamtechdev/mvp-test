@@ -13,8 +13,8 @@ const n2 = (n) =>
   });
 
 /**
- * Professional gauge card with endpoint labels & KPI badge
- * --------------------------------------------------------
+ * Responsive gauge card with endpoint labels & KPI badge
+ * ------------------------------------------------------
  * Props
  *  - kpi: { clicks: number }
  *  - cpa: number
@@ -26,7 +26,6 @@ export default function ClicksGauge({ kpi, cpa, maxClicks = 150_000 }) {
 
   /* vibrant yet business‑friendly palette */
   const palette = ["#FF5160", "#FFC107", "#12C99B"]; // red / amber / teal
-  const segments = [0.33, 0.33, 0.34];
   const activeColor =
     percent < 0.33 ? palette[0] : percent < 0.66 ? palette[1] : palette[2];
 
@@ -34,13 +33,12 @@ export default function ClicksGauge({ kpi, cpa, maxClicks = 150_000 }) {
   const labelStyle = { fontSize: "0.72rem", color: "#8A8F9A" };
 
   return (
-    <Card
-      className="p-4 shadow-sm rounded-4 h-100 d-flex flex-column"
-      // style={{ background: "#ffffff" }}
-    >
+    <Card className="p-4 shadow-sm  h-100 d-flex flex-column">
       {/* Header */}
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <h6 className="fw-semibold text-secondary mb-0">Clicks – 30 days</h6>
+        <h6 className="fw-semibold text-secondary mb-0">
+          Clicks&nbsp;–&nbsp;30 days
+        </h6>
         <InfoPopover
           title="Clicks Trend – AI Insight"
           description="Clicks are rising steadily; consider scaling top‑performing creatives."
@@ -55,7 +53,7 @@ export default function ClicksGauge({ kpi, cpa, maxClicks = 150_000 }) {
           id="clicks‑gauge"
           animate
           nrOfLevels={120}
-          arcsLength={segments}
+          arcsLength={[0.33, 0.33, 0.34]}
           colors={palette}
           percent={percent}
           arcWidth={0.18}
@@ -63,14 +61,14 @@ export default function ClicksGauge({ kpi, cpa, maxClicks = 150_000 }) {
           needleColor="#272B30"
           needleBaseColor="#272B30"
           hideText
-          style={{ width: "100%", maxWidth: 320 }}
+          style={{ width: "clamp(180px, 45vw, 320px)" }}
         />
 
         {/* KPI number & subtitle */}
         <div
           style={{
             position: "absolute",
-            top: "63%",
+            top: "60%",
             left: "50%",
             transform: "translate(-50%, -50%)",
             textAlign: "center",
@@ -80,7 +78,7 @@ export default function ClicksGauge({ kpi, cpa, maxClicks = 150_000 }) {
         >
           <div
             style={{
-              fontSize: "clamp(1.4rem, 4vw, 2.4rem)",
+              fontSize: "clamp(1.4rem, 6vw, 2.4rem)",
               fontWeight: 700,
               color: activeColor,
             }}
@@ -97,8 +95,8 @@ export default function ClicksGauge({ kpi, cpa, maxClicks = 150_000 }) {
           style={{
             ...labelStyle,
             position: "absolute",
-            left: 8,
-            bottom: 30,
+            left: "6%",
+            bottom: "12%",
           }}
         >
           0
@@ -108,7 +106,7 @@ export default function ClicksGauge({ kpi, cpa, maxClicks = 150_000 }) {
             ...labelStyle,
             position: "absolute",
             left: "50%",
-            top: 22,
+            top: "7%",
             transform: "translateX(-50%)",
           }}
         >
@@ -118,8 +116,8 @@ export default function ClicksGauge({ kpi, cpa, maxClicks = 150_000 }) {
           style={{
             ...labelStyle,
             position: "absolute",
-            right: 8,
-            bottom: 30,
+            right: "6%",
+            bottom: "12%",
             textAlign: "right",
           }}
         >
