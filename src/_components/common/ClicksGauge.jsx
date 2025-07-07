@@ -1,29 +1,45 @@
 "use client";
 
 import { Card } from "react-bootstrap";
-import GaugeComponent from "react-gauge-component"; // ⬅️ new gauge lib
+import GaugeComponent from "react-gauge-component";
 import { FiArrowUpRight } from "react-icons/fi";
 import InfoPopover from "./InsightModel";
 
-/* number formatters */
-const n0 = (n) => n.toLocaleString("en-US");
+/* ─── Helpers ─────────────────────────────────────── */
+const kFmt = (n) => {
+  if (n < 1_000) return n.toString(); // 972  →  "972"
+  const v = n / 1_000;
+  return v % 1 === 0 ? `${v}k` : `${v.toFixed(1)}k`; // 12 300 → "12.3k"
+};
 const n2 = (n) =>
   n.toLocaleString("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
 
+/* ─── Colours & styles ────────────────────────────── */
+const palette = ["#FF5160", "#FFC107", "#12C99B"];
+const labelStyle = { fontSize: "0.72rem", color: "#8A8F9A" };
+const dotStyle = { width: 10, height: 10, borderRadius: "50%", marginRight: 6 };
+
+/* ─── Component ───────────────────────────────────── */
 export default function ClicksGauge({ kpi, cpa, maxClicks = 150_000 }) {
-  /* gauge maths & active colour */
   const percent = Math.min(kpi.clicks / maxClicks, 1);
-  const palette = ["#FF5160", "#FFC107", "#12C99B"]; // red | amber | teal
-  const active =
+  const activeColor =
     percent < 0.33 ? palette[0] : percent < 0.66 ? palette[1] : palette[2];
-  const labelSty = { fontSize: "0.72rem", color: "#8A8F9A" };
+
+  /* dynamic legend thresholds */
+  const t1 = Math.round(maxClicks * 0.33);
+  const t2 = Math.round(maxClicks * 0.66);
+  const ranges = [
+    { color: palette[0], label: `≤ ${kFmt(t1)}` },
+    { color: palette[1], label: `${kFmt(t1 + 1)}‑${kFmt(t2)}` },
+    { color: palette[2], label: `> ${kFmt(t2)}` },
+  ];
 
   return (
     <Card className="p-4 shadow-sm h-100 d-flex flex-column">
-      {/* header */}
+      {/* Header */}
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h6 className="fw-semibold text-secondary mb-0">Clicks – 30 days</h6>
         <InfoPopover
@@ -33,14 +49,13 @@ export default function ClicksGauge({ kpi, cpa, maxClicks = 150_000 }) {
         />
       </div>
 
-      {/* dial */}
+      {/* Gauge */}
       <div className="d-flex justify-content-center align-items-center">
         <GaugeComponent
           type="semicircle"
           value={percent * 100}
           minValue={0}
           maxValue={100}
-          /* arc shape & colours */
           arc={{
             width: 0.18,
             padding: 0.008,
@@ -51,45 +66,58 @@ export default function ClicksGauge({ kpi, cpa, maxClicks = 150_000 }) {
               { limit: 100, color: palette[2] },
             ],
           }}
-          /* neat, slender needle */
           pointer={{
-            type: "needle", // cleaner than "arrow" in a half‑dial
-            color: active, // inherits zone colour
+            type: "needle",
+            color: activeColor,
             baseColor: "#272B30",
-            length: 0.7, // 70 % of radius
-            width: 4, // slim shaft
-            baseSize: 12, // small hub disc
+            length: 0.7,
+            width: 4,
+            baseSize: 12,
           }}
-          /* hide ALL library labels */
           labels={{
-            valueLabel: { formatTextValue: () => "" }, // no centre % text
+            valueLabel: { formatTextValue: () => "" },
             tickLabels: {
-              defaultTickLabelConfig: { formatTextValue: () => "" },
+              hideMinMax: true,
+              defaultTickValueConfig: { hide: true },
+              defaultTickLineConfig: { hide: true },
             },
-            minMaxLabel: { show: false }, // suppress “0 / 100”
           }}
           style={{ width: "clamp(180px, 45vw, 320px)" }}
         />
       </div>
 
-      {/* KPI number & label (below dial) */}
+      {/* Legend */}
+      <div className="d-flex justify-content-center gap-3 mt-2">
+        {ranges.map(({ color, label }) => (
+          <div
+            key={color}
+            className="d-flex align-items-center"
+            style={{ fontSize: "0.75rem", color: "#6C757D" }}
+          >
+            <span style={{ ...dotStyle, backgroundColor: color }} />
+            {label}
+          </div>
+        ))}
+      </div>
+
+      {/* Clicks number */}
       <div className="text-center mt-2">
         <div
           style={{
             fontSize: "clamp(1.4rem, 6vw, 2.4rem)",
             fontWeight: 700,
-            color: active,
+            color: activeColor,
             lineHeight: 1.1,
           }}
         >
-          {n0(kpi.clicks)}
+          {kFmt(kpi.clicks)}
         </div>
-        <small style={{ ...labelSty, marginTop: 6, display: "block" }}>
+        <small style={{ ...labelStyle, marginTop: 6, display: "block" }}>
           Clicks
         </small>
       </div>
 
-      {/* CPA badge */}
+      {/* CPA pill */}
       <div className="text-center mt-3">
         <span
           className="d-inline-flex align-items-center gap-1 px-3 py-2 fw-medium"
@@ -100,8 +128,8 @@ export default function ClicksGauge({ kpi, cpa, maxClicks = 150_000 }) {
           }}
         >
           CPA
-          <FiArrowUpRight style={{ color: active }} />
-          <span style={{ color: active }}>${n2(cpa)}</span>
+          <FiArrowUpRight style={{ color: activeColor }} />
+          <span style={{ color: activeColor }}>${n2(cpa)}</span>
         </span>
       </div>
     </Card>
