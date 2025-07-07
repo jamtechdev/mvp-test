@@ -12,33 +12,18 @@ const n2 = (n) =>
     maximumFractionDigits: 2,
   });
 
-/**
- * Responsive gauge card with endpoint labels & KPI badge
- * ------------------------------------------------------
- * Props
- *  - kpi: { clicks: number }
- *  - cpa: number
- *  - maxClicks (optional): gauge 100 % ceiling (default 150 000)
- */
 export default function ClicksGauge({ kpi, cpa, maxClicks = 150_000 }) {
-  /* percentage & colour logic */
+  /* gauge maths & colours ------------------------------------------- */
   const percent = Math.min(kpi.clicks / maxClicks, 1);
-
-  /* vibrant yet business‑friendly palette */
-  const palette = ["#FF5160", "#FFC107", "#12C99B"]; // red / amber / teal
-  const activeColor =
+  const palette = ["#FF5160", "#FFC107", "#12C99B"]; // red | amber | teal
+  const active =
     percent < 0.33 ? palette[0] : percent < 0.66 ? palette[1] : palette[2];
-
-  /* minor UI constants */
-  const labelStyle = { fontSize: "0.72rem", color: "#8A8F9A" };
+  const labelSty = { fontSize: "0.72rem", color: "#8A8F9A" };
 
   return (
-    <Card className="p-4 shadow-sm  h-100 d-flex flex-column">
-      {/* Header */}
+    <Card className="p-4 shadow-sm h-100 d-flex flex-column">
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <h6 className="fw-semibold text-secondary mb-0">
-          Clicks&nbsp;–&nbsp;30 days
-        </h6>
+        <h6 className="fw-semibold text-secondary mb-0">Clicks – 30 days</h6>
         <InfoPopover
           title="Clicks Trend – AI Insight"
           description="Clicks are rising steadily; consider scaling top‑performing creatives."
@@ -46,11 +31,10 @@ export default function ClicksGauge({ kpi, cpa, maxClicks = 150_000 }) {
         />
       </div>
 
-      {/* Gauge zone */}
-      <div className="flex-grow-1 d-flex justify-content-center align-items-center position-relative">
-        {/* gauge graphic */}
+      {/* ── gauge zone ── */}
+      <div className="d-flex justify-content-center align-items-center position-relative">
         <GaugeChart
-          id="clicks‑gauge"
+          id="clicks-gauge"
           animate
           nrOfLevels={120}
           arcsLength={[0.33, 0.33, 0.34]}
@@ -58,52 +42,21 @@ export default function ClicksGauge({ kpi, cpa, maxClicks = 150_000 }) {
           percent={percent}
           arcWidth={0.18}
           arcPadding={0.008}
-          needleColor="#272B30"
+          needleWidth={2}
+          needleHeightRatio={0.6} /* short enough to clear bottom edge */
+          needleColor={active}
           needleBaseColor="#272B30"
           hideText
           style={{ width: "clamp(180px, 45vw, 320px)" }}
         />
 
-        {/* KPI number & subtitle */}
-        <div
-          style={{
-            position: "absolute",
-            top: "60%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            textAlign: "center",
-            userSelect: "none",
-            lineHeight: 1.25,
-          }}
-        >
-          <div
-            style={{
-              fontSize: "clamp(1.4rem, 6vw, 2.4rem)",
-              fontWeight: 700,
-              color: activeColor,
-            }}
-          >
-            {n0(kpi.clicks)}
-          </div>
-          <small style={{ ...labelStyle, display: "block", marginTop: 4 }}>
-            Clicks
-          </small>
-        </div>
-
         {/* endpoint labels */}
-        <small
-          style={{
-            ...labelStyle,
-            position: "absolute",
-            left: "6%",
-            bottom: "12%",
-          }}
-        >
+        {/* <small style={{ ...labelSty, position: "absolute", left: "6%", bottom: "12%" }}>
           0
         </small>
         <small
           style={{
-            ...labelStyle,
+            ...labelSty,
             position: "absolute",
             left: "50%",
             top: "7%",
@@ -114,18 +67,33 @@ export default function ClicksGauge({ kpi, cpa, maxClicks = 150_000 }) {
         </small>
         <small
           style={{
-            ...labelStyle,
+            ...labelSty,
             position: "absolute",
-            right: "6%",
+            right: "1%",
             bottom: "12%",
             textAlign: "right",
           }}
         >
           {n0(maxClicks)}
-        </small>
+        </small> */}
       </div>
 
-      {/* CPA badge */}
+      {/* ── KPI number & label BELOW the dial ── */}
+      <div className="text-center mt-2">
+        <div
+          style={{
+            fontSize: "clamp(1.4rem, 6vw, 2.4rem)",
+            fontWeight: 700,
+            color: active,
+            lineHeight: 1.1,
+          }}
+        >
+          {n0(kpi.clicks)}
+        </div>
+        <small style={{ ...labelSty }}>Clicks</small>
+      </div>
+
+      {/* ── CPA badge ── */}
       <div className="text-center mt-3">
         <span
           className="d-inline-flex align-items-center gap-1 px-3 py-2 fw-medium"
@@ -136,8 +104,8 @@ export default function ClicksGauge({ kpi, cpa, maxClicks = 150_000 }) {
           }}
         >
           CPA
-          <FiArrowUpRight style={{ color: activeColor }} />
-          <span style={{ color: activeColor }}>${n2(cpa)}</span>
+          <FiArrowUpRight style={{ color: active }} />
+          <span style={{ color: active }}>${n2(cpa)}</span>
         </span>
       </div>
     </Card>
