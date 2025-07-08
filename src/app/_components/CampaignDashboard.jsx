@@ -16,6 +16,7 @@ import CampaignAnalytics from "@/_components/common/CampaignAnalytics";
 import CampaignFilterBar from "@/_components/common/CampaignFilterBar";
 import KPIStatCards from "@/_components/common/KPIStatCards";
 import ChannelMetricCards from "@/_components/common/ChannelMetricCards";
+import ChatBotWidget from "@/_components/common/ChatBotWidget";
 export default function CampaignDashboard({ channel1 = "all" }) {
   const canonical = channel1.toLowerCase();
   const [range, setRange] = useState({
@@ -112,6 +113,9 @@ export default function CampaignDashboard({ channel1 = "all" }) {
       />
       {/* -----------------TABLES---------------------------------- */}
       <CampaignAnalytics />
+
+      {/* ---------------CHAT BOT------------------------------- */}
+      <ChatBotWidget />
     </div>
   );
 }
