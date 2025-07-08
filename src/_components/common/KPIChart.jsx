@@ -98,7 +98,7 @@ export default function KPITrendCard() {
       <Card className="p-4 h-100 flex-fill shadow-sm rounded-4">
         {/* header */}
         <div className="d-flex justify-content-between align-items-center mb-3">
-          <h6 className="fw-semibold text-muted mb-0">KPI Trend</h6>
+           <h6 className="fw-semibold mb-0">KPI Trend</h6>
           <InfoPopover
             title="KPI Trend – AI Insight"
             description="Switch metrics to see their trend over time."

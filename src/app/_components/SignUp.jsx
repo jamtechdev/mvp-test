@@ -57,7 +57,7 @@ export default function SignUp() {
               {/* Logo */}
               <div className="d-flex align-items-center gap-2 mb-4">
                 <Image
-                  src="/images/sample-logo.jpg"
+                  src="/images/updated-logo.png"
                   className="rounded-3 for-light-logo"
                   alt="logo"
                   width={25}

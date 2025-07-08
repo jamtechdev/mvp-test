@@ -51,24 +51,92 @@ const kpi = {
 };
 
 const campaigns = [
-  { campaign_name: "Campaign P", clicks: 9642, media_cost: 4112.68 },
-  { campaign_name: "Campaign G", clicks: 9015, media_cost: 3210.44 },
-  { campaign_name: "Campaign F", clicks: 8767, media_cost: 1520.78 },
-  { campaign_name: "Campaign A", clicks: 8276, media_cost: 2345.12 },
-  { campaign_name: "Campaign N", clicks: 8103, media_cost: 3480.91 },
-  { campaign_name: "Campaign I", clicks: 7498, media_cost: 2978.35 },
-  { campaign_name: "Campaign D", clicks: 6567, media_cost: 2541.87 },
-  { campaign_name: "Campaign K", clicks: 6121, media_cost: 2640.27 },
-  { campaign_name: "Campaign E", clicks: 5688, media_cost: 7847.6 },
-  { campaign_name: "Campaign O", clicks: 5437, media_cost: 2233.07 },
-  { campaign_name: "Campaign B", clicks: 5120, media_cost: 1880.5 },
-  { campaign_name: "Campaign M", clicks: 4955, media_cost: 1925.49 },
-  { campaign_name: "Campaign H", clicks: 4332, media_cost: 1145.2 },
-  { campaign_name: "Campaign C", clicks: 3901, media_cost: 1220.99 },
-  // { campaign_name: "Campaign L", clicks: 3582, media_cost: 1399.13 },
-  // { campaign_name: "Campaign Q", clicks: 2998, media_cost: 1087.54 },
-  // { campaign_name: "Campaign J", clicks: 2764, media_cost: 1012.0 },
+  {
+    campaign_name: "Campaign P",
+    clicks: 9642,
+    media_cost: 4112.68,
+    revenue: 8520,
+  },
+  {
+    campaign_name: "Campaign G",
+    clicks: 9015,
+    media_cost: 3210.44,
+    revenue: 7900,
+  },
+  {
+    campaign_name: "Campaign F",
+    clicks: 8767,
+    media_cost: 1520.78,
+    revenue: 6250,
+  },
+  {
+    campaign_name: "Campaign A",
+    clicks: 8276,
+    media_cost: 2345.12,
+    revenue: 7050,
+  },
+  {
+    campaign_name: "Campaign N",
+    clicks: 8103,
+    media_cost: 3480.91,
+    revenue: 6980,
+  },
+  {
+    campaign_name: "Campaign I",
+    clicks: 7498,
+    media_cost: 2978.35,
+    revenue: 6020,
+  },
+  {
+    campaign_name: "Campaign D",
+    clicks: 6567,
+    media_cost: 2541.87,
+    revenue: 5430,
+  },
+  {
+    campaign_name: "Campaign K",
+    clicks: 6121,
+    media_cost: 2640.27,
+    revenue: 5110,
+  },
+  {
+    campaign_name: "Campaign E",
+    clicks: 5688,
+    media_cost: 7847.6,
+    revenue: 4000,
+  },
+  {
+    campaign_name: "Campaign O",
+    clicks: 5437,
+    media_cost: 2233.07,
+    revenue: 4880,
+  },
+  {
+    campaign_name: "Campaign B",
+    clicks: 5120,
+    media_cost: 1880.5,
+    revenue: 4600,
+  },
+  {
+    campaign_name: "Campaign M",
+    clicks: 4955,
+    media_cost: 1925.49,
+    revenue: 4520,
+  },
+  {
+    campaign_name: "Campaign H",
+    clicks: 4332,
+    media_cost: 1145.2,
+    revenue: 3920,
+  },
+  {
+    campaign_name: "Campaign C",
+    clicks: 3901,
+    media_cost: 1220.99,
+    revenue: 3700,
+  },
 ];
+const maxRevenue = Math.max(...campaigns.map((c) => c.revenue));
 
 const ads = [
   {
@@ -157,7 +225,7 @@ export default function CampaignAnalytics() {
 
       {/* Campaign Table + Top Ads */}
       <Row className="g-4">
-        <Col xl={7}>
+        <Col xl={12}>
           <Card className="p-3 campign-card h-100">
             <div className="d-flex justify-content-between align-items-center mb-3">
               <h6 className="fw-semibold mb-0">Top Campaigns (Clicks)</h6>
@@ -187,6 +255,7 @@ export default function CampaignAnalytics() {
                     <th>Campaign</th>
                     <th className="text-center">Clicks</th>
                     <th className="text-center">Spend</th>
+                    <th className="text-center">Revenue</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -220,6 +289,18 @@ export default function CampaignAnalytics() {
                           </OverlayTrigger>
                         </div>
                       </td>
+                      <td className="text-end">
+                        <div className="d-flex align-items-center gap-2 justify-content-end">
+                          <span className="fw-semibold">${n2(c.revenue)}</span>
+                          <OverlayTrigger
+                            overlay={
+                              <Tooltip>${n2(c.revenue)} revenue</Tooltip>
+                            }
+                          >
+                            {bar(c.revenue, maxRevenue, "success")}
+                          </OverlayTrigger>
+                        </div>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -228,7 +309,7 @@ export default function CampaignAnalytics() {
           </Card>
         </Col>
 
-        <Col xl={5}>
+        <Col xl={12}>
           <TopAdCreative ad={topAd} />
         </Col>
       </Row>

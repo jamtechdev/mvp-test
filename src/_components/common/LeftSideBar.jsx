@@ -66,7 +66,7 @@ export default function LeftSidebar({ manageToggleButton, setToggleButton }) {
           className="d-block text-decoration-none position-relative"
         >
           <Image
-            src="/images/sample-logo.jpg"
+            src="/images/updated-logo.png"
             alt="Logo"
             width={0}
             height={0}
