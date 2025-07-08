@@ -115,7 +115,7 @@ export default function CampaignDashboard({ channel1 = "all" }) {
       <CampaignAnalytics />
 
       {/* ---------------CHAT BOT------------------------------- */}
-      <ChatBotWidget />
+      {/* <ChatBotWidget /> */}
     </div>
   );
 }
