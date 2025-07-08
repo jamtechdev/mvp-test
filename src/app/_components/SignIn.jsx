@@ -60,13 +60,16 @@ export default function SignIn() {
             <div className="mw-480 ms-lg-auto">
               {/* Logo */}
               <div className="d-flex align-items-center gap-2 mb-4">
+                {/* <div className="logo-container"> */}
+
                 <Image
-                  src="/images/updated-logo.png"
-                  className="rounded-3 for-light-logo"
+                  src="/images/new-logo.png"
+                  className="rounded-3 for-light-logo bg-white"
                   alt="logo"
                   width={25}
                   height={25}
                 />
+                {/* </div> */}
                 <span className="logotxt">Umbrella Performance</span>
               </div>
 

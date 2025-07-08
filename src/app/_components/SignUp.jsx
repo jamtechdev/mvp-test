@@ -42,6 +42,7 @@ export default function SignUp() {
       <Container className="ps-xl-0">
         <Row className="align-items-center">
           <Col lg={7} className="d-none d-lg-block px-0">
+
             <Image
               // src="/images/authpage.png"
               src="/images/authpage-2.jpg"
@@ -57,8 +58,8 @@ export default function SignUp() {
               {/* Logo */}
               <div className="d-flex align-items-center gap-2 mb-4">
                 <Image
-                  src="/images/updated-logo.png"
-                  className="rounded-3 for-light-logo"
+                  src="/images/new-logo.png"
+                 className="rounded-3 for-light-logo bg-white"
                   alt="logo"
                   width={25}
                   height={25}
