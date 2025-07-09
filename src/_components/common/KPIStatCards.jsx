@@ -24,7 +24,12 @@ export default function KPIStatCards({
                 description="Progress toward target"
                 placement="bottom"
               />
-
+              {/* <InfoPopover
+                title={`${label} – Target ${n0(target)}`}
+                placement="bottom"
+                kpi={{ [key]: value }} // 👈 KPI value
+                targets={{ [key]: target }} // 👈 Its goal
+              /> */}
               <div className="card-body p-4">
                 <div className="d-flex justify-content-between align-items-start mb-2">
                   <div>

@@ -6,7 +6,6 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// pick a model from env or default to GPT‑4o
 const PREFERRED_MODEL = process.env.OPENAI_MODEL || "gpt-4o";
 const FALLBACK_MODEL = "gpt-3.5-turbo"; // change if you want a different fallback
 

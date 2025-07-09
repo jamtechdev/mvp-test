@@ -87,23 +87,14 @@ export default function CampaignDashboard({ channel1 = "all" }) {
       <KPIStatCards kpi={kpi} targets={goals} />
 
       <Row className="g-4 mb-4">
-        {/*----------------------- FUNNEL ------------------------*/}
         <Col xl={8} md={12} className="d-flex">
-          <Card className="p-3 campign-card h-100 flex-fill">
-            <div className="d-flex justify-content-between align-items-center mb-3">
-              <h6 className="fw-semibold text-muted mb-0">Campaign Funnel</h6>
-              <InfoPopover
-                title="Campaign Funnel – AI Insight"
-                description="Identify the biggest drop‑offs and optimise."
-                placement="bottom"
-              />
-            </div>
-            {<CampaignFunnel />}
-          </Card>
+          {/*----------------------- FUNNEL ------------------------*/}
+          <CampaignFunnel />
         </Col>
-
-        {/*-------------- KPI TREND DROPDOWN ------------------------*/}
-        <KpiTrendCard trendSeries={trendSeries} />
+        <Col xl={4} md={12} className="d-flex">
+          {/*-------------- KPI TREND DROPDOWN ------------------------*/}
+          <KpiTrendCard trendSeries={trendSeries} />
+        </Col>
       </Row>
       {/*-------------------------- DONUT CHARTS--------------------------- */}
       <ChannelMetricCards
@@ -115,7 +106,7 @@ export default function CampaignDashboard({ channel1 = "all" }) {
       <CampaignAnalytics />
 
       {/* ---------------CHAT BOT------------------------------- */}
-      {/* <ChatBotWidget /> */}
+      <ChatBotWidget />
     </div>
   );
 }

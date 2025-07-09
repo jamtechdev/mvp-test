@@ -2,19 +2,15 @@
 
 import { useState, useMemo } from "react";
 import dynamic from "next/dynamic";
-import {
-  Col,
-  Card,
-  ButtonGroup,
-  ToggleButton,
-  ProgressBar,
-} from "react-bootstrap";
+import { Card, ButtonGroup, ToggleButton, ProgressBar } from "react-bootstrap";
 import { FiTrendingUp } from "react-icons/fi";
 import { n0 } from "@/_utils/formatNumber";
 import InfoPopover from "./InsightModel";
 
 const ApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
+/* ───────────────────────────────────────────────────────────── */
+/* CONFIG                                                       */
 const METRIC_COLORS = {
   spend: "#6366f1",
   impressions: "#14b8a6",
@@ -43,12 +39,22 @@ const STATIC_SERIES = {
   leads: buildSeries(30, 1200),
   revenue: buildSeries(30, 600),
 };
+/* ───────────────────────────────────────────────────────────── */
 
 export default function KPITrendCard() {
   const [metric, setMetric] = useState("spend");
   const color = METRIC_COLORS[metric];
 
+  /* 30‑day data for selected metric */
   const seriesData = useMemo(() => STATIC_SERIES[metric], [metric]);
+
+  /* ---------- AI payload ------------------------------------ */
+  const aiPayload = useMemo(
+    () => ({ metric, series: seriesData }),
+    [metric, seriesData]
+  );
+
+  /* ----------------------------------------------------------- */
 
   const total = n0(seriesData.reduce((t, p) => t + p.y, 0));
   const todayVal = seriesData.at(-1)?.y ?? 0;
@@ -94,80 +100,80 @@ export default function KPITrendCard() {
   };
 
   return (
-    <Col xl={4} md={12} className="d-flex">
-      <Card className="p-4 h-100 flex-fill shadow-sm rounded-4">
-        {/* header */}
-        <div className="d-flex justify-content-between align-items-center mb-3">
-           <h6 className="fw-semibold mb-0">KPI Trend</h6>
-          <InfoPopover
-            title="KPI Trend – AI Insight"
-            description="Switch metrics to see their trend over time."
-            placement="bottom"
-          />
-        </div>
+    <Card className="p-4 h-100 flex-fill shadow-sm rounded-4">
+      {/*  Header  */}
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h6 className="fw-semibold mb-0">KPI Trend</h6>
+        {/* <InfoPopover
+  title="KPI Trend – AI Insight"
+  payload={aiPayload}
+  placement="bottom"
+/> */}
 
-        {/* headline total */}
-        <div className="mb-3 text-muted fw-semibold">
-          <Stat
-            icon={<FiTrendingUp />}
-            label={`Total ${metric}`}
-            value={total}
-          />
-        </div>
-
-        {/* metric selector */}
-        <ButtonGroup className="mb-3 flex-wrap">
-          {Object.keys(METRIC_COLORS).map((m) => (
-            <ToggleButton
-              key={m}
-              id={`metric-${m}`}
-              type="radio"
-              size="sm"
-              variant={metric === m ? "primary" : "outline-secondary"}
-              value={m}
-              checked={metric === m}
-              onChange={() => setMetric(m)}
-              style={{
-                borderColor: METRIC_COLORS[m],
-                backgroundColor:
-                  metric === m ? METRIC_COLORS[m] : "transparent",
-                color: metric === m ? "#fff" : METRIC_COLORS[m],
-                marginRight: 6,
-                marginBottom: 6,
-                paddingInline: 12,
-              }}
-            >
-              {m.charAt(0).toUpperCase() + m.slice(1)}
-            </ToggleButton>
-          ))}
-        </ButtonGroup>
-
-        {/* today‑vs‑best bar */}
-        <ProgressBar
-          className="bg-light mb-3"
-          style={{ height: 6, borderRadius: 4, overflow: "hidden" }}
-        >
-          <ProgressBar
-            now={pctToday}
-            style={{ backgroundColor: color }}
-            key={metric}
-            animated
-            visuallyHidden
-          />
-        </ProgressBar>
-
-        {/* trend line */}
-        <ApexChart
-          type="line"
-          height={200}
-          series={[{ name: metric, data: seriesData }]}
-          options={options}
+        <InfoPopover
+          title="KPI Trend – AI Insight"
+          description="Switch metrics to see their trend over time."
+          placement="bottom"
         />
-      </Card>
-    </Col>
+      </div>
+
+      {/*  Headline total  */}
+      <div className="mb-3 text-muted fw-semibold">
+        <Stat icon={<FiTrendingUp />} label={`Total ${metric}`} value={total} />
+      </div>
+
+      {/*  Metric selector  */}
+      <ButtonGroup className="mb-3 flex-wrap">
+        {Object.keys(METRIC_COLORS).map((m) => (
+          <ToggleButton
+            key={m}
+            id={`metric-${m}`}
+            type="radio"
+            size="sm"
+            variant={metric === m ? "primary" : "outline-secondary"}
+            value={m}
+            checked={metric === m}
+            onChange={() => setMetric(m)}
+            style={{
+              borderColor: METRIC_COLORS[m],
+              backgroundColor: metric === m ? METRIC_COLORS[m] : "transparent",
+              color: metric === m ? "#fff" : METRIC_COLORS[m],
+              marginRight: 6,
+              marginBottom: 6,
+              paddingInline: 12,
+            }}
+          >
+            {m.charAt(0).toUpperCase() + m.slice(1)}
+          </ToggleButton>
+        ))}
+      </ButtonGroup>
+
+      {/*  Today vs Best bar  */}
+      <ProgressBar
+        className="bg-light mb-3"
+        style={{ height: 6, borderRadius: 4, overflow: "hidden" }}
+      >
+        <ProgressBar
+          now={pctToday}
+          key={metric}
+          animated
+          visuallyHidden
+          style={{ backgroundColor: color }}
+        />
+      </ProgressBar>
+
+      {/*  Trend line  */}
+      <ApexChart
+        type="line"
+        height={200}
+        series={[{ name: metric, data: seriesData }]}
+        options={options}
+      />
+    </Card>
   );
 }
 
+/* ─────────── Helper for headline box ─────────── */
 function Stat({ icon, label, value }) {
   return (
     <Card className="shadow-sm border-0 p-3 h-100">

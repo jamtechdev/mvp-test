@@ -148,7 +148,18 @@ export default function ChannelMetricCards({ devicePie, sessions, revenue }) {
                 <h6 className="fw-semibold text-muted mb-0 flex-grow-1 text-center">
                   {label}
                 </h6>
-                <InfoPopover
+                {/* <InfoPopover
+                  title={`${label} – AI Insight`}
+                  description={`Quick insight for ${label.toLowerCase()}.`}
+                  placement="bottom"
+                  payload={{
+                    label,
+                    series: data.series,
+                    labels: data.labels,
+                    type: isPie ? "pie" : "bar",
+                  }}
+                /> */}
+                 <InfoPopover
                   title={`${label} – AI Insight`}
                   description={`Quick insight for ${label.toLowerCase()}.`}
                   placement="bottom"

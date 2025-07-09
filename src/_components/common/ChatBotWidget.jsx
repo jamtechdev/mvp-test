@@ -62,7 +62,10 @@ function useTheme() {
     return () => mq.removeEventListener("change", handler);
   }, []);
 
-  return scheme === "dark" ? DARK : LIGHT;
+  // add `scheme` key so callers can inspect it
+  return scheme === "dark"
+    ? { ...DARK, scheme: "dark" }
+    : { ...LIGHT, scheme: "light" };
 }
 
 export default function ChatBotWidget() {
@@ -232,6 +235,32 @@ function ChatBox({ onClose, theme }) {
           background: theme.bodyBg,
         }}
       >
+        {/* 👋  Welcome message shown only until the first real message arrives */}
+        {messages.length === 0 && !loading && (
+          <div
+            style={{
+              marginBottom: "0.75rem",
+              display: "flex",
+              justifyContent: "flex-start",
+            }}
+          >
+            <div
+              style={{
+                background: theme.assistantBubbleBg,
+                color: theme.assistantBubbleText,
+                borderRadius: "1rem",
+                padding: "0.6rem 1rem",
+                maxWidth: "80%",
+                boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                whiteSpace: "pre-wrap",
+                fontStyle: "italic",
+              }}
+            >
+              Hi there! How can I help you?
+            </div>
+          </div>
+        )}
+
         {messages.map((m, i) => (
           <div
             key={i}
@@ -262,6 +291,7 @@ function ChatBox({ onClose, theme }) {
             </div>
           </div>
         ))}
+
         {loading && (
           <div className="d-flex align-items-center gap-2">
             <Spinner size="sm" animation="border" />
@@ -281,7 +311,7 @@ function ChatBox({ onClose, theme }) {
           placeholder="Type your message..."
           disabled={loading}
           style={{
-            // backgroundColor: theme.inputBg, // use backgroundColor to ensure override
+            // backgroundColor: theme.inputBg,
             color: theme.inputText,
             border: "none",
           }}
