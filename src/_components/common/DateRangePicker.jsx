@@ -6,7 +6,9 @@ import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { Button } from "react-bootstrap";
 
-/* Hook to detect dark mode via <html data-theme="dark"> */
+/* ──────────────────────────────────────────────────────────────────
+   Hook: read & react to <html data-theme="…">
+─────────────────────────────────────────────────────────────────── */
 function useHtmlDataTheme() {
   const getTheme = () =>
     typeof document !== "undefined"
@@ -16,6 +18,7 @@ function useHtmlDataTheme() {
   const [scheme, setScheme] = useState(getTheme);
 
   useEffect(() => {
+    if (typeof document === "undefined") return;
     const obs = new MutationObserver(() => setScheme(getTheme()));
     obs.observe(document.documentElement, {
       attributes: true,
@@ -24,51 +27,55 @@ function useHtmlDataTheme() {
     return () => obs.disconnect();
   }, []);
 
-  return scheme; // "dark" or "light"
+  return scheme; // "dark" | "light"
 }
 
+/* ──────────────────────────────────────────────────────────────────
+   Date‑range selector
+─────────────────────────────────────────────────────────────────── */
 export default function DateRangeInput({ value, onChange }) {
-  const scheme = useHtmlDataTheme();
+  const scheme = useHtmlDataTheme(); // dark | light
   const [open, setOpen] = useState(false);
+  const [touched, setTouched] = useState(false); // user changed date?
   const [draft, setDraft] = useState({
     startDate: value.start,
     endDate: value.end,
   });
-  const [touched, setTouched] = useState(false); // ✨ Track user interaction
+
   const wrapperRef = useRef(null);
 
-  // Sync external value to draft
+  /* keep internal draft in sync with external props */
   useEffect(() => {
     setDraft({ startDate: value.start, endDate: value.end });
   }, [value.start, value.end]);
 
-  // Close calendar on outside click
+  /* close pop‑up when clicking outside */
   useEffect(() => {
-    const handleClick = (e) =>
+    const close = (e) =>
       wrapperRef.current &&
       !wrapperRef.current.contains(e.target) &&
       setOpen(false);
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
+    document.addEventListener("mousedown", close);
+    return () => document.removeEventListener("mousedown", close);
   }, []);
 
+  /* handle user selecting dates */
   const handleSelect = ({ selection }) => {
-    setTouched(true); // ✨ User picked something
+    setTouched(true);
     setDraft(selection);
     onChange({ start: selection.startDate, end: selection.endDate });
-
-    if (!isSameDay(selection.startDate, selection.endDate)) {
-      setOpen(false);
-    }
+    if (!isSameDay(selection.startDate, selection.endDate)) setOpen(false);
   };
 
+  /* clear back to today */
   const handleClear = () => {
     const today = new Date();
     onChange({ start: today, end: today });
+    setTouched(false);
     setOpen(false);
-    setTouched(false); // ✨ Reset touch state
   };
 
+  /* computed pop‑up style */
   const popStyle = useMemo(
     () => ({
       position: "absolute",
@@ -86,9 +93,10 @@ export default function DateRangeInput({ value, onChange }) {
     [scheme]
   );
 
+  /* ────────────────────────── render ─────────────────────────── */
   return (
     <div ref={wrapperRef} style={{ position: "relative" }}>
-      {/* Dark mode patch for react-date-range */}
+      {/* 🎨 Dark‑mode overrides for react‑date‑range */}
       {scheme === "dark" && (
         <style jsx global>{`
           .rdrCalendarWrapper,
@@ -102,6 +110,15 @@ export default function DateRangeInput({ value, onChange }) {
             background: #0c1427 !important;
             color: #e6e6e6 !important;
           }
+
+          /* ← NEW: top date-input boxes */
+          .rdrDateDisplayItem,
+          .rdrDateDisplayItem input {
+            background: #0c1427 !important;
+            color: #e6e6e6 !important;
+            border: 1px solid #37beb0 !important;
+          }
+
           .rdrDayNumber span {
             color: #e6e6e6 !important;
           }
@@ -111,9 +128,11 @@ export default function DateRangeInput({ value, onChange }) {
           .rdrNextPrevButton {
             background: rgba(230, 230, 230, 0.08) !important;
           }
+
           .rdrDayToday .rdrDayNumber span:after {
             background: #37beb0 !important;
           }
+
           .rdrSelected,
           .rdrInRange,
           .rdrStartEdge,
@@ -121,18 +140,20 @@ export default function DateRangeInput({ value, onChange }) {
             background: #37beb0 !important;
             color: #fff !important;
           }
+
           .rdrDayHovered,
           .rdrDayActive {
             background: rgba(55, 190, 176, 0.3) !important;
             color: #fff !important;
           }
+
           .rdrMonthAndYearPickers select {
             border: 1px solid #2a354d !important;
           }
         `}</style>
       )}
 
-      {/* Input & Clear */}
+      {/* Input and conditional Clear button */}
       <div className="d-flex gap-2 align-items-center">
         <input
           type="text"
@@ -149,13 +170,14 @@ export default function DateRangeInput({ value, onChange }) {
             variant="outline-secondary"
             size="sm"
             onClick={handleClear}
-            title="Clear selection"
+            title="Clear range"
           >
             Clear
           </Button>
         )}
       </div>
 
+      {/* Calendar pop‑up */}
       {open && (
         <div style={popStyle}>
           <DateRange
