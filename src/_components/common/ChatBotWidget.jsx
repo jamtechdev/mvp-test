@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import {
   Button,
   Form,
@@ -8,23 +8,17 @@ import {
   CloseButton,
 } from "react-bootstrap";
 
-/**
- * Light & dark palettes
- * --------------------
- * brand        – primary accent
- * bg           – chatbox background
- * bodyBg       – message pane background
- * userBubbleBg – user message bubble
- * assistantBubbleBg – assistant message bubble
- */
+/* ------------------------------------------------------------------
+   Colour palettes
+------------------------------------------------------------------- */
 const LIGHT = {
-  brand: "#37BEB0", // teal‑ish accent
-  bg: "#ffffff",
-  bodyBg: "#f1f3f5",
+  brand: "#37BEB0",
+  bg: "#37BEB0",
+  bodyBg: "rgb(165 229 223)",
   headerText: "#ffffff",
   userBubbleBg: "#37BEB0",
   userBubbleText: "#ffffff",
-  assistantBubbleBg: "#e9ecef",
+  assistantBubbleBg: "#ffffff",
   assistantBubbleText: "#212529",
   inputBg: "#ffffff",
   inputText: "#212529",
@@ -32,42 +26,113 @@ const LIGHT = {
 
 const DARK = {
   brand: "#2a9d90",
-  bg: "#1e1e1e",
-  bodyBg: "#252525",
+  bg: "#37BEB0",
+  bodyBg: "#0c1427",
   headerText: "#ffffff",
   userBubbleBg: "#37BEB0",
   userBubbleText: "#ffffff",
   assistantBubbleBg: "#313131",
   assistantBubbleText: "#e8e8e8",
-  inputBg: "#2a2a2a",
-  inputText: "#212529",
+  inputBg: "#0c1427",
+  inputText: "#e8e8e8",
 };
 
-/**
- * Detects system colour‑scheme and keeps it in sync.
- */
+/* ------------------------------------------------------------------
+   Theme hook — reads <html data-theme="…"> and reacts to changes
+------------------------------------------------------------------- */
 function useTheme() {
-  const getScheme = () =>
-    typeof window !== "undefined" &&
-    window.matchMedia("(prefers-color-scheme: dark)").matches
+  const getAttrScheme = () => {
+    if (typeof document === "undefined") return null;
+    return document.documentElement.getAttribute("data-theme"); // "dark" | "light" | null
+  };
+
+  const getPrefersScheme = () => {
+    if (typeof window === "undefined" || !window.matchMedia) return "light";
+    return window.matchMedia("(prefers-color-scheme: dark)").matches
       ? "dark"
       : "light";
+  };
 
-  const [scheme, setScheme] = useState(getScheme);
+  /* start with attribute, fallback to system, else "light" */
+  const [scheme, setScheme] = useState(
+    () => getAttrScheme() || getPrefersScheme()
+  );
 
   useEffect(() => {
-    const mq = window.matchMedia("(prefers-color-scheme: dark)");
-    const handler = (e) => setScheme(e.matches ? "dark" : "light");
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
+    if (typeof document === "undefined") return;
+
+    const root = document.documentElement;
+
+    /* 1) Observe data‑theme attribute */
+    const obs = new MutationObserver(() => {
+      const attr = getAttrScheme();
+      if (attr === "dark" || attr === "light") setScheme(attr);
+    });
+    obs.observe(root, { attributes: true, attributeFilter: ["data-theme"] });
+
+    /* 2) Fallback: listen to prefers‑color‑scheme if no data‑theme present */
+    let mq;
+    if (!getAttrScheme() && window.matchMedia) {
+      mq = window.matchMedia("(prefers-color-scheme: dark)");
+      const handle = (e) => setScheme(e.matches ? "dark" : "light");
+      mq.addEventListener("change", handle);
+    }
+
+    return () => {
+      obs.disconnect();
+      mq?.removeEventListener("change", () => {});
+    };
   }, []);
 
-  // add `scheme` key so callers can inspect it
-  return scheme === "dark"
-    ? { ...DARK, scheme: "dark" }
-    : { ...LIGHT, scheme: "light" };
+  return useMemo(
+    () =>
+      scheme === "dark"
+        ? { ...DARK, scheme: "dark" }
+        : { ...LIGHT, scheme: "light" },
+    [scheme]
+  );
 }
 
+/* ------------------------------------------------------------------
+   Static style objects (created once)
+------------------------------------------------------------------- */
+const launcherStyle = {
+  border: "none",
+  width: 60,
+  height: 60,
+  position: "fixed",
+  bottom: 20,
+  right: 20,
+  zIndex: 1000,
+};
+
+const wrapperBase = {
+  position: "fixed",
+  bottom: 0,
+  right: 2,
+  width: "90%",
+  maxWidth: 380,
+  height: 440,
+  borderRadius: "1rem",
+  display: "flex",
+  flexDirection: "column",
+  zIndex: 1050,
+  overflow: "hidden",
+  fontFamily: "Segoe UI, sans-serif",
+};
+
+const bubbleBase = {
+  borderRadius: "1rem",
+  padding: "0.6rem 1rem",
+  maxWidth: "80%",
+  boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+  whiteSpace: "pre-wrap",
+  fontStyle: "italic",
+};
+
+/* ------------------------------------------------------------------
+   Launcher
+------------------------------------------------------------------- */
 export default function ChatBotWidget() {
   const [open, setOpen] = useState(false);
   const theme = useTheme();
@@ -77,16 +142,7 @@ export default function ChatBotWidget() {
       {!open && (
         <Button
           className="rounded-circle shadow"
-          style={{
-            backgroundColor: theme.brand,
-            border: "none",
-            width: 60,
-            height: 60,
-            position: "fixed",
-            bottom: 20,
-            right: 20,
-            zIndex: 1000,
-          }}
+          style={{ ...launcherStyle, backgroundColor: theme.brand }}
           onClick={() => setOpen(true)}
         >
           💬
@@ -97,39 +153,34 @@ export default function ChatBotWidget() {
   );
 }
 
+/* ------------------------------------------------------------------
+   Chat box
+------------------------------------------------------------------- */
 function ChatBox({ onClose, theme }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [hasLoaded, setHasLoaded] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
   const bodyRef = useRef(null);
 
-  // Load from localStorage once
+  /* load history */
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("chat_history") || "[]");
-    setMessages(saved);
-    setHasLoaded(true);
-    // scroll after first paint
-    setTimeout(() => {
-      if (bodyRef.current) {
-        bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
-      }
-    }, 0);
+    setMessages(JSON.parse(localStorage.getItem("chat_history") || "[]"));
+    setHydrated(true);
   }, []);
 
-  // Persist history & autoscroll on every change (after load)
+  /* persist + autoscroll */
   useEffect(() => {
-    if (!hasLoaded) return;
+    if (!hydrated) return;
     localStorage.setItem("chat_history", JSON.stringify(messages));
-    if (bodyRef.current) {
-      bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
-    }
-  }, [messages, hasLoaded]);
+    bodyRef.current?.scrollTo(0, bodyRef.current.scrollHeight);
+  }, [messages, hydrated]);
 
+  /* send */
   const send = async (content) => {
     if (!content.trim()) return;
-    const newMsgs = [...messages, { role: "user", content }];
-    setMessages(newMsgs);
+    const draft = [...messages, { role: "user", content }];
+    setMessages(draft);
     setInput("");
     setLoading(true);
 
@@ -137,36 +188,24 @@ function ChatBox({ onClose, theme }) {
       const res = await fetch("/api/ask-ai", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: newMsgs }),
+        body: JSON.stringify({ messages: draft }),
       });
-
       const json = await res.json();
 
-      if (!res.ok || json.error) {
-        // 👇 show error in chat
-        setMessages([
-          ...newMsgs,
-          {
-            role: "assistant",
-            content: `❗ Error: ${json.error || "Unknown error occurred."}`,
-          },
-        ]);
-      } else {
-        setMessages([
-          ...newMsgs,
-          { role: "assistant", content: json.response },
-        ]);
-      }
-    } catch (err) {
-      // 👇 show fetch/network errors
       setMessages([
-        ...newMsgs,
+        ...draft,
         {
           role: "assistant",
-          content: `❗ Network error: ${
-            err.message || "Something went wrong."
-          }`,
+          content:
+            !res.ok || json.error
+              ? `❗ Error: ${json.error || "Unknown error occurred."}`
+              : json.response,
         },
+      ]);
+    } catch (err) {
+      setMessages([
+        ...draft,
+        { role: "assistant", content: `❗ Network error: ${err.message}` },
       ]);
     } finally {
       setLoading(false);
@@ -178,46 +217,35 @@ function ChatBox({ onClose, theme }) {
     localStorage.removeItem("chat_history");
   };
 
+  const bubbleStyle = (isUser) => ({
+    ...bubbleBase,
+    backgroundColor: isUser ? theme.userBubbleBg : theme.assistantBubbleBg,
+    color: isUser ? theme.userBubbleText : theme.assistantBubbleText,
+  });
+
   return (
     <div
       style={{
-        position: "fixed",
-        bottom: 0,
-        right: 2,
-        width: "90%",
-        maxWidth: 380,
-        height: 520,
+        ...wrapperBase,
         backgroundColor: theme.bg,
-        borderRadius: "1rem",
         boxShadow:
           theme.scheme === "dark"
             ? "0 6px 24px rgba(0,0,0,0.6)"
             : "0 6px 24px rgba(0,0,0,0.2)",
-        display: "flex",
-        flexDirection: "column",
-        zIndex: 1050,
-        overflow: "hidden",
-        fontFamily: "Segoe UI, sans-serif",
       }}
     >
       {/* Header */}
       <div
-        style={{
-          backgroundColor: theme.brand,
-          color: theme.headerText,
-          padding: "0.75rem 1rem",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
+        className="py-2 px-3 d-flex justify-content-between align-items-center"
+        style={{ backgroundColor: theme.brand, color: theme.headerText }}
       >
-        <span className="fw-bold">AI Assistant</span>
+        <span className="fw-bold fst-italic">AI Assistant</span>
         <div>
           <Button
             variant="outline-light"
             size="sm"
+            className="fst-italic me-2"
             onClick={clearChat}
-            style={{ marginRight: 8 }}
           >
             Clear
           </Button>
@@ -228,35 +256,13 @@ function ChatBox({ onClose, theme }) {
       {/* Messages */}
       <div
         ref={bodyRef}
-        style={{
-          flexGrow: 1,
-          overflowY: "auto",
-          padding: "1rem",
-          background: theme.bodyBg,
-        }}
+        className="flex-grow-1 overflow-auto p-3"
+        style={{ background: theme.bodyBg }}
       >
-        {/* 👋  Welcome message shown only until the first real message arrives */}
         {messages.length === 0 && !loading && (
-          <div
-            style={{
-              marginBottom: "0.75rem",
-              display: "flex",
-              justifyContent: "flex-start",
-            }}
-          >
-            <div
-              style={{
-                background: theme.assistantBubbleBg,
-                color: theme.assistantBubbleText,
-                borderRadius: "1rem",
-                padding: "0.6rem 1rem",
-                maxWidth: "80%",
-                boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-                whiteSpace: "pre-wrap",
-                fontStyle: "italic",
-              }}
-            >
-              Hi there! How can I help you?
+          <div className="d-flex justify-content-start mb-2">
+            <div style={bubbleStyle(false)}>
+              👋 Hey there! What can I help you with today?
             </div>
           </div>
         )}
@@ -264,38 +270,23 @@ function ChatBox({ onClose, theme }) {
         {messages.map((m, i) => (
           <div
             key={i}
-            style={{
-              marginBottom: "0.75rem",
-              display: "flex",
-              justifyContent: m.role === "user" ? "flex-end" : "flex-start",
-            }}
+            className={`d-flex mb-2 ${
+              m.role === "user"
+                ? "justify-content-end"
+                : "justify-content-start"
+            }`}
           >
-            <div
-              style={{
-                background:
-                  m.role === "user"
-                    ? theme.userBubbleBg
-                    : theme.assistantBubbleBg,
-                color:
-                  m.role === "user"
-                    ? theme.userBubbleText
-                    : theme.assistantBubbleText,
-                borderRadius: "1rem",
-                padding: "0.6rem 1rem",
-                maxWidth: "80%",
-                boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-                whiteSpace: "pre-wrap",
-              }}
-            >
-              {m.content}
-            </div>
+            <div style={bubbleStyle(m.role === "user")}>{m.content}</div>
           </div>
         ))}
 
         {loading && (
           <div className="d-flex align-items-center gap-2">
             <Spinner size="sm" animation="border" />
-            <small style={{ color: theme.assistantBubbleText }}>
+            <small
+              className="fst-italic"
+              style={{ color: theme.assistantBubbleText }}
+            >
               AI is typing...
             </small>
           </div>
@@ -303,23 +294,21 @@ function ChatBox({ onClose, theme }) {
       </div>
 
       {/* Input */}
-      <InputGroup className="p-2 border-top " style={{ background: theme.bg }}>
+      <InputGroup className="p-2 border-top" style={{ background: theme.bg }}>
         <Form.Control
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && send(input)}
           placeholder="Type your message..."
           disabled={loading}
-          style={{
-            // backgroundColor: theme.inputBg,
-            color: theme.inputText,
-            border: "none",
-          }}
+          className="fst-italic border-0"
+          style={{ backgroundColor: theme.inputBg, color: theme.inputText }}
         />
         <Button
-          onClick={() => send(input)}
           disabled={loading}
-          style={{ backgroundColor: theme.brand, border: "none" }}
+          onClick={() => send(input)}
+          className="fst-italic border-0"
+          style={{ backgroundColor: theme.brand }}
         >
           Send
         </Button>
