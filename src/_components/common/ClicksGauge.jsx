@@ -38,16 +38,16 @@ export default function ClicksGauge({ kpi, cpa, maxClicks = 150_000 }) {
     <Card className="p-4 shadow-sm h-100 d-flex flex-column">
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h6 className="fw-semibold mb-0">Cost Per Acquisition</h6>
-        <InfoPopover
+        {/* <InfoPopover
           title="Clicks Trend – AI Insight"
           payload={{ clicks: kpi.clicks, cpa }}
           placement="bottom"
-        />
-         {/* <InfoPopover
+        /> */}
+         <InfoPopover
           title="Clicks Trend – AI Insight"
           description="Clicks are rising steadily; consider scaling top‑performing creatives."
           placement="bottom"
-        /> */}
+        />
       </div>
 
       <div className="d-flex justify-content-center align-items-center">

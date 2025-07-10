@@ -26,16 +26,26 @@ const LIGHT = {
 };
 
 const DARK = {
-  brand: "#2a9d90",
+  // brand: "#2a9d90",
+  // bg: "#37BEB0",
+  // bodyBg: "#0c1427",
+  // headerText: "#ffffff",
+  // userBubbleBg: "#37BEB0",
+  // userBubbleText: "#ffffff",
+  // assistantBubbleBg: "#313131",
+  // assistantBubbleText: "#e8e8e8",
+  // inputBg: "#0c1427",
+  // inputText: "#e8e8e8",
+  brand: "#37BEB0",
   bg: "#37BEB0",
-  bodyBg: "#0c1427",
+  bodyBg: "rgb(165 229 223)",
   headerText: "#ffffff",
   userBubbleBg: "#37BEB0",
   userBubbleText: "#ffffff",
-  assistantBubbleBg: "#313131",
-  assistantBubbleText: "#e8e8e8",
-  inputBg: "#0c1427",
-  inputText: "#e8e8e8",
+  assistantBubbleBg: "#ffffff",
+  assistantBubbleText: "#212529",
+  inputBg: "#ffffff",
+  inputText: "#212529",
 };
 
 function useTheme() {
