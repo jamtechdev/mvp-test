@@ -10,7 +10,7 @@ function DarkModeSwitcher() {
     if (savedTheme) {
       setDarkMode(savedTheme === "dark");
     }
-  }, []); // Empty dependency array means this runs only once after initial mount
+  }, []); 
 
   useEffect(() => {
     if (darkMode) {

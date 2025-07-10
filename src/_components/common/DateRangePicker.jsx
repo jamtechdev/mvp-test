@@ -6,9 +6,6 @@ import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { Button } from "react-bootstrap";
 
-/* ──────────────────────────────────────────────────────────────────
-   Hook: read & react to <html data-theme="…">
-─────────────────────────────────────────────────────────────────── */
 function useHtmlDataTheme() {
   const getTheme = () =>
     typeof document !== "undefined"
@@ -30,9 +27,6 @@ function useHtmlDataTheme() {
   return scheme; // "dark" | "light"
 }
 
-/* ──────────────────────────────────────────────────────────────────
-   Date‑range selector
-─────────────────────────────────────────────────────────────────── */
 export default function DateRangeInput({ value, onChange }) {
   const scheme = useHtmlDataTheme(); // dark | light
   const [open, setOpen] = useState(false);
@@ -93,7 +87,6 @@ export default function DateRangeInput({ value, onChange }) {
     [scheme]
   );
 
-  /* ────────────────────────── render ─────────────────────────── */
   return (
     <div ref={wrapperRef} style={{ position: "relative" }}>
       {/* 🎨 Dark‑mode overrides for react‑date‑range */}
@@ -153,7 +146,6 @@ export default function DateRangeInput({ value, onChange }) {
         `}</style>
       )}
 
-      {/* Input and conditional Clear button */}
       <div className="d-flex gap-2 align-items-center">
         <input
           type="text"
@@ -177,7 +169,6 @@ export default function DateRangeInput({ value, onChange }) {
         )}
       </div>
 
-      {/* Calendar pop‑up */}
       {open && (
         <div style={popStyle}>
           <DateRange

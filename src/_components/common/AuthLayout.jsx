@@ -10,15 +10,12 @@ export default function AuthLayout({ children }) {
     <>
       <div className="dashboard-wrapper">
         <div className="dashboard-sidebar">
-          {/* <LeftSidebar manageToggleButton={manageToggleButton} setToggleButtom={setToggleButtom} /> */}
-          {/* // Pass it down */}
           <LeftSidebar
             manageToggleButton={manageToggleButton}
             setToggleButton={setToggleButton}
           />
         </div>
         <div className="dashboard-content main-container">
-          {/* <TopHeader manageToggleButton={manageToggleButton} setToggleButtom={setToggleButtom}  /> */}
           <TopHeader
             manageToggleButton={manageToggleButton}
             setToggleButton={setToggleButton}

@@ -5,7 +5,6 @@ import GaugeComponent from "react-gauge-component";
 import { FiArrowUpRight } from "react-icons/fi";
 import InfoPopover from "./InsightModel";
 
-/* ─── Helpers ─────────────────────────────────────── */
 const kFmt = (n) => {
   if (n < 1_000) return n.toString(); // 972  →  "972"
   const v = n / 1_000;
@@ -17,12 +16,10 @@ const n2 = (n) =>
     maximumFractionDigits: 2,
   });
 
-/* ─── Colours & styles ────────────────────────────── */
 const palette = ["#FF5160", "#FFC107", "#12C99B"];
 const labelStyle = { fontSize: "0.72rem", color: "#8A8F9A" };
 const dotStyle = { width: 10, height: 10, borderRadius: "50%", marginRight: 6 };
 
-/* ─── Component ───────────────────────────────────── */
 export default function ClicksGauge({ kpi, cpa, maxClicks = 150_000 }) {
   const percent = Math.min(kpi.clicks / maxClicks, 1);
   const activeColor =
@@ -39,7 +36,6 @@ export default function ClicksGauge({ kpi, cpa, maxClicks = 150_000 }) {
 
   return (
     <Card className="p-4 shadow-sm h-100 d-flex flex-column">
-      {/* Header */}
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h6 className="fw-semibold mb-0">Cost Per Acquisition</h6>
         {/* <InfoPopover
@@ -54,7 +50,6 @@ export default function ClicksGauge({ kpi, cpa, maxClicks = 150_000 }) {
         />
       </div>
 
-      {/* Gauge */}
       <div className="d-flex justify-content-center align-items-center">
         <GaugeComponent
           type="semicircle"

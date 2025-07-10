@@ -9,8 +9,6 @@ import InfoPopover from "./InsightModel";
 
 const ApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-/* ───────────────────────────────────────────────────────────── */
-/* CONFIG                                                       */
 const METRIC_COLORS = {
   spend: "#6366f1",
   impressions: "#14b8a6",
@@ -39,7 +37,6 @@ const STATIC_SERIES = {
   leads: buildSeries(30, 1200),
   revenue: buildSeries(30, 600),
 };
-/* ───────────────────────────────────────────────────────────── */
 
 export default function KPITrendCard() {
   const [metric, setMetric] = useState("spend");
@@ -54,7 +51,6 @@ export default function KPITrendCard() {
     [metric, seriesData]
   );
 
-  /* ----------------------------------------------------------- */
 
   const total = n0(seriesData.reduce((t, p) => t + p.y, 0));
   const todayVal = seriesData.at(-1)?.y ?? 0;
