@@ -1,4 +1,5 @@
 "use client";
+import { openAIServices } from "@/_service";
 import { useState, useEffect, useRef, useMemo } from "react";
 import {
   Button,
@@ -25,32 +26,18 @@ const LIGHT = {
 };
 
 const DARK = {
-  // ---------UNCOMMENT--------
-  // brand: "#2a9d90",
-  // bg: "#37BEB0",
-  // bodyBg: "#0c1427",
-  // headerText: "#ffffff",
-  // userBubbleBg: "#37BEB0",
-  // userBubbleText: "#ffffff",
-  // assistantBubbleBg: "#313131",
-  // assistantBubbleText: "#e8e8e8",
-  // inputBg: "#0c1427",
-  // inputText: "#e8e8e8",
-   brand: "#37BEB0",
+  brand: "#2a9d90",
   bg: "#37BEB0",
-  bodyBg: "rgb(165 229 223)",
+  bodyBg: "#0c1427",
   headerText: "#ffffff",
   userBubbleBg: "#37BEB0",
   userBubbleText: "#ffffff",
-  assistantBubbleBg: "#ffffff",
-  assistantBubbleText: "#212529",
-  inputBg: "#ffffff",
-  inputText: "#212529",
+  assistantBubbleBg: "#313131",
+  assistantBubbleText: "#e8e8e8",
+  inputBg: "#0c1427",
+  inputText: "#e8e8e8",
 };
 
-/* ------------------------------------------------------------------
-   Theme hook — reads <html data-theme="…"> and reacts to changes
-------------------------------------------------------------------- */
 function useTheme() {
   const getAttrScheme = () => {
     if (typeof document === "undefined") return null;
@@ -141,9 +128,6 @@ const bubbleBase = {
   fontStyle: "italic",
 };
 
-/* ------------------------------------------------------------------
-   Launcher
-------------------------------------------------------------------- */
 export default function ChatBotWidget() {
   const [open, setOpen] = useState(false);
   const theme = useTheme();
@@ -164,64 +148,79 @@ export default function ChatBotWidget() {
   );
 }
 
-/* ------------------------------------------------------------------
-   Chat box
-------------------------------------------------------------------- */
 function ChatBox({ onClose, theme }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const bodyRef = useRef(null);
-  // ---------UNCOMMENT--------
 
   /* load history */
-  // useEffect(() => {
-  //   setMessages(JSON.parse(localStorage.getItem("chat_history") || "[]"));
-  //   setHydrated(true);
-  // }, []);
+  useEffect(() => {
+    setMessages(JSON.parse(localStorage.getItem("chat_history") || "[]"));
+    setHydrated(true);
+  }, []);
 
   /* persist + autoscroll */
-  // useEffect(() => {
-  //   if (!hydrated) return;
-  //   localStorage.setItem("chat_history", JSON.stringify(messages));
-  //   bodyRef.current?.scrollTo(0, bodyRef.current.scrollHeight);
-  // }, [messages, hydrated]);
+  useEffect(() => {
+    if (!hydrated) return;
+    localStorage.setItem("chat_history", JSON.stringify(messages));
+    bodyRef.current?.scrollTo(0, bodyRef.current.scrollHeight);
+  }, [messages, hydrated]);
 
-  /* send */
+  // const send = async (content) => {
+  //   if (!content.trim()) return;
+  //   const draft = [...messages, { role: "user", content }];
+  //   setMessages(draft);
+  //   setInput("");
+  //   setLoading(true);
+
+  //   try {
+  //     const res = await fetch("/api/ask-ai", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ messages: draft }),
+  //     });
+  //     const json = await res.json();
+
+  //     setMessages([
+  //       ...draft,
+  //       {
+  //         role: "assistant",
+  //         content:
+  //           !res.ok || json.error
+  //             ? `❗ Error: ${json.error || "Unknown error occurred."}`
+  //             : json.response,
+  //       },
+  //     ]);
+  //   } catch (err) {
+  //     setMessages([
+  //       ...draft,
+  //       { role: "assistant", content: `❗ Network error: ${err.message}` },
+  //     ]);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   const send = async (content) => {
     if (!content.trim()) return;
+
     const draft = [...messages, { role: "user", content }];
     setMessages(draft);
     setInput("");
     setLoading(true);
 
-    try {
-      const res = await fetch("/api/ask-ai", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: draft }),
-      });
-      const json = await res.json();
+    const result = await openAIServices.sendChat(draft);
 
-      setMessages([
-        ...draft,
-        {
-          role: "assistant",
-          content:
-            !res.ok || json.error
-              ? `❗ Error: ${json.error || "Unknown error occurred."}`
-              : json.response,
-        },
-      ]);
-    } catch (err) {
-      setMessages([
-        ...draft,
-        { role: "assistant", content: `❗ Network error: ${err.message}` },
-      ]);
-    } finally {
-      setLoading(false);
-    }
+    setMessages([
+      ...draft,
+      {
+        role: "assistant",
+        content: result.success ? result.data : result.error,
+      },
+    ]);
+
+    setLoading(false);
   };
 
   const clearChat = () => {
@@ -246,7 +245,6 @@ function ChatBox({ onClose, theme }) {
             : "0 6px 24px rgba(0,0,0,0.2)",
       }}
     >
-      {/* Header */}
       <div
         className="py-2 px-3 d-flex justify-content-between align-items-center"
         style={{ backgroundColor: theme.brand, color: theme.headerText }}
@@ -257,9 +255,7 @@ function ChatBox({ onClose, theme }) {
             variant="outline-light"
             size="sm"
             className="fst-italic me-2"
-              // ---------UNCOMMENT--------
-
-            // onClick={clearChat}
+            onClick={clearChat}
           >
             Clear
           </Button>
@@ -307,7 +303,6 @@ function ChatBox({ onClose, theme }) {
         )}
       </div>
 
-      {/* Input */}
       <InputGroup className="p-2 border-top" style={{ background: theme.bg }}>
         <Form.Control
           value={input}

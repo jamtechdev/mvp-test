@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "apexcharts": "^4.7.0",
+    "axios": "^1.10.0",
     "bootstrap": "^5.3.7",
     "date-fns": "^4.1.0",
     "formik": "^2.4.6",

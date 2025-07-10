@@ -1,5 +1,6 @@
 "use client";
 
+import { openAIServices } from "@/_service";
 import { useState, useRef, useMemo, useEffect } from "react";
 import { Overlay, Popover } from "react-bootstrap";
 import { FiZap } from "react-icons/fi";
@@ -29,43 +30,63 @@ export default function InfoPopover({
   const popoverRef = useRef(null);
 
   /* ── Fetch once per mount ────────────────────────────── */
+  // const fetchInsight = async () => {
+  //   if (loading || insight || (!kpi && !payload)) return;
+  //   setLoading(true);
+
+  //   try {
+  //     const res = await fetch("/api/ai-insight", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(payload ? { payload } : { kpi, targets }),
+  //     });
+
+  //     /* ---------- 1. Bad HTTP status? ---------- */
+  //     if (!res.ok) {
+  //       const txt = await res.text(); // may be HTML
+  //       throw new Error(`HTTP ${res.status}: ${txt.slice(0, 120)}…`);
+  //     }
+
+  //     /* ---------- 2. Non‑JSON content? ---------- */
+  //     const isJson = res.headers
+  //       .get("content-type")
+  //       ?.includes("application/json");
+  //     if (!isJson) {
+  //       const txt = await res.text();
+  //       throw new Error(`Non‑JSON response: ${txt.slice(0, 120)}…`);
+  //     }
+
+  //     /* ---------- 3. Parse JSON safely ---------- */
+  //     const data = await res.json();
+  //     if (data.insight) setInsight(data.insight);
+  //     else setInsight(`⚠️ ${data.error || "No insight returned."}`);
+  //   } catch (err) {
+  //     setInsight(`⚠️ ${err.message}`);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   const fetchInsight = async () => {
     if (loading || insight || (!kpi && !payload)) return;
+
     setLoading(true);
 
     try {
-      const res = await fetch("/api/ai-insight", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload ? { payload } : { kpi, targets }),
+      const result = await openAIServices.getAIInsight({
+        payload,
+        kpi,
+        targets,
       });
 
-      /* ---------- 1. Bad HTTP status? ---------- */
-      if (!res.ok) {
-        const txt = await res.text(); // may be HTML
-        throw new Error(`HTTP ${res.status}: ${txt.slice(0, 120)}…`);
+      if (result.success) {
+        setInsight(result.data);
+      } else {
+        setInsight(result.error); // e.g., ⚠️ HTTP 500, etc.
       }
-
-      /* ---------- 2. Non‑JSON content? ---------- */
-      const isJson = res.headers
-        .get("content-type")
-        ?.includes("application/json");
-      if (!isJson) {
-        const txt = await res.text();
-        throw new Error(`Non‑JSON response: ${txt.slice(0, 120)}…`);
-      }
-
-      /* ---------- 3. Parse JSON safely ---------- */
-      const data = await res.json();
-      if (data.insight) setInsight(data.insight);
-      else setInsight(`⚠️ ${data.error || "No insight returned."}`);
-    } catch (err) {
-      setInsight(`⚠️ ${err.message}`);
     } finally {
       setLoading(false);
     }
   };
-
   /* ── Split insight into bullets ───────────────────────── */
   const bullets = useMemo(() => {
     if (!insight) return [];
