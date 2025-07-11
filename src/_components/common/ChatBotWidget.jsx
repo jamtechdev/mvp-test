@@ -8,6 +8,7 @@ import {
   Spinner,
   CloseButton,
 } from "react-bootstrap";
+import ReactMarkdown from "react-markdown";
 
 /* ------------------------------------------------------------------
    Colour palettes
@@ -109,7 +110,7 @@ const wrapperBase = {
   bottom: 0,
   right: 2,
   width: "90%",
-  maxWidth: 380,
+  maxWidth: 440,
   height: 440,
   borderRadius: "1rem",
   display: "flex",
@@ -122,9 +123,9 @@ const wrapperBase = {
 const bubbleBase = {
   borderRadius: "1rem",
   padding: "0.6rem 1rem",
-  maxWidth: "80%",
+  maxWidth: "85%",
   boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-  whiteSpace: "pre-wrap",
+  // whiteSpace: "pre-wrap",
   fontStyle: "italic",
 };
 
@@ -276,7 +277,6 @@ function ChatBox({ onClose, theme }) {
             </div>
           </div>
         )}
-
         {messages.map((m, i) => (
           <div
             key={i}
@@ -286,10 +286,15 @@ function ChatBox({ onClose, theme }) {
                 : "justify-content-start"
             }`}
           >
-            <div style={bubbleStyle(m.role === "user")}>{m.content}</div>
+            <div style={bubbleStyle(m.role === "user")}>
+              {m.role === "assistant" ? (
+                <ReactMarkdown>{m.content}</ReactMarkdown>
+              ) : (
+                m.content
+              )}
+            </div>
           </div>
         ))}
-
         {loading && (
           <div className="d-flex align-items-center gap-2">
             <Spinner size="sm" animation="border" />
