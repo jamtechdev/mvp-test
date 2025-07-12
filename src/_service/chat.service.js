@@ -4,18 +4,21 @@ export const openAIServices = {
   sendChat,
   getAIInsight,
 };
+
 const API = "/api";
-async function sendChat(messages, token = null) {
+
+// ✅ UPDATED FUNCTION
+async function sendChat(messages, aiInput = null, token = null) {
   try {
     const res = await axios.post(
       `${API}/ask-ai`,
-      { messages }
-      //   {
-      //     headers: {
-      //       ...(token && { Authorization: `Bearer ${token}` }),
-      //       "Content-Type": "application/json",
-      //     },
-      //   }
+      { messages, aiInput }, // ✅ send both messages + aiInput
+      {
+        headers: {
+          ...(token && { Authorization: `Bearer ${token}` }),
+          "Content-Type": "application/json",
+        },
+      }
     );
 
     return {
@@ -26,7 +29,6 @@ async function sendChat(messages, token = null) {
     const message =
       error?.response?.data?.error || error?.message || "Something went wrong";
 
-    // Optional: only show this in dev
     if (process.env.NODE_ENV === "development") {
       console.warn("📦 Chat API failed:", message);
     }
@@ -39,17 +41,15 @@ async function sendChat(messages, token = null) {
   }
 }
 
+// ✅ No changes here
 async function getAIInsight({ payload, kpi, targets }) {
   try {
     const body = payload ? { payload } : { kpi, targets };
 
     const response = await axios.post(`${API}/ai-insight`, body, {
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
+      headers: { "Content-Type": "application/json" },
     });
 
-    // Success response
     const { insight, error } = response.data;
 
     return {
@@ -57,7 +57,6 @@ async function getAIInsight({ payload, kpi, targets }) {
       data: insight || `⚠️ ${error || "No insight returned."}`,
     };
   } catch (error) {
-    // Safe error parsing
     const fallback =
       error?.response?.data?.error ||
       error?.message ||

@@ -39,16 +39,16 @@ export default function AdPerformanceTable({ ads = [] }) {
     <Card className="p-3 h-100 campign-card">
       <div className="d-flex justify-content-between align-items-center mb-2">
         <h6 className="fw-semibold mb-0">Top Ads Per Objectives</h6>
-        {/* <InfoPopover
+        <InfoPopover
           title="Top Ads – AI Insight"
           payload={{ ads }}
           placement="bottom"
-        /> */}
-         <InfoPopover
+        />
+         {/* <InfoPopover
           title="Clicks vs Impressions – AI Insight"
           description="Surface your best ad on each platform and objective."
           placement="bottom"
-        />
+        /> */}
       </div>
 
       <Table size="sm" hover responsive>

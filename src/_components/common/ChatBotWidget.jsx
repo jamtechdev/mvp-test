@@ -1,6 +1,7 @@
 "use client";
+
 import { openAIServices } from "@/_service";
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Button,
   Form,
@@ -10,9 +11,6 @@ import {
 } from "react-bootstrap";
 import ReactMarkdown from "react-markdown";
 
-/* ------------------------------------------------------------------
-   Colour palettes
-------------------------------------------------------------------- */
 const LIGHT = {
   brand: "#37BEB0",
   bg: "#37BEB0",
@@ -40,169 +38,92 @@ const DARK = {
 };
 
 function useTheme() {
-  const getAttrScheme = () => {
-    if (typeof document === "undefined") return null;
-    return document.documentElement.getAttribute("data-theme"); // "dark" | "light" | null
-  };
+  const isDark =
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(prefers-color-scheme: dark)").matches;
 
-  const getPrefersScheme = () => {
-    if (typeof window === "undefined" || !window.matchMedia) return "light";
-    return window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light";
-  };
-
-  /* start with attribute, fallback to system, else "light" */
-  const [scheme, setScheme] = useState(
-    () => getAttrScheme() || getPrefersScheme()
+  const [scheme, setScheme] = useState(() =>
+    typeof document !== "undefined"
+      ? document.documentElement.getAttribute("data-theme") ||
+        (isDark ? "dark" : "light")
+      : "light"
   );
 
   useEffect(() => {
-    if (typeof document === "undefined") return;
-
     const root = document.documentElement;
-
-    /* 1) Observe data‑theme attribute */
     const obs = new MutationObserver(() => {
-      const attr = getAttrScheme();
+      const attr = root.getAttribute("data-theme");
       if (attr === "dark" || attr === "light") setScheme(attr);
     });
+
     obs.observe(root, { attributes: true, attributeFilter: ["data-theme"] });
-
-    /* 2) Fallback: listen to prefers‑color‑scheme if no data‑theme present */
-    let mq;
-    if (!getAttrScheme() && window.matchMedia) {
-      mq = window.matchMedia("(prefers-color-scheme: dark)");
-      const handle = (e) => setScheme(e.matches ? "dark" : "light");
-      mq.addEventListener("change", handle);
-    }
-
-    return () => {
-      obs.disconnect();
-      mq?.removeEventListener("change", () => {});
-    };
+    return () => obs.disconnect();
   }, []);
 
-  return useMemo(
-    () =>
-      scheme === "dark"
-        ? { ...DARK, scheme: "dark" }
-        : { ...LIGHT, scheme: "light" },
-    [scheme]
-  );
+  return scheme === "dark" ? { ...DARK, scheme } : { ...LIGHT, scheme };
 }
 
-/* ------------------------------------------------------------------
-   Static style objects (created once)
-------------------------------------------------------------------- */
-const launcherStyle = {
-  border: "none",
-  width: 60,
-  height: 60,
-  position: "fixed",
-  bottom: 20,
-  right: 20,
-  zIndex: 1000,
-};
+function summarizeAIInput(input) {
+  if (!input) return null;
+  const parts = [];
 
-const wrapperBase = {
-  position: "fixed",
-  bottom: 0,
-  right: 2,
-  width: "90%",
-  maxWidth: 440,
-  height: 440,
-  borderRadius: "1rem",
-  display: "flex",
-  flexDirection: "column",
-  zIndex: 1050,
-  overflow: "hidden",
-  fontFamily: "Segoe UI, sans-serif",
-};
+  if (input.kpi)
+    parts.push(
+      `**KPI**: ${
+        typeof input.kpi === "object" ? JSON.stringify(input.kpi) : input.kpi
+      }`
+    );
+  if (input.targets?.length)
+    parts.push(`**Targets**: ${input.targets.join(", ")}`);
+  if (input.payload && typeof input.payload === "object") {
+    const keys = Object.keys(input.payload);
+    if (keys.length) parts.push(`**Payload** fields: ${keys.join(", ")}`);
+  }
 
-const bubbleBase = {
-  borderRadius: "1rem",
-  padding: "0.6rem 1rem",
-  maxWidth: "85%",
-  boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-  // whiteSpace: "pre-wrap",
-  fontStyle: "italic",
-};
+  return parts.length > 0
+    ? `📊 You opted for ${parts.join(" | ")}. Let me know how I can help.`
+    : null;
+}
 
-export default function ChatBotWidget() {
-  const [open, setOpen] = useState(false);
+export default function ChatBotWidget({ open, setOpen, aiInput }) {
   const theme = useTheme();
 
   return (
     <>
-      {!open && (
-        <Button
-          className="rounded-circle shadow"
-          style={{ ...launcherStyle, backgroundColor: theme.brand }}
-          onClick={() => setOpen(true)}
-        >
-          💬
-        </Button>
+      {open && (
+        <ChatBox
+          theme={theme}
+          onClose={() => setOpen(false)}
+          aiInput={aiInput}
+        />
       )}
-      {open && <ChatBox theme={theme} onClose={() => setOpen(false)} />}
     </>
   );
 }
 
-function ChatBox({ onClose, theme }) {
+function ChatBox({ onClose, theme, aiInput }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [hydrated, setHydrated] = useState(false);
   const bodyRef = useRef(null);
 
-  /* load history */
   useEffect(() => {
-    setMessages(JSON.parse(localStorage.getItem("chat_history") || "[]"));
-    setHydrated(true);
-  }, []);
+    const summary = summarizeAIInput(aiInput);
+    const intro = summary
+      ? { role: "assistant", content: summary }
+      : {
+          role: "assistant",
+          content: "👋 Hey there! Please select a section to begin the chat.",
+        };
 
-  /* persist + autoscroll */
+    setMessages([intro]);
+    setInput("");
+  }, []); // Runs once on remount
+
   useEffect(() => {
-    if (!hydrated) return;
-    localStorage.setItem("chat_history", JSON.stringify(messages));
     bodyRef.current?.scrollTo(0, bodyRef.current.scrollHeight);
-  }, [messages, hydrated]);
+  }, [messages]);
 
-  // const send = async (content) => {
-  //   if (!content.trim()) return;
-  //   const draft = [...messages, { role: "user", content }];
-  //   setMessages(draft);
-  //   setInput("");
-  //   setLoading(true);
-
-  //   try {
-  //     const res = await fetch("/api/ask-ai", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({ messages: draft }),
-  //     });
-  //     const json = await res.json();
-
-  //     setMessages([
-  //       ...draft,
-  //       {
-  //         role: "assistant",
-  //         content:
-  //           !res.ok || json.error
-  //             ? `❗ Error: ${json.error || "Unknown error occurred."}`
-  //             : json.response,
-  //       },
-  //     ]);
-  //   } catch (err) {
-  //     setMessages([
-  //       ...draft,
-  //       { role: "assistant", content: `❗ Network error: ${err.message}` },
-  //     ]);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
   const send = async (content) => {
     if (!content.trim()) return;
 
@@ -211,7 +132,7 @@ function ChatBox({ onClose, theme }) {
     setInput("");
     setLoading(true);
 
-    const result = await openAIServices.sendChat(draft);
+    const result = await openAIServices.sendChat(draft, aiInput);
 
     setMessages([
       ...draft,
@@ -225,12 +146,25 @@ function ChatBox({ onClose, theme }) {
   };
 
   const clearChat = () => {
-    setMessages([]);
-    localStorage.removeItem("chat_history");
+    setMessages([
+      {
+        role: "assistant",
+        content: "👋 Hey there! Please select a section to begin the chat.",
+      },
+    ]);
+    setInput("");
+  };
+
+  const handleClose = () => {
+    onClose();
   };
 
   const bubbleStyle = (isUser) => ({
-    ...bubbleBase,
+    borderRadius: "1rem",
+    padding: "0.6rem 1rem",
+    maxWidth: "85%",
+    boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+    fontStyle: "italic",
     backgroundColor: isUser ? theme.userBubbleBg : theme.assistantBubbleBg,
     color: isUser ? theme.userBubbleText : theme.assistantBubbleText,
   });
@@ -238,7 +172,18 @@ function ChatBox({ onClose, theme }) {
   return (
     <div
       style={{
-        ...wrapperBase,
+        position: "fixed",
+        bottom: 0,
+        right: 2,
+        width: "90%",
+        maxWidth: 440,
+        height: 440,
+        borderRadius: "1rem",
+        display: "flex",
+        flexDirection: "column",
+        zIndex: 1050,
+        overflow: "hidden",
+        fontFamily: "Segoe UI, sans-serif",
         backgroundColor: theme.bg,
         boxShadow:
           theme.scheme === "dark"
@@ -260,23 +205,15 @@ function ChatBox({ onClose, theme }) {
           >
             Clear
           </Button>
-          <CloseButton variant="white" onClick={onClose} />
+          <CloseButton variant="white" onClick={handleClose} />
         </div>
       </div>
 
-      {/* Messages */}
       <div
         ref={bodyRef}
         className="flex-grow-1 overflow-auto p-3"
         style={{ background: theme.bodyBg }}
       >
-        {messages.length === 0 && !loading && (
-          <div className="d-flex justify-content-start mb-2">
-            <div style={bubbleStyle(false)}>
-              👋 Hey there! What can I help you with today?
-            </div>
-          </div>
-        )}
         {messages.map((m, i) => (
           <div
             key={i}
@@ -295,6 +232,7 @@ function ChatBox({ onClose, theme }) {
             </div>
           </div>
         ))}
+
         {loading && (
           <div className="d-flex align-items-center gap-2">
             <Spinner size="sm" animation="border" />
@@ -316,7 +254,10 @@ function ChatBox({ onClose, theme }) {
           placeholder="Type your message..."
           disabled={loading}
           className="fst-italic border-0"
-          style={{ backgroundColor: theme.inputBg, color: theme.inputText }}
+          style={{
+            backgroundColor: theme.inputBg,
+            color: theme.inputText,
+          }}
         />
         <Button
           disabled={loading}

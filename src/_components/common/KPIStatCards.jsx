@@ -1,35 +1,39 @@
+"use client";
+
 import { Row, Col, ProgressBar } from "react-bootstrap";
 import InfoPopover from "./InsightModel";
+import { RiBankCardFill, RiGroupLine, RiFilterLine, RiWallet3Line } from "react-icons/ri";
+import { n0 } from "@/_utils/formatNumber";
+import unified from "../../_data/unifiedPayload.json"; // 👈 Import unified data
 
-export default function KPIStatCards({
-  kpi = {},
-  targets = {},
-  meta = DEFAULT_META,
-}) {
+const DEFAULT_META = [
+  { key: "spend", label: "Spend", icon: <RiBankCardFill size={26} /> },
+  { key: "impressions", label: "Impressions", icon: <RiGroupLine size={26} /> },
+  { key: "leads", label: "Leads", icon: <RiFilterLine size={26} /> },
+  { key: "revenue", label: "Revenue", icon: <RiWallet3Line size={26} /> },
+];
+
+export default function KPIStatCards() {
+  const kpiData = unified.kpi_cards?.metrics || [];
+
   return (
     <Row className="g-3 mb-0">
-      {meta.map(({ label, key, icon }) => {
-        const value = kpi[key] ?? 0;
-        const target = targets[key] ?? 1;
-        const pct = (value / target) * 100;
+      {DEFAULT_META.map(({ key, label, icon }) => {
+        const metric = kpiData.find((m) => m.key === key);
+        if (!metric) return null;
 
-        const variant =
-          pct >= 100 ? "success" : pct >= 75 ? "warning" : "danger";
+        const { value, target = 1, percentage = 0 } = metric;
+        const variant = percentage >= 100 ? "success" : percentage >= 75 ? "warning" : "danger";
 
         return (
           <Col xl={3} md={6} key={key}>
             <div className="card bg-white click-card border-1 rounded-3 mb-4 stats-box position-relative">
               <InfoPopover
                 title={`${label} – Target ${n0(target)}`}
-                description="Progress toward target"
                 placement="bottom"
+                kpi={{ [key]: value }}
+                targets={{ [key]: target }}
               />
-              {/* <InfoPopover
-                title={`${label} – Target ${n0(target)}`}
-                placement="bottom"
-                kpi={{ [key]: value }} // 👈 KPI value
-                targets={{ [key]: target }} // 👈 Its goal
-              /> */}
               <div className="card-body p-4">
                 <div className="d-flex justify-content-between align-items-start mb-2">
                   <div>
@@ -40,7 +44,7 @@ export default function KPIStatCards({
                         className={`badge text-bg-${variant} ms-2`}
                         style={{ fontSize: 13 }}
                       >
-                        {pct.toFixed(0)}%
+                        {percentage.toFixed(0)}%
                       </span>
                     </h3>
                   </div>
@@ -48,13 +52,13 @@ export default function KPIStatCards({
                 </div>
 
                 <ProgressBar
-                  now={Math.min(pct, 100)}
+                  now={Math.min(percentage, 100)}
                   variant={variant}
                   style={{ height: 6 }}
                 />
 
                 <div className="fs-12 mt-1 text-muted fw-semibold">
-                  Target {n0(target)}
+                  Target {n0(target)}
                 </div>
               </div>
             </div>
@@ -64,18 +68,3 @@ export default function KPIStatCards({
     </Row>
   );
 }
-
-import {
-  RiBankCardFill, // credit card → Spend
-  RiGroupLine, // audience → Impressions
-  RiFilterLine, // funnel → Leads
-  RiWallet3Line, // wallet  → Revenue
-} from "react-icons/ri";
-import { n0 } from "@/_utils/formatNumber";
-
-const DEFAULT_META = [
-  { key: "spend", label: "Spend", icon: <RiBankCardFill size={26} /> },
-  { key: "impressions", label: "Impressions", icon: <RiGroupLine size={26} /> },
-  { key: "leads", label: "Leads", icon: <RiFilterLine size={26} /> },
-  { key: "revenue", label: "Revenue", icon: <RiWallet3Line size={26} /> },
-];

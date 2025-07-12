@@ -4,8 +4,9 @@ import { useState, useMemo } from "react";
 import dynamic from "next/dynamic";
 import { Card, ButtonGroup, ToggleButton, ProgressBar } from "react-bootstrap";
 import { FiTrendingUp } from "react-icons/fi";
-import { n0 } from "@/_utils/formatNumber";
 import InfoPopover from "./InsightModel";
+import { n0 } from "@/_utils/formatNumber";
+import unified from "../../_data/unifiedPayload.json"; // 👈 Import unified data
 
 const ApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
@@ -17,45 +18,36 @@ const METRIC_COLORS = {
   revenue: "#ef4444",
 };
 
-function buildSeries(days, base, swing = 0.15) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  return Array.from({ length: days }).map((_, i) => {
-    const d = new Date(today);
-    d.setDate(d.getDate() - (days - 1 - i));
-
-    const y = Math.round(base * (1 + swing * Math.sin(i / 3)));
-    return { x: d, y };
-  });
-}
-
-const STATIC_SERIES = {
-  spend: buildSeries(30, 5000),
-  impressions: buildSeries(30, 90000),
-  clicks: buildSeries(30, 8000),
-  leads: buildSeries(30, 1200),
-  revenue: buildSeries(30, 600),
-};
-
 export default function KPITrendCard() {
   const [metric, setMetric] = useState("spend");
   const color = METRIC_COLORS[metric];
 
-  /* 30‑day data for selected metric */
-  const seriesData = useMemo(() => STATIC_SERIES[metric], [metric]);
+  // Get selected metric's object from unified JSON
+  const selectedMetric = useMemo(() => {
+    return (
+      unified.kpi_trend?.metrics?.find((m) => m.key === metric) || {
+        total: 0,
+        daily: [],
+      }
+    );
+  }, [metric]);
 
-  /* ---------- AI payload ------------------------------------ */
+  const seriesData = useMemo(() => {
+    return selectedMetric.daily.map((point) => ({
+      x: new Date(point.date),
+      y: point.value,
+    }));
+  }, [selectedMetric]);
+
+  const total = n0(selectedMetric.total);
+  const todayVal = seriesData.at(-1)?.y ?? 0;
+  const best = Math.max(...seriesData.map((p) => p.y), 0);
+  const pctToday = best ? Math.round((todayVal / best) * 100) : 0;
+
   const aiPayload = useMemo(
     () => ({ metric, series: seriesData }),
     [metric, seriesData]
   );
-
-
-  const total = n0(seriesData.reduce((t, p) => t + p.y, 0));
-  const todayVal = seriesData.at(-1)?.y ?? 0;
-  const best = Math.max(...seriesData.map((p) => p.y));
-  const pctToday = best ? Math.round((todayVal / best) * 100) : 0;
 
   const options = {
     chart: {
@@ -97,28 +89,26 @@ export default function KPITrendCard() {
 
   return (
     <Card className="p-4 h-100 flex-fill shadow-sm rounded-4">
-      {/*  Header  */}
+      {/* Header */}
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h6 className="fw-semibold mb-0">KPI Trend</h6>
-        {/* <InfoPopover
-  title="KPI Trend – AI Insight"
-  payload={aiPayload}
-  placement="bottom"
-/> */}
-
         <InfoPopover
           title="KPI Trend – AI Insight"
-          description="Switch metrics to see their trend over time."
+          payload={aiPayload}
           placement="bottom"
         />
       </div>
 
-      {/*  Headline total  */}
+      {/* Total */}
       <div className="mb-3 text-muted fw-semibold">
-        <Stat icon={<FiTrendingUp />} label={`Total ${metric}`} value={total} />
+        <Stat
+          icon={<FiTrendingUp />}
+          label={`Total ${metric}`}
+          value={total}
+        />
       </div>
 
-      {/*  Metric selector  */}
+      {/* Metric Toggle */}
       <ButtonGroup className="mb-3 flex-wrap">
         {Object.keys(METRIC_COLORS).map((m) => (
           <ToggleButton
@@ -144,7 +134,7 @@ export default function KPITrendCard() {
         ))}
       </ButtonGroup>
 
-      {/*  Today vs Best bar  */}
+      {/* Bar */}
       <ProgressBar
         className="bg-light mb-3"
         style={{ height: 6, borderRadius: 4, overflow: "hidden" }}
@@ -158,7 +148,7 @@ export default function KPITrendCard() {
         />
       </ProgressBar>
 
-      {/*  Trend line  */}
+      {/* Chart */}
       <ApexChart
         type="line"
         height={200}
@@ -169,7 +159,6 @@ export default function KPITrendCard() {
   );
 }
 
-/* ─────────── Helper for headline box ─────────── */
 function Stat({ icon, label, value }) {
   return (
     <Card className="shadow-sm border-0 p-3 h-100">

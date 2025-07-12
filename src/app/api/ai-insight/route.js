@@ -31,11 +31,10 @@ function buildPrompt(caseId, data) {
       const seriesTxt = data.series
         .map((p) => {
           const d = new Date(p.x);
-          return `${
-            isNaN(d) ? "[Invalid date]" : d.toISOString().slice(0, 10)
-          }: ${p.y}`;
+          return `${d.toISOString().slice(0, 10)}: ${p.y}`;
         })
         .join("\n");
+
       return [
         {
           role: "system",
@@ -89,6 +88,54 @@ function buildPrompt(caseId, data) {
         },
       ];
 
+    case "sessionsByChannel":
+      return [
+        {
+          role: "system",
+          content:
+            "You are a digital channel analyst. Analyze session counts across marketing channels. " +
+            "Mention which platforms are leading or underperforming and suggest 2 improvements.",
+        },
+        {
+          role: "user",
+          content: `Session breakdown by channel:\n${data.labels
+            .map((label, i) => `${label}: ${data.series[i]}`)
+            .join("\n")}`,
+        },
+      ];
+
+    case "deviceSessions":
+      return [
+        {
+          role: "system",
+          content:
+            "You are a device segmentation expert. Based on the session share per device type, " +
+            "point out any dominant device and whether the UX/ads should be optimized accordingly.",
+        },
+        {
+          role: "user",
+          content: `Device Sessions:\n${data.labels
+            .map((label, i) => `${label}: ${data.series[i]}`)
+            .join("\n")}`,
+        },
+      ];
+
+    case "revenueByChannel":
+      return [
+        {
+          role: "system",
+          content:
+            "You are a performance marketer. Analyze the revenue distribution across channels " +
+            "and suggest how budget or focus can be optimized.",
+        },
+        {
+          role: "user",
+          content: `Revenue by Channel:\n${data.labels
+            .map((label, i) => `${label}: $${data.series[i]}`)
+            .join("\n")}`,
+        },
+      ];
+
     case "generic":
       return [
         {
@@ -113,32 +160,41 @@ export async function POST(req) {
 
     const { kpi, targets, payload } = body;
 
-    let caseId, promptData;
+let caseId, promptData;
 
-    if (payload?.stages) {
-      caseId = "funnel";
-      promptData = payload;
-    } else if (payload?.series) {
-      caseId = "trend";
-      promptData = payload;
-    } else if (payload?.ads) {
-      caseId = "ads";
-      promptData = payload;
-    } else if (payload?.campaigns) {
-      caseId = "campaigns";
-      promptData = payload;
-    } else if (kpi && targets) {
-      caseId = "kpiTargets";
-      promptData = { kpi, targets };
-    } else if (payload) {
-      caseId = "generic";
-      promptData = { payload };
-    } else {
-      return NextResponse.json(
-        { error: "Missing kpi/targets or payload" },
-        { status: 400 }
-      );
-    }
+if (payload?.stages) {
+  caseId = "funnel";
+  promptData = payload;
+} else if (payload?.series && payload?.metric) {
+  caseId = "trend";
+  promptData = payload;
+} else if (payload?.ads) {
+  caseId = "ads";
+  promptData = payload;
+} else if (payload?.campaigns) {
+  caseId = "campaigns";
+  promptData = payload;
+} else if (payload?.label?.toLowerCase().includes("sessions by channel")) {
+  caseId = "sessionsByChannel";
+  promptData = payload;
+} else if (payload?.label?.toLowerCase().includes("device sessions")) {
+  caseId = "deviceSessions";
+  promptData = payload;
+} else if (payload?.label?.toLowerCase().includes("revenue per channel")) {
+  caseId = "revenueByChannel";
+  promptData = payload;
+} else if (kpi && targets) {
+  caseId = "kpiTargets";
+  promptData = { kpi, targets };
+} else if (payload) {
+  caseId = "generic";
+  promptData = { payload };
+} else {
+  return NextResponse.json(
+    { error: "Missing kpi/targets or payload" },
+    { status: 400 }
+  );
+}
 
     const messages = buildPrompt(caseId, promptData);
 

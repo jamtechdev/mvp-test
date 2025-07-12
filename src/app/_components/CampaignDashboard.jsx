@@ -1,7 +1,6 @@
 "use client";
-import { useMemo, useState, useEffect, useRef } from "react";
-import dynamic from "next/dynamic";
-import { Card, Row, Col } from "react-bootstrap";
+import { useMemo, useState, useEffect } from "react";
+import { Row, Col } from "react-bootstrap";
 
 import {
   getData,
@@ -9,7 +8,6 @@ import {
   sessionChannelBreakdown,
   revenueByChannel,
 } from "@/_utils/campaignUtils";
-import InfoPopover from "@/_components/common/InsightModel";
 import CampaignFunnel from "@/_components/common/FunnelChart";
 import KpiTrendCard from "@/_components/common/KPIChart";
 import CampaignAnalytics from "@/_components/common/CampaignAnalytics";
@@ -34,9 +32,7 @@ export default function CampaignDashboard({ channel1 = "all" }) {
   };
 
   const rows = useMemo(() => getData(canonical), [canonical]);
-  const devicePie = useMemo(() => deviceBreakdown(), []);
-  const sessions = useMemo(() => sessionChannelBreakdown(rows), [rows]);
-  const revenue = useMemo(() => revenueByChannel(), []);
+
   const campaignOptions = useMemo(() => {
     const names = Array.from(
       new Set(rows.map((r) => r.campaign_name?.trim()).filter(Boolean))
@@ -45,29 +41,6 @@ export default function CampaignDashboard({ channel1 = "all" }) {
   }, [rows]);
   const [selectedCampaign, setSelectedCampaign] = useState("All");
 
-  const trendSeries = useMemo(() => {
-    const byDate = {};
-    rows.forEach((r) => {
-      const raw = r.date;
-      const dt = new Date(raw);
-      if (!isNaN(dt)) {
-        const key = dt.toISOString().slice(0, 10);
-        byDate[key] = (byDate[key] || 0) + Number(r[metric] || 0);
-      }
-    });
-
-    return [
-      {
-        name: metric,
-        data: Object.entries(byDate)
-          .sort(([a], [b]) => new Date(a) - new Date(b))
-          .map(([d, v]) => ({ x: new Date(d), y: v })),
-      },
-    ];
-  }, [rows, metric]);
-
-  const kpi = { spend: 3450, impressions: 88000, leads: 560, revenue: 2400 };
-  const goals = { spend: 4000, impressions: 100000, leads: 800, revenue: 3000 };
   return (
     <div className="container-fluid py-4">
       {/*--------------- TOP FILTER BAR----------------------- */}
@@ -84,7 +57,7 @@ export default function CampaignDashboard({ channel1 = "all" }) {
         onRefresh={refreshData}
       />
       {/* -------------------------KPI CARDS------------------------ */}
-      <KPIStatCards kpi={kpi} targets={goals} />
+      <KPIStatCards />
 
       <Row className="g-4 mb-4">
         <Col xl={8} md={12} className="d-flex">
@@ -93,20 +66,16 @@ export default function CampaignDashboard({ channel1 = "all" }) {
         </Col>
         <Col xl={4} md={12} className="d-flex">
           {/*-------------- KPI TREND DROPDOWN ------------------------*/}
-          <KpiTrendCard trendSeries={trendSeries} />
+          <KpiTrendCard />
         </Col>
       </Row>
       {/*-------------------------- DONUT CHARTS--------------------------- */}
-      <ChannelMetricCards
-        devicePie={devicePie}
-        sessions={sessions}
-        revenue={revenue}
-      />
+      <ChannelMetricCards />
       {/* -----------------TABLES---------------------------------- */}
       <CampaignAnalytics />
 
       {/* ---------------CHAT BOT------------------------------- */}
-      <ChatBotWidget />
+      {/* <ChatBotWidget /> */}
     </div>
   );
 }

@@ -4,14 +4,88 @@ import { openAIServices } from "@/_service";
 import { useState, useRef, useMemo, useEffect } from "react";
 import { Overlay, Popover } from "react-bootstrap";
 import { FiZap } from "react-icons/fi";
+import ChatBotWidget from "./ChatBotWidget";
+import ReactMarkdown from "react-markdown";
 
-/**
- * Re‑usable AI insight badge.
- *
- *  • Pass kpi + targets   → endpoint receives { kpi, targets }.
- *  • Pass payload         → endpoint receives { payload }.
- *  • Pass neither         → static description only.
- */
+// ✅ Add unifiedPayload here (you can also import from a file if needed)
+const unifiedPayload = {
+  ads: [
+    {
+      id: "fb‑001",
+      name: "Summer Flash Sale",
+      platform: "facebook",
+      objective: "Traffic",
+      impressions: 82450,
+      clicks: 3214,
+      spend: 1500,
+      thumbnail_url: "/images/advertisement-1.jpg",
+      preview_url: "https://facebook.com/ads/fb-001"
+    },
+    {
+      id: "gg‑002",
+      name: "Free Trial – Search",
+      platform: "google",
+      objective: "Leads",
+      impressions: 91320,
+      clicks: 5876,
+      spend: 3200,
+      leads: 250,
+      thumbnail_url: "/images/advertisement-2.jpg",
+      preview_url: "https://ads.google.com/gg-002"
+    },
+    {
+      id: "li‑003",
+      name: "Whitepaper Download",
+      platform: "linkedin",
+      objective: "Conversions",
+      impressions: 25900,
+      clicks: 1120,
+      spend: 2400,
+      conversions: 70,
+      thumbnail_url: "/images/advertisement-3.webp"
+    },
+    {
+      id: "tt‑004",
+      name: "Back‑to‑School Promo",
+      platform: "tiktok",
+      objective: "Engagement",
+      impressions: 45000,
+      clicks: 3500,
+      spend: 800,
+      engagements: 2800,
+      thumbnail_url: "/images/advertisement-4.webp",
+      video_url: "advertisement-vdo.mp4"
+    },
+    {
+      id: "tw‑005",
+      name: "Webinar Registration",
+      platform: "twitter",
+      objective: "Leads",
+      impressions: 38400,
+      clicks: 2450,
+      spend: 1600,
+      leads: 120,
+      thumbnail_url: "/images/advertisement-5.jpg"
+    }
+  ],
+  campaigns: [
+    { name: "Campaign P", clicks: 9642, media_cost: 4112.68, revenue: 8520 },
+    { name: "Campaign G", clicks: 9015, media_cost: 3210.44, revenue: 7900 },
+    { name: "Campaign F", clicks: 8767, media_cost: 1520.78, revenue: 6250 },
+    { name: "Campaign A", clicks: 8276, media_cost: 2345.12, revenue: 7050 },
+    { name: "Campaign N", clicks: 8103, media_cost: 3480.91, revenue: 6980 },
+    { name: "Campaign I", clicks: 7498, media_cost: 2978.35, revenue: 6020 },
+    { name: "Campaign D", clicks: 6567, media_cost: 2541.87, revenue: 5430 },
+    { name: "Campaign K", clicks: 6121, media_cost: 2640.27, revenue: 5110 },
+    { name: "Campaign E", clicks: 5688, media_cost: 7847.6, revenue: 4000 },
+    { name: "Campaign O", clicks: 5437, media_cost: 2233.07, revenue: 4880 },
+    { name: "Campaign B", clicks: 5120, media_cost: 1880.5, revenue: 4600 },
+    { name: "Campaign M", clicks: 4955, media_cost: 1925.49, revenue: 4520 },
+    { name: "Campaign H", clicks: 4332, media_cost: 1145.2, revenue: 3920 },
+    { name: "Campaign C", clicks: 3901, media_cost: 1220.99, revenue: 3700 }
+  ]
+};
+
 export default function InfoPopover({
   title,
   description = "AI insight",
@@ -19,101 +93,54 @@ export default function InfoPopover({
   kpi,
   targets,
   payload,
-  revealDelay = 600, // ms between bullet reveals
+  revealDelay = 600,
 }) {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const [insight, setInsight] = useState(null);
-  const [visible, setVisible] = useState(0); // bullet reveal counter
+  const [visible, setVisible] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [sessionId, setSessionId] = useState(0);
 
   const badgeRef = useRef(null);
   const popoverRef = useRef(null);
 
-  /* ── Fetch once per mount ────────────────────────────── */
-  // const fetchInsight = async () => {
-  //   if (loading || insight || (!kpi && !payload)) return;
-  //   setLoading(true);
-
-  //   try {
-  //     const res = await fetch("/api/ai-insight", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify(payload ? { payload } : { kpi, targets }),
-  //     });
-
-  //     /* ---------- 1. Bad HTTP status? ---------- */
-  //     if (!res.ok) {
-  //       const txt = await res.text(); // may be HTML
-  //       throw new Error(`HTTP ${res.status}: ${txt.slice(0, 120)}…`);
-  //     }
-
-  //     /* ---------- 2. Non‑JSON content? ---------- */
-  //     const isJson = res.headers
-  //       .get("content-type")
-  //       ?.includes("application/json");
-  //     if (!isJson) {
-  //       const txt = await res.text();
-  //       throw new Error(`Non‑JSON response: ${txt.slice(0, 120)}…`);
-  //     }
-
-  //     /* ---------- 3. Parse JSON safely ---------- */
-  //     const data = await res.json();
-  //     if (data.insight) setInsight(data.insight);
-  //     else setInsight(`⚠️ ${data.error || "No insight returned."}`);
-  //   } catch (err) {
-  //     setInsight(`⚠️ ${err.message}`);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
   const fetchInsight = async () => {
     if (loading || insight || (!kpi && !payload)) return;
-
     setLoading(true);
-
     try {
       const result = await openAIServices.getAIInsight({
         payload,
         kpi,
         targets,
       });
-
-      if (result.success) {
-        setInsight(result.data);
-      } else {
-        setInsight(result.error); // e.g., ⚠️ HTTP 500, etc.
-      }
+      if (result.success) setInsight(result.data);
+      else setInsight(result.error);
     } finally {
       setLoading(false);
     }
   };
-  /* ── Split insight into bullets ───────────────────────── */
+
   const bullets = useMemo(() => {
     if (!insight) return [];
-    const lines = insight
-      .split(/\n+/)
-      .map((l) => l.replace(/^[-*\d.\s]+/, "").trim())
-      .filter(Boolean);
-    return lines.length > 1 ? lines : [insight];
+    return insight.split(/\n{2,}/).filter(Boolean);
   }, [insight]);
 
-  /* ── Progressive reveal ───────────────────────────────── */
   useEffect(() => {
     if (!show || bullets.length === 0) return;
     setVisible(1);
     if (bullets.length === 1) return;
-
     const id = setInterval(() => {
       setVisible((c) => (c >= bullets.length ? (clearInterval(id), c) : c + 1));
     }, revealDelay);
     return () => clearInterval(id);
   }, [show, bullets, revealDelay]);
 
-  /* ── Keep popover open while pointer in badge or popover */
   const enter = () => {
     setShow(true);
     fetchInsight();
   };
+
   const leave = (e) => {
     const t = e.relatedTarget;
     if (
@@ -124,55 +151,68 @@ export default function InfoPopover({
     setShow(false);
   };
 
+  const handleClick = () => {
+    setOpen(false);
+    setTimeout(() => {
+      setSessionId((id) => id + 1);
+      setOpen(true);
+    }, 10);
+  };
+
   return (
-    <span className="position-absolute top-0 end-0 m-2  info-icon">
-      <span
-        ref={badgeRef}
-        role="button"
-        aria-label="AI insight"
-        className="badge bg-warning text-white fw-bold"
-        style={{ cursor: "pointer", fontSize: "0.65rem", letterSpacing: 0.5 }}
-        onMouseEnter={enter}
-        onMouseLeave={leave}
-        onFocus={enter}
-        onBlur={leave}
-      >
-        AI
+    <>
+      <span className="position-absolute top-0 end-0 m-2 info-icon">
+        <span
+          ref={badgeRef}
+          role="button"
+          aria-label="AI insight"
+          className="badge bg-warning text-white fw-bold"
+          style={{ cursor: "pointer", fontSize: "0.65rem", letterSpacing: 0.5 }}
+          onMouseEnter={enter}
+          onMouseLeave={leave}
+          onFocus={enter}
+          onBlur={leave}
+          onClick={handleClick}
+        >
+          AI
+        </span>
+
+        <Overlay target={badgeRef.current} show={show} placement={placement} flip>
+          {(props) => (
+            <Popover
+              id="ai-popover"
+              ref={popoverRef}
+              {...props}
+              onMouseEnter={() => setShow(true)}
+              onMouseLeave={leave}
+            >
+              <Popover.Body className="fs-12">
+                <div className="d-flex gap-2 align-items-center justify-content-center fw-semibold text-primary-emphasis mb-1">
+                  <FiZap size={20} />
+                  {title}
+                </div>
+                {loading ? (
+                  <p className="text-center small mb-0">Analyzing…</p>
+                ) : bullets.length === 0 ? (
+                  <p className="text-center small mb-0">{description}</p>
+                ) : (
+                  bullets
+                    .slice(0, visible)
+                    .map((b, i) => <ReactMarkdown key={i}>{b}</ReactMarkdown>)
+                )}
+              </Popover.Body>
+            </Popover>
+          )}
+        </Overlay>
       </span>
 
-      <Overlay target={badgeRef.current} show={show} placement={placement} flip>
-        {(props) => (
-          <Popover
-            id="ai-popover"
-            ref={popoverRef}
-            {...props}
-            onMouseEnter={() => setShow(true)}
-            onMouseLeave={leave}
-          >
-            <Popover.Body className="fs-12">
-              <div className="d-flex gap-2 align-items-center justify-content-center fw-semibold text-primary-emphasis mb-1">
-                <FiZap size={20} />
-                {title}
-              </div>
-
-              {/* Content area */}
-              {loading ? (
-                <p className="text-center small mb-0">Analyzing…</p>
-              ) : bullets.length === 0 ? (
-                <p className="text-center small mb-0">{description}</p>
-              ) : bullets.length === 1 ? (
-                <p className="text-center small mb-0">{bullets[0]}</p>
-              ) : (
-                <ul className="small lh-lg mb-0 ps-3">
-                  {bullets.slice(0, visible).map((b, i) => (
-                    <li key={i}>{b}</li>
-                  ))}
-                </ul>
-              )}
-            </Popover.Body>
-          </Popover>
-        )}
-      </Overlay>
-    </span>
+      {open && (
+        <ChatBotWidget
+           open={open}
+  setOpen={setOpen}
+  aiInput={{ payload, kpi, targets }} // ✅ this aiInput is scoped per section
+        />
+      )}
+    </>
   );
 }

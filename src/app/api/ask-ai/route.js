@@ -17,23 +17,27 @@ export async function POST(req) {
   } catch {
     return NextResponse.json({ error: "Bad JSON" }, { status: 400 });
   }
-  const { messages } = body ?? {};
-  if (!Array.isArray(messages)) {
-    return NextResponse.json(
-      { error: "messages must be an array" },
-      { status: 400 }
-    );
-  }
+const { messages, aiInput } = body ?? {};
 
-  // ---------- 2. helper that calls OpenAI once ----------------------------
-  const callOpenAI = async (model) =>
-    openai.chat.completions.create({
-      model,
-      messages: [
-        { role: "system", content: "You are a helpful assistant." },
-        ...messages,
-      ],
-    });
+const summarizedContext = `You are a campaign performance assistant. Use the following data only for all insights and answers:
+
+${JSON.stringify(aiInput?.payload || {}, null, 2)}
+
+KPI: ${JSON.stringify(aiInput?.kpi || {})}
+Targets: ${JSON.stringify(aiInput?.targets || [])}
+
+Only respond based on the provided data. Do not hallucinate. If data isn't available, say so clearly.
+`;
+
+const callOpenAI = async (model) =>
+  openai.chat.completions.create({
+    model,
+    messages: [
+      { role: "system", content: summarizedContext },
+      ...messages,
+    ],
+  });
+
 
   try {
     // try preferred model first -------------------------------------------

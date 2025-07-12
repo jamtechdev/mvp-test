@@ -1,0 +1,354 @@
+{
+  "kpi_cards": {
+    "metrics": [
+      {
+        "key": "spend",
+        "label": "Spend",
+        "value": 3450,
+        "target": 4000,
+        "unit": "USD",
+        "percentage": 86.25
+      },
+      {
+        "key": "impressions",
+        "label": "Impressions",
+        "value": 88000,
+        "target": 100000,
+        "unit": "impressions",
+        "percentage": 88.0
+      },
+      {
+        "key": "leads",
+        "label": "Leads",
+        "value": 560,
+        "target": 800,
+        "unit": "leads",
+        "percentage": 70.0
+      },
+      {
+        "key": "revenue",
+        "label": "Revenue",
+        "value": 2400,
+        "target": 3000,
+        "unit": "USD",
+        "percentage": 80.0
+      }
+    ]
+  },
+  "campaign_funnel": {
+    "stages": [
+      {
+        "name": "Impressions",
+        "value": 12000
+      },
+      {
+        "name": "Clicks",
+        "value": 7800
+      },
+      {
+        "name": "Leads",
+        "value": 3400
+      },
+      {
+        "name": "Conversions",
+        "value": 850
+      },
+      {
+        "name": "Revenue",
+        "value": 120
+      }
+    ]
+  },
+
+  "kpi_cards": {
+    "metrics": [
+      {
+        "key": "spend",
+        "label": "Spend",
+        "value": 3450,
+        "target": 4000,
+        "unit": "USD",
+        "percentage": 86.25
+      },
+      {
+        "key": "impressions",
+        "label": "Impressions",
+        "value": 88000,
+        "target": 100000,
+        "unit": "impressions",
+        "percentage": 88.0
+      },
+      {
+        "key": "leads",
+        "label": "Leads",
+        "value": 560,
+        "target": 800,
+        "unit": "leads",
+        "percentage": 70.0
+      },
+      {
+        "key": "revenue",
+        "label": "Revenue",
+        "value": 2400,
+        "target": 3000,
+        "unit": "USD",
+        "percentage": 80.0
+      }
+    ]
+  },
+
+  "campaign_funnel": {
+    "stages": [
+      { "name": "Impressions", "value": 12000 },
+      { "name": "Clicks", "value": 7800 },
+      { "name": "Leads", "value": 3400 },
+      { "name": "Conversions", "value": 850 },
+      { "name": "Revenue", "value": 120 }
+    ]
+  },
+
+  "kpi_trend": {
+    "metrics": [
+      {
+        "key": "spend",
+        "label": "Spend",
+        "unit": "USD",
+        "total": 150000,
+        "daily": [
+          { "date": "2024-07-01", "value": 5200 },
+          { "date": "2024-07-02", "value": 5100 },
+          { "date": "2024-07-03", "value": 5000 },
+          { "date": "2024-07-04", "value": 4900 },
+          { "date": "2024-07-05", "value": 5300 }
+        ]
+      },
+      {
+        "key": "impressions",
+        "label": "Impressions",
+        "unit": "impressions",
+        "total": 2700000,
+        "daily": [
+          { "date": "2024-07-01", "value": 91000 },
+          { "date": "2024-07-02", "value": 89000 },
+          { "date": "2024-07-03", "value": 87000 },
+          { "date": "2024-07-04", "value": 93000 },
+          { "date": "2024-07-05", "value": 91000 }
+        ]
+      },
+      {
+        "key": "clicks",
+        "label": "Clicks",
+        "unit": "clicks",
+        "total": 240000,
+        "daily": [
+          { "date": "2024-07-01", "value": 8000 },
+          { "date": "2024-07-02", "value": 7900 },
+          { "date": "2024-07-03", "value": 8200 },
+          { "date": "2024-07-04", "value": 7800 },
+          { "date": "2024-07-05", "value": 8100 }
+        ]
+      },
+      {
+        "key": "leads",
+        "label": "Leads",
+        "unit": "leads",
+        "total": 36000,
+        "daily": [
+          { "date": "2024-07-01", "value": 1200 },
+          { "date": "2024-07-02", "value": 1100 },
+          { "date": "2024-07-03", "value": 1150 },
+          { "date": "2024-07-04", "value": 1180 },
+          { "date": "2024-07-05", "value": 1170 }
+        ]
+      },
+      {
+        "key": "revenue",
+        "label": "Revenue",
+        "unit": "USD",
+        "total": 18000,
+        "daily": [
+          { "date": "2024-07-01", "value": 600 },
+          { "date": "2024-07-02", "value": 590 },
+          { "date": "2024-07-03", "value": 620 },
+          { "date": "2024-07-04", "value": 580 },
+          { "date": "2024-07-05", "value": 610 }
+        ]
+      }
+    ]
+  },
+
+  "channel_metrics": {
+    "device_sessions": {
+      "labels": ["Mobile", "Desktop", "Tablet"],
+      "series": [550, 350, 100]
+    },
+    "sessions_by_channel": {
+      "labels": [
+        "Snapchat",
+        "TikTok",
+        "X",
+        "Pinterest",
+        "LinkedIn",
+        "Google Ads"
+      ],
+      "series": [176000, 149000, 122000, 95000, 73300, 42150]
+    },
+    "revenue_per_channel": {
+      "labels": ["Google Ads", "Facebook Ads", "LinkedIn", "Email"],
+      "series": [120000, 95000, 40000, 55000]
+    }
+  },
+  "analytics": {
+    "kpi": {
+      "clicks": 91200,
+      "cpa": 8.4
+    }
+  },
+  "campaign_analytics": {
+    "campaigns": [
+      {
+        "campaign_name": "Campaign P",
+        "clicks": 9642,
+        "media_cost": 4112.68,
+        "revenue": 8520
+      },
+      {
+        "campaign_name": "Campaign G",
+        "clicks": 9015,
+        "media_cost": 3210.44,
+        "revenue": 7900
+      },
+      {
+        "campaign_name": "Campaign F",
+        "clicks": 8767,
+        "media_cost": 1520.78,
+        "revenue": 6250
+      },
+      {
+        "campaign_name": "Campaign A",
+        "clicks": 8276,
+        "media_cost": 2345.12,
+        "revenue": 7050
+      },
+      {
+        "campaign_name": "Campaign N",
+        "clicks": 8103,
+        "media_cost": 3480.91,
+        "revenue": 6980
+      },
+      {
+        "campaign_name": "Campaign I",
+        "clicks": 7498,
+        "media_cost": 2978.35,
+        "revenue": 6020
+      },
+      {
+        "campaign_name": "Campaign D",
+        "clicks": 6567,
+        "media_cost": 2541.87,
+        "revenue": 5430
+      },
+      {
+        "campaign_name": "Campaign K",
+        "clicks": 6121,
+        "media_cost": 2640.27,
+        "revenue": 5110
+      },
+      {
+        "campaign_name": "Campaign E",
+        "clicks": 5688,
+        "media_cost": 7847.6,
+        "revenue": 4000
+      },
+      {
+        "campaign_name": "Campaign O",
+        "clicks": 5437,
+        "media_cost": 2233.07,
+        "revenue": 4880
+      },
+      {
+        "campaign_name": "Campaign B",
+        "clicks": 5120,
+        "media_cost": 1880.5,
+        "revenue": 4600
+      },
+      {
+        "campaign_name": "Campaign M",
+        "clicks": 4955,
+        "media_cost": 1925.49,
+        "revenue": 4520
+      },
+      {
+        "campaign_name": "Campaign H",
+        "clicks": 4332,
+        "media_cost": 1145.2,
+        "revenue": 3920
+      },
+      {
+        "campaign_name": "Campaign C",
+        "clicks": 3901,
+        "media_cost": 1220.99,
+        "revenue": 3700
+      }
+    ],
+
+    "ads": [
+      {
+        "ad_id": "fb‑001",
+        "ad_name": "Summer Flash Sale",
+        "platform": "facebook",
+        "objective": "Traffic",
+        "impressions": 82450,
+        "clicks": 3214,
+        "spend": 1500,
+        "thumbnail_url": "/images/advertisement-1.jpg"
+      },
+      {
+        "ad_id": "gg‑002",
+        "ad_name": "Free Trial – Search",
+        "platform": "google",
+        "objective": "Leads",
+        "impressions": 91320,
+        "clicks": 5876,
+        "spend": 3200,
+        "leads": 250,
+        "video_url": "advertisement-vdo-2.mp4",
+        "thumbnail_url": "/images/advertisement-2.jpg"
+      },
+      {
+        "ad_id": "li‑003",
+        "ad_name": "Whitepaper Download",
+        "platform": "linkedin",
+        "objective": "Conversions",
+        "impressions": 25900,
+        "clicks": 1120,
+        "spend": 2400,
+        "conversions": 70,
+        "thumbnail_url": "/images/advertisement-3.webp"
+      },
+      {
+        "ad_id": "tt‑004",
+        "ad_name": "Back‑to‑School Promo",
+        "platform": "tiktok",
+        "objective": "Engagement",
+        "impressions": 45000,
+        "clicks": 3500,
+        "spend": 800,
+        "engagements": 2800,
+        "thumbnail_url": "/images/advertisement-4.webp",
+        "video_url": "advertisement-vdo.mp4"
+      },
+      {
+        "ad_id": "tw‑005",
+        "ad_name": "Webinar Registration",
+        "platform": "twitter",
+        "objective": "Leads",
+        "impressions": 38400,
+        "clicks": 2450,
+        "spend": 1600,
+        "leads": 120,
+        "thumbnail_url": "/images/advertisement-5.jpg"
+      }
+    ]
+  }
+}

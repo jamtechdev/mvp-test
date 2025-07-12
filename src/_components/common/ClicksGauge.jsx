@@ -4,11 +4,12 @@ import { Card } from "react-bootstrap";
 import GaugeComponent from "react-gauge-component";
 import { FiArrowUpRight } from "react-icons/fi";
 import InfoPopover from "./InsightModel";
+import unified from "/src/_data/unifiedPayload.json";
 
 const kFmt = (n) => {
-  if (n < 1_000) return n.toString(); // 972  →  "972"
+  if (n < 1_000) return n.toString();
   const v = n / 1_000;
-  return v % 1 === 0 ? `${v}k` : `${v.toFixed(1)}k`; // 12 300 → "12.3k"
+  return v % 1 === 0 ? `${v}k` : `${v.toFixed(1)}k`;
 };
 const n2 = (n) =>
   n.toLocaleString("en-US", {
@@ -20,12 +21,14 @@ const palette = ["#FF5160", "#FFC107", "#12C99B"];
 const labelStyle = { fontSize: "0.72rem", color: "#8A8F9A" };
 const dotStyle = { width: 10, height: 10, borderRadius: "50%", marginRight: 6 };
 
-export default function ClicksGauge({ kpi, cpa, maxClicks = 150_000 }) {
-  const percent = Math.min(kpi.clicks / maxClicks, 1);
+export default function ClicksGauge({ maxClicks = 150_000 }) {
+  const clicks = unified.analytics.kpi.clicks || 0;
+  const cpa = unified.analytics.kpi.cpa || 0;
+
+  const percent = Math.min(clicks / maxClicks, 1);
   const activeColor =
     percent < 0.33 ? palette[0] : percent < 0.66 ? palette[1] : palette[2];
 
-  /* dynamic legend thresholds */
   const t1 = Math.round(maxClicks * 0.33);
   const t2 = Math.round(maxClicks * 0.66);
   const ranges = [
@@ -38,14 +41,9 @@ export default function ClicksGauge({ kpi, cpa, maxClicks = 150_000 }) {
     <Card className="p-4 shadow-sm h-100 d-flex flex-column">
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h6 className="fw-semibold mb-0">Cost Per Acquisition</h6>
-        {/* <InfoPopover
+        <InfoPopover
           title="Clicks Trend – AI Insight"
-          payload={{ clicks: kpi.clicks, cpa }}
-          placement="bottom"
-        /> */}
-         <InfoPopover
-          title="Clicks Trend – AI Insight"
-          description="Clicks are rising steadily; consider scaling top‑performing creatives."
+          payload={{ clicks, cpa }}
           placement="bottom"
         />
       </div>
@@ -86,7 +84,6 @@ export default function ClicksGauge({ kpi, cpa, maxClicks = 150_000 }) {
         />
       </div>
 
-      {/* Legend */}
       <div className="d-flex justify-content-center gap-3 mt-2">
         {ranges.map(({ color, label }) => (
           <div
@@ -100,7 +97,6 @@ export default function ClicksGauge({ kpi, cpa, maxClicks = 150_000 }) {
         ))}
       </div>
 
-      {/* Clicks number */}
       <div className="text-center mt-2">
         <div
           style={{
@@ -110,14 +106,13 @@ export default function ClicksGauge({ kpi, cpa, maxClicks = 150_000 }) {
             lineHeight: 1.1,
           }}
         >
-          {kFmt(kpi.clicks)}
+          {kFmt(clicks)}
         </div>
         <small style={{ ...labelStyle, marginTop: 6, display: "block" }}>
           Clicks
         </small>
       </div>
 
-      {/* CPA pill */}
       <div className="text-center mt-3">
         <span
           className="d-inline-flex align-items-center gap-1 px-3 py-2 fw-medium"
