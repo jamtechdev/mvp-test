@@ -45,7 +45,7 @@ export default function AdPerformanceTable({ ads = [] }) {
           placement="bottom"
         /> */}
         <InfoPopover
-          title="Clicks vs Impressions – AI Insight"
+          title="Top Ads – AI Insight"
           description="Surface your best ad on each platform and objective."
           placement="bottom"
         />
