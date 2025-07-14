@@ -63,28 +63,6 @@ function useTheme() {
   return scheme === "dark" ? { ...DARK, scheme } : { ...LIGHT, scheme };
 }
 
-function summarizeAIInput(input) {
-  if (!input) return null;
-  const parts = [];
-
-  if (input.kpi)
-    parts.push(
-      `**KPI**: ${
-        typeof input.kpi === "object" ? JSON.stringify(input.kpi) : input.kpi
-      }`
-    );
-  if (input.targets?.length)
-    parts.push(`**Targets**: ${input.targets.join(", ")}`);
-  if (input.payload && typeof input.payload === "object") {
-    const keys = Object.keys(input.payload);
-    if (keys.length) parts.push(`**Payload** fields: ${keys.join(", ")}`);
-  }
-
-  return parts.length > 0
-    ? `📊 You opted for ${parts.join(" | ")}. Let me know how I can help.`
-    : null;
-}
-
 export default function ChatBotWidget({
   open,
   setOpen,
@@ -92,7 +70,6 @@ export default function ChatBotWidget({
   contextTitle,
 }) {
   const theme = useTheme();
-  console.log(aiInput, "aiInput");
   return (
     <>
       {open && (
