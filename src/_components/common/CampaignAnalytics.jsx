@@ -78,8 +78,8 @@ export default function CampaignAnalytics() {
               {/* <InfoPopover
                 title="Top Campaigns – AI Insight"
                 payload={{ campaigns }}
-                placement="bottom"
-              /> */}
+                placement="left"
+              />  */}
             </div>
 
             <Table

@@ -122,9 +122,36 @@ export default function InfoPopover({
                 ) : bullets.length === 0 ? (
                   <p className="text-center small mb-0">{description}</p>
                 ) : (
-                  bullets
-                    .slice(0, visible)
-                    .map((b, i) => <ReactMarkdown key={i}>{b}</ReactMarkdown>)
+                  <>
+                    <div
+                      style={{
+                        maxHeight: "280px",
+                        overflowY: "auto",
+                        paddingRight: "4px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          maxHeight: "280px",
+                          overflowY: "auto",
+                          paddingRight: "4px",
+                        }}
+                      >
+                        {bullets.slice(0, visible).map((b, i) => (
+                          <div
+                            key={i}
+                            style={{
+                              marginBottom: "1rem",
+                              fontSize: "0.875rem",
+                              lineHeight: 1.5,
+                            }}
+                          >
+                            <ReactMarkdown>{b}</ReactMarkdown>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </>
                 )}
               </Popover.Body>
             </Popover>

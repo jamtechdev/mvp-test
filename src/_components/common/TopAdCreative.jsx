@@ -67,7 +67,7 @@ export default function TopAdCreative({ ad = [] }) {
           {/* <InfoPopover
             title="Top Ad – AI Insight"
             payload={{ ads: sortedAds }}
-            placement="bottom"
+            placement="left"
           /> */}
            <InfoPopover
             title="Top Ad – AI Insight"
