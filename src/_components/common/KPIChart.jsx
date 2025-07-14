@@ -92,15 +92,11 @@ export default function KPITrendCard() {
       {/* Header */}
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h6 className="fw-semibold mb-0">KPI Trend</h6>
-        {/* <InfoPopover
+        <InfoPopover
           title="KPI Trend – AI Insight"
           payload={aiPayload}
           placement="bottom"
-        /> */}
-        <InfoPopover
-          title="KPI Trend – AI Insight"
           description="Switch metrics to see their trend over time."
-          placement="bottom"
         />
       </div>
 

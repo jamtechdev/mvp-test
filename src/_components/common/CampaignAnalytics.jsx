@@ -70,16 +70,13 @@ export default function CampaignAnalytics() {
           <Card className="p-3 campign-card h-100">
             <div className="d-flex justify-content-between align-items-center mb-3">
               <h6 className="fw-semibold mb-0">Top Campaigns (Clicks)</h6>
+
               <InfoPopover
-                title="Top Campaigns – AI Insight"
-                description="Replicate Campaign A's targeting in weaker campaigns."
-                placement="bottom"
-              />
-              {/* <InfoPopover
                 title="Top Campaigns – AI Insight"
                 payload={{ campaigns }}
                 placement="left"
-              />  */}
+                description="Replicate Campaign A's targeting in weaker campaigns."
+              />
             </div>
 
             <Table

@@ -64,16 +64,12 @@ export default function TopAdCreative({ ad = [] }) {
       <Card className="p-3 h-100 campign-card d-flex flex-column">
         <div className="d-flex justify-content-between align-items-center mb-3">
           <h6 className="fw-semibold mb-0">Top‑Performing Ad</h6>
-          {/* <InfoPopover
+          <InfoPopover
             title="Top Ad – AI Insight"
             payload={{ ads: sortedAds }}
             placement="left"
-          /> */}
-           <InfoPopover
-            title="Top Ad – AI Insight"
             description="This ad drives the most clicks vs its objective."
-            placement="bottom"
-          /> 
+          />
         </div>
 
         {sortedAds.map((creative, idx) => {

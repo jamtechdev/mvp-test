@@ -23,15 +23,11 @@ export default function CampaignFunnel() {
     <Card className="p-3 campign-card h-100 flex-fill">
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h6 className="fw-semibold text-muted mb-0">Campaign Funnel</h6>
-        {/* <InfoPopover
-          title="Campaign Funnel – AI Insight"
-          payload={{ stages }}
-          placement="bottom"
-        /> */}
         <InfoPopover
           title="Campaign Funnel – AI Insight"
           description="Identify the biggest drop‑offs and optimise."
           placement="bottom"
+          payload={{ stages }}
         />
       </div>
       <div className="d-flex gap-4 mt-5">

@@ -151,7 +151,7 @@ export default function ChannelMetricCards() {
                 <h6 className="fw-semibold text-muted mb-0 flex-grow-1 text-center">
                   {label}
                 </h6>
-                {/* <InfoPopover
+                <InfoPopover
                   title={`${label} – AI Insight`}
                   description={`Quick insight for ${label.toLowerCase()}.`}
                   placement="bottom"
@@ -161,12 +161,8 @@ export default function ChannelMetricCards() {
                     labels: data.labels,
                     type,
                   }}
-                /> */}
-                <InfoPopover
-                  title={`${label} – AI Insight`}
-                  description={`Quick insight for ${label.toLowerCase()}.`}
-                  placement="bottom"
                 />
+              
               </div>
 
               <Chart

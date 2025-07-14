@@ -2,7 +2,12 @@
 
 import { Row, Col, ProgressBar } from "react-bootstrap";
 import InfoPopover from "./InsightModel";
-import { RiBankCardFill, RiGroupLine, RiFilterLine, RiWallet3Line } from "react-icons/ri";
+import {
+  RiBankCardFill,
+  RiGroupLine,
+  RiFilterLine,
+  RiWallet3Line,
+} from "react-icons/ri";
 import { n0 } from "@/_utils/formatNumber";
 import unified from "../../_data/unifiedPayload.json";
 
@@ -23,22 +28,24 @@ export default function KPIStatCards() {
         if (!metric) return null;
 
         const { value, target = 1, percentage = 0 } = metric;
-        const variant = percentage >= 100 ? "success" : percentage >= 75 ? "warning" : "danger";
+        const variant =
+          percentage >= 100
+            ? "success"
+            : percentage >= 75
+            ? "warning"
+            : "danger";
 
         return (
           <Col xl={3} md={6} key={key}>
             <div className="card bg-white click-card border-1 rounded-3 mb-4 stats-box position-relative">
-              {/* <InfoPopover
+              <InfoPopover
                 title={`${label} – Target ${n0(target)}`}
                 placement="bottom"
                 kpi={{ [key]: value }}
                 targets={{ [key]: target }}
-              /> */}
-               <InfoPopover
-                title={`${label} – Target ${n0(target)}`}
-                placement="bottom"
-                 description="Progress toward target"
+                description="Progress toward target"
               />
+
               <div className="card-body p-4">
                 <div className="d-flex justify-content-between align-items-start mb-2">
                   <div>
