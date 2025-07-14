@@ -3,7 +3,7 @@
 import { FunnelChart, Funnel, Tooltip, ResponsiveContainer } from "recharts";
 import InfoPopover from "./InsightModel";
 import { Card } from "react-bootstrap";
-import unified from "../../_data/unifiedPayload.json"; 
+import unified from "../../_data/unifiedPayload.json";
 
 const COLORS = [
   "#ff6384", // Impressions
@@ -23,9 +23,14 @@ export default function CampaignFunnel() {
     <Card className="p-3 campign-card h-100 flex-fill">
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h6 className="fw-semibold text-muted mb-0">Campaign Funnel</h6>
-        <InfoPopover
+        {/* <InfoPopover
           title="Campaign Funnel – AI Insight"
           payload={{ stages }}
+          placement="bottom"
+        /> */}
+        <InfoPopover
+          title="Campaign Funnel – AI Insight"
+          description="Identify the biggest drop‑offs and optimise."
           placement="bottom"
         />
       </div>

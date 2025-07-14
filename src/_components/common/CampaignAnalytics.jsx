@@ -72,9 +72,14 @@ export default function CampaignAnalytics() {
               <h6 className="fw-semibold mb-0">Top Campaigns (Clicks)</h6>
               <InfoPopover
                 title="Top Campaigns – AI Insight"
-                payload={{ campaigns }}
+                description="Replicate Campaign A's targeting in weaker campaigns."
                 placement="bottom"
               />
+              {/* <InfoPopover
+                title="Top Campaigns – AI Insight"
+                payload={{ campaigns }}
+                placement="bottom"
+              /> */}
             </div>
 
             <Table

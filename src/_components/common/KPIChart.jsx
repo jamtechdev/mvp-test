@@ -6,7 +6,7 @@ import { Card, ButtonGroup, ToggleButton, ProgressBar } from "react-bootstrap";
 import { FiTrendingUp } from "react-icons/fi";
 import InfoPopover from "./InsightModel";
 import { n0 } from "@/_utils/formatNumber";
-import unified from "../../_data/unifiedPayload.json"; 
+import unified from "../../_data/unifiedPayload.json";
 
 const ApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
@@ -92,20 +92,21 @@ export default function KPITrendCard() {
       {/* Header */}
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h6 className="fw-semibold mb-0">KPI Trend</h6>
-        <InfoPopover
+        {/* <InfoPopover
           title="KPI Trend – AI Insight"
           payload={aiPayload}
+          placement="bottom"
+        /> */}
+        <InfoPopover
+          title="KPI Trend – AI Insight"
+          description="Switch metrics to see their trend over time."
           placement="bottom"
         />
       </div>
 
       {/* Total */}
       <div className="mb-3 text-muted fw-semibold">
-        <Stat
-          icon={<FiTrendingUp />}
-          label={`Total ${metric}`}
-          value={total}
-        />
+        <Stat icon={<FiTrendingUp />} label={`Total ${metric}`} value={total} />
       </div>
 
       {/* Metric Toggle */}
