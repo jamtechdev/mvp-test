@@ -112,7 +112,7 @@ export default function InfoPopover({
               onMouseEnter={() => setShow(true)}
               onMouseLeave={leave}
             >
-              <Popover.Body className="fs-12">
+              {/* <Popover.Body className="fs-12">
                 <div className="d-flex gap-2 align-items-center justify-content-center fw-semibold text-primary-emphasis mb-1">
                   <FiZap size={20} />
                   {title}
@@ -153,27 +153,27 @@ export default function InfoPopover({
                     </div>
                   </>
                 )}
-              </Popover.Body>
-              {/* <Popover.Body className="fs-12">
+              </Popover.Body> */}
+              <Popover.Body className="fs-12">
                 <div className="d-flex gap-2 align-items-center justify-content-center fw-semibold text-primary-emphasis mb-1">
                   <FiZap size={20} />
                   {title}
                 </div>
                 <p className="text-center small mb-0">{description}</p>
-              </Popover.Body> */}
+              </Popover.Body>
             </Popover>
           )}
         </Overlay>
       </span>
 
-      {open && (
+      {/* {open && (
         <ChatBotWidget
           open={open}
           setOpen={setOpen}
           aiInput={{ payload, kpi, targets }} // ✅ this aiInput is scoped per section
           contextTitle={title}
         />
-      )}
+      )} */}
     </>
   );
 }
