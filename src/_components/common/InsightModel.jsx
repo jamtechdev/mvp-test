@@ -166,14 +166,14 @@ export default function InfoPopover({
         </Overlay>
       </span>
 
-      {/* {open && (
+      {open && (
         <ChatBotWidget
           open={open}
           setOpen={setOpen}
           aiInput={{ payload, kpi, targets }} // ✅ this aiInput is scoped per section
           contextTitle={title}
         />
-      )} */}
+      )}
     </>
   );
 }

@@ -45,7 +45,7 @@ export default function ClicksGauge({ maxClicks = 150_000 }) {
           title="Clicks Trend – AI Insight"
           payload={{ clicks, cpa }}
           description="Clicks are rising steadily; consider scaling top‑performing creatives."
-          placement="bottom"
+          placement="left"
         />
       </div>
 
