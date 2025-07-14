@@ -3,7 +3,7 @@
 import { FunnelChart, Funnel, Tooltip, ResponsiveContainer } from "recharts";
 import InfoPopover from "./InsightModel";
 import { Card } from "react-bootstrap";
-import unified from "../../_data/unifiedPayload.json"; // 👈 Import unified data
+import unified from "../../_data/unifiedPayload.json"; 
 
 const COLORS = [
   "#ff6384", // Impressions

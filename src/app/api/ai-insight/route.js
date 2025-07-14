@@ -4,20 +4,23 @@ import OpenAI from "openai";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-const MODELS = [
-  process.env.OPENAI_MODEL || "gpt-4o", // primary
-  "gpt-3.5-turbo", // fallback
-];
+const MODELS = [process.env.OPENAI_MODEL || "gpt-4o", "gpt-3.5-turbo"];
 
 function buildPrompt(caseId, data) {
+  const base = {
+    fallbackRule:
+      `⚠️ If data is incomplete (e.g., missing budget, ROAS, revenue), ` +
+      `respond with thoughtful industry-based suggestions or estimates. ` +
+      `Use markdown formatting (**bold**, bullet points, emoji) where it helps. ` +
+      `Do NOT say “no data available”. Be as helpful as possible.`,
+  };
+
   switch (caseId) {
     case "funnel":
       return [
         {
           role: "system",
-          content:
-            "You are a marketing analyst specialised in funnel analysis. " +
-            "Identify the largest drop‑offs and propose 2–3 optimisation ideas.",
+          content: `You're a funnel expert. Identify biggest drop-offs and suggest 2–3 improvements.\n${base.fallbackRule}`,
         },
         {
           role: "user",
@@ -38,13 +41,11 @@ function buildPrompt(caseId, data) {
       return [
         {
           role: "system",
-          content:
-            "You are a marketing analyst. Analyse the 30‑day trend for a metric, " +
-            "highlight anomalies, and suggest 2–3 improvements.",
+          content: `You are a metric trend analyst. Analyze anomalies and recommend actions.\n${base.fallbackRule}`,
         },
         {
           role: "user",
-          content: `Metric: ${data.metric}\nSeries (date,value):\n${seriesTxt}`,
+          content: `Metric: ${data.metric}\nTrend:\n${seriesTxt}`,
         },
       ];
 
@@ -52,24 +53,23 @@ function buildPrompt(caseId, data) {
       return [
         {
           role: "system",
-          content:
-            "You are a marketing analyst. From ad‑level data, flag top performers " +
-            "and under‑performers, then recommend budget reallocations or creative tweaks.",
+          content: `You're an ad performance specialist. Flag best/worst performers and suggest fixes or reallocations.\n${base.fallbackRule}`,
         },
-        { role: "user", content: `Ad data: ${JSON.stringify(data.ads)}` },
+        {
+          role: "user",
+          content: `Ad Data:\n${JSON.stringify(data.ads, null, 2)}`,
+        },
       ];
 
     case "campaigns":
       return [
         {
           role: "system",
-          content:
-            "You are a marketing analyst. Rank campaigns, spot outliers with high spend but low revenue, " +
-            "and propose actions.",
+          content: `You're a campaign reviewer. Rank performance, flag issues (e.g., high spend, low return), and suggest next steps.\n${base.fallbackRule}`,
         },
         {
           role: "user",
-          content: `Campaigns: ${JSON.stringify(data.campaigns)}`,
+          content: `Campaigns:\n${JSON.stringify(data.campaigns, null, 2)}`,
         },
       ];
 
@@ -77,14 +77,13 @@ function buildPrompt(caseId, data) {
       return [
         {
           role: "system",
-          content:
-            "You are a senior marketing analyst. Provide a concise insight and 2–3 actionable suggestions.",
+          content: `You're a KPI specialist. Compare actuals to targets and provide 2–3 concise suggestions.\n${base.fallbackRule}`,
         },
         {
           role: "user",
-          content: `KPIs: ${JSON.stringify(
+          content: `KPIs:\n${JSON.stringify(
             data.kpi
-          )}\nTargets: ${JSON.stringify(data.targets)}`,
+          )}\nTargets:\n${JSON.stringify(data.targets)}`,
         },
       ];
 
@@ -92,13 +91,11 @@ function buildPrompt(caseId, data) {
       return [
         {
           role: "system",
-          content:
-            "You are a digital channel analyst. Analyze session counts across marketing channels. " +
-            "Mention which platforms are leading or underperforming and suggest 2 improvements.",
+          content: `You're a channel engagement expert. Identify top/weak platforms and suggest 2 optimizations.\n${base.fallbackRule}`,
         },
         {
           role: "user",
-          content: `Session breakdown by channel:\n${data.labels
+          content: `Sessions by channel:\n${data.labels
             .map((label, i) => `${label}: ${data.series[i]}`)
             .join("\n")}`,
         },
@@ -108,13 +105,11 @@ function buildPrompt(caseId, data) {
       return [
         {
           role: "system",
-          content:
-            "You are a device segmentation expert. Based on the session share per device type, " +
-            "point out any dominant device and whether the UX/ads should be optimized accordingly.",
+          content: `You're a UX device analyst. Based on session share by device, suggest if mobile/desktop UX should be optimized.\n${base.fallbackRule}`,
         },
         {
           role: "user",
-          content: `Device Sessions:\n${data.labels
+          content: `Device sessions:\n${data.labels
             .map((label, i) => `${label}: ${data.series[i]}`)
             .join("\n")}`,
         },
@@ -124,9 +119,7 @@ function buildPrompt(caseId, data) {
       return [
         {
           role: "system",
-          content:
-            "You are a performance marketer. Analyze the revenue distribution across channels " +
-            "and suggest how budget or focus can be optimized.",
+          content: `You're a revenue analyst. Spot most/least efficient channels and suggest budget shifts or focus areas.\n${base.fallbackRule}`,
         },
         {
           role: "user",
@@ -140,10 +133,12 @@ function buildPrompt(caseId, data) {
       return [
         {
           role: "system",
-          content:
-            "You are a marketing analyst. Summarise the numbers and give 2–3 short recommendations.",
+          content: `You're a marketing assistant. Summarize insights and recommend 2–3 improvements.\n${base.fallbackRule}`,
         },
-        { role: "user", content: `Context: ${JSON.stringify(data.payload)}` },
+        {
+          role: "user",
+          content: `Data:\n${JSON.stringify(data.payload, null, 2)}`,
+        },
       ];
 
     default:
@@ -160,65 +155,68 @@ export async function POST(req) {
 
     const { kpi, targets, payload } = body;
 
-let caseId, promptData;
+    let caseId, promptData;
 
-if (payload?.stages) {
-  caseId = "funnel";
-  promptData = payload;
-} else if (payload?.series && payload?.metric) {
-  caseId = "trend";
-  promptData = payload;
-} else if (payload?.ads) {
-  caseId = "ads";
-  promptData = payload;
-} else if (payload?.campaigns) {
-  caseId = "campaigns";
-  promptData = payload;
-} else if (payload?.label?.toLowerCase().includes("sessions by channel")) {
-  caseId = "sessionsByChannel";
-  promptData = payload;
-} else if (payload?.label?.toLowerCase().includes("device sessions")) {
-  caseId = "deviceSessions";
-  promptData = payload;
-} else if (payload?.label?.toLowerCase().includes("revenue per channel")) {
-  caseId = "revenueByChannel";
-  promptData = payload;
-} else if (kpi && targets) {
-  caseId = "kpiTargets";
-  promptData = { kpi, targets };
-} else if (payload) {
-  caseId = "generic";
-  promptData = { payload };
-} else {
-  return NextResponse.json(
-    { error: "Missing kpi/targets or payload" },
-    { status: 400 }
-  );
-}
+    if (payload?.stages) {
+      caseId = "funnel";
+      promptData = payload;
+    } else if (payload?.series && payload?.metric) {
+      caseId = "trend";
+      promptData = payload;
+    } else if (payload?.ads) {
+      caseId = "ads";
+      promptData = payload;
+    } else if (payload?.campaigns) {
+      caseId = "campaigns";
+      promptData = payload;
+    } else if (payload?.label?.toLowerCase().includes("sessions by channel")) {
+      caseId = "sessionsByChannel";
+      promptData = payload;
+    } else if (payload?.label?.toLowerCase().includes("device sessions")) {
+      caseId = "deviceSessions";
+      promptData = payload;
+    } else if (payload?.label?.toLowerCase().includes("revenue per channel")) {
+      caseId = "revenueByChannel";
+      promptData = payload;
+    } else if (kpi && targets) {
+      caseId = "kpiTargets";
+      promptData = { kpi, targets };
+    } else if (payload) {
+      caseId = "generic";
+      promptData = { payload };
+    } else {
+      return NextResponse.json(
+        { error: "Missing kpi/targets or payload" },
+        { status: 400 }
+      );
+    }
 
     const messages = buildPrompt(caseId, promptData);
+    if (!messages) {
+      return NextResponse.json(
+        { error: "Invalid prompt structure" },
+        { status: 400 }
+      );
+    }
 
-    /* 2‑B. Try models in order until one succeeds */
     let insight = "";
+
     for (const model of MODELS) {
       try {
         const resp = await openai.chat.completions.create({
           model,
           messages,
-          temperature: 0.3,
+          temperature: 0.4,
         });
         insight = resp.choices[0]?.message?.content;
-        if (insight) break; // success ✅
+        if (insight) break;
       } catch (err) {
-        if (err?.status === 404 || err?.code === "model_not_found") {
-          continue; // try next model
-        }
-        // genuine error -> bubble out
+        if (err?.status === 404 || err?.code === "model_not_found") continue;
         throw err;
       }
     }
 
-    if (!insight) insight = "Could not generate insight.";
+    if (!insight) insight = "⚠️ Insight could not be generated.";
 
     return NextResponse.json({ insight });
   } catch (err) {

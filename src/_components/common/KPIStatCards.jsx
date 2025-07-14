@@ -4,7 +4,7 @@ import { Row, Col, ProgressBar } from "react-bootstrap";
 import InfoPopover from "./InsightModel";
 import { RiBankCardFill, RiGroupLine, RiFilterLine, RiWallet3Line } from "react-icons/ri";
 import { n0 } from "@/_utils/formatNumber";
-import unified from "../../_data/unifiedPayload.json"; // 👈 Import unified data
+import unified from "../../_data/unifiedPayload.json";
 
 const DEFAULT_META = [
   { key: "spend", label: "Spend", icon: <RiBankCardFill size={26} /> },

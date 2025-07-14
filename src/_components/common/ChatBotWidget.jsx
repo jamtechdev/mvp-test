@@ -85,9 +85,14 @@ function summarizeAIInput(input) {
     : null;
 }
 
-export default function ChatBotWidget({ open, setOpen, aiInput }) {
+export default function ChatBotWidget({
+  open,
+  setOpen,
+  aiInput,
+  contextTitle,
+}) {
   const theme = useTheme();
-
+  console.log(aiInput, "aiInput");
   return (
     <>
       {open && (
@@ -95,30 +100,32 @@ export default function ChatBotWidget({ open, setOpen, aiInput }) {
           theme={theme}
           onClose={() => setOpen(false)}
           aiInput={aiInput}
+          contextTitle={contextTitle}
         />
       )}
     </>
   );
 }
 
-function ChatBox({ onClose, theme, aiInput }) {
+function ChatBox({ onClose, theme, aiInput, contextTitle }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const bodyRef = useRef(null);
-
   useEffect(() => {
-    const summary = summarizeAIInput(aiInput);
-    const intro = summary
-      ? { role: "assistant", content: summary }
+    const introMessage = contextTitle
+      ? {
+          role: "assistant",
+          content: `📊 **You selected:** *${contextTitle}.*\nI’ve loaded the relevant data. Feel free to ask questions or request insights.`,
+        }
       : {
           role: "assistant",
           content: "👋 Hey there! Please select a section to begin the chat.",
         };
 
-    setMessages([intro]);
+    setMessages([introMessage]);
     setInput("");
-  }, []); // Runs once on remount
+  }, []);
 
   useEffect(() => {
     bodyRef.current?.scrollTo(0, bodyRef.current.scrollHeight);

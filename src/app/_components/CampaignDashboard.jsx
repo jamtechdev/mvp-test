@@ -2,12 +2,7 @@
 import { useMemo, useState, useEffect } from "react";
 import { Row, Col } from "react-bootstrap";
 
-import {
-  getData,
-  deviceBreakdown,
-  sessionChannelBreakdown,
-  revenueByChannel,
-} from "@/_utils/campaignUtils";
+import { getData } from "@/_utils/campaignUtils";
 import CampaignFunnel from "@/_components/common/FunnelChart";
 import KpiTrendCard from "@/_components/common/KPIChart";
 import CampaignAnalytics from "@/_components/common/CampaignAnalytics";
@@ -21,7 +16,6 @@ export default function CampaignDashboard({ channel1 = "all" }) {
     start: new Date(Date.now() - 7 * 864e5),
     end: new Date(),
   });
-  const [metric, setMetric] = useState("spend");
   const [selectedChannel, setSelectedChannel] = useState("All");
 
   const [lastUpdated, setLastUpdated] = useState("");

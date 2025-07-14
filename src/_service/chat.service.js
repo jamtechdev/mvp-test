@@ -7,7 +7,6 @@ export const openAIServices = {
 
 const API = "/api";
 
-// ✅ UPDATED FUNCTION
 async function sendChat(messages, aiInput = null, token = null) {
   try {
     const res = await axios.post(
@@ -41,7 +40,6 @@ async function sendChat(messages, aiInput = null, token = null) {
   }
 }
 
-// ✅ No changes here
 async function getAIInsight({ payload, kpi, targets }) {
   try {
     const body = payload ? { payload } : { kpi, targets };

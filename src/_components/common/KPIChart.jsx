@@ -6,7 +6,7 @@ import { Card, ButtonGroup, ToggleButton, ProgressBar } from "react-bootstrap";
 import { FiTrendingUp } from "react-icons/fi";
 import InfoPopover from "./InsightModel";
 import { n0 } from "@/_utils/formatNumber";
-import unified from "../../_data/unifiedPayload.json"; // 👈 Import unified data
+import unified from "../../_data/unifiedPayload.json"; 
 
 const ApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
