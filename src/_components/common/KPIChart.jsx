@@ -95,7 +95,7 @@ export default function KPITrendCard() {
         <InfoPopover
           title="KPI Trend – AI Insight"
           payload={aiPayload}
-          placement="left"
+          placement="bottom"
           description="Switch metrics to see their trend over time."
         />
       </div>

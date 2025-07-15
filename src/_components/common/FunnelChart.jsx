@@ -26,7 +26,7 @@ export default function CampaignFunnel() {
         <InfoPopover
           title="Campaign Funnel – AI Insight"
           description="Identify the biggest drop‑offs and optimise."
-          placement="left"
+          placement="bottom"
           payload={{ stages }}
         />
       </div>

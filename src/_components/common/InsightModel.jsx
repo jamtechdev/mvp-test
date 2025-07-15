@@ -2,7 +2,7 @@
 
 import { openAIServices } from "@/_service";
 import { useState, useRef, useMemo, useEffect } from "react";
-import { Overlay, Popover } from "react-bootstrap";
+import { Overlay, Popover, Spinner } from "react-bootstrap";
 import { FiZap } from "react-icons/fi";
 import ChatBotWidget from "./ChatBotWidget";
 import ReactMarkdown from "react-markdown";
@@ -22,9 +22,14 @@ export default function InfoPopover({
   const [visible, setVisible] = useState(0);
   const [open, setOpen] = useState(false);
   const [sessionId, setSessionId] = useState(0);
+  const [hasMounted, setHasMounted] = useState(false);
 
   const badgeRef = useRef(null);
   const popoverRef = useRef(null);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   const fetchInsight = async () => {
     if (loading || insight || (!kpi && !payload)) return;
@@ -80,6 +85,63 @@ export default function InfoPopover({
     }, 10);
   };
 
+  const isDark =
+    typeof window !== "undefined"
+      ? document?.documentElement?.getAttribute("theme") === "dark"
+      : false;
+
+  const bulletStyle = {
+    backgroundColor: isDark ? "#004c4c" : "#d6f4f2",
+    color: isDark ? "#ffffff" : "#1b1b1b",
+    fontSize: "0.95rem",
+    lineHeight: 1.6,
+    boxShadow: isDark
+      ? "inset 0 0 0 1px rgba(255,255,255,0.08)"
+      : "inset 0 0 0 1px rgba(0,0,0,0.08)",
+    textShadow: isDark ? "0 1px 2px rgba(0,0,0,0.6)" : "none",
+    padding: "0.75rem",
+    borderLeft: `4px solid ${isDark ? "#5ee8e8" : "#00b3b3"}`,
+  };
+
+  const markdownComponents = {
+    h1: ({ node, ...props }) => (
+      <h5
+        style={{ color: bulletStyle.color }}
+        className="fw-bold mb-2"
+        {...props}
+      />
+    ),
+    h2: ({ node, ...props }) => (
+      <h6
+        style={{ color: bulletStyle.color }}
+        className="fw-semibold mb-2"
+        {...props}
+      />
+    ),
+    h3: ({ node, ...props }) => (
+      <h6 style={{ color: bulletStyle.color }} className="mb-2" {...props} />
+    ),
+    p: ({ node, ...props }) => (
+      <p
+        style={{ color: bulletStyle.color, fontSize: "0.9rem" }}
+        className="mb-1"
+        {...props}
+      />
+    ),
+    li: ({ node, ...props }) => (
+      <li
+        style={{ color: bulletStyle.color, marginBottom: "0.25rem" }}
+        {...props}
+      />
+    ),
+    strong: ({ node, ...props }) => (
+      <strong style={{ color: bulletStyle.color }} {...props} />
+    ),
+    em: ({ node, ...props }) => (
+      <em style={{ color: bulletStyle.color }} {...props} />
+    ),
+  };
+
   return (
     <>
       <span className="position-absolute top-0 end-0 m-2 info-icon">
@@ -87,8 +149,16 @@ export default function InfoPopover({
           ref={badgeRef}
           role="button"
           aria-label="AI insight"
-          className="badge bg-warning text-white fw-bold"
-          style={{ cursor: "pointer", fontSize: "0.65rem", letterSpacing: 0.5 }}
+          className="fw-bold shadow-sm badge text-white"
+          style={{
+            cursor: "pointer",
+            backgroundColor: isDark ? "#2ad3d3" : "#d1f4f2",
+            color: isDark ? "#000" : "#005c5c",
+            fontWeight: 600,
+            fontSize: "0.65rem",
+            borderRadius: "0.5rem",
+            padding: "0.4em 0.6em",
+          }}
           onMouseEnter={enter}
           onMouseLeave={leave}
           onFocus={enter}
@@ -112,54 +182,126 @@ export default function InfoPopover({
               onMouseEnter={() => setShow(true)}
               onMouseLeave={leave}
             >
-              {/* <Popover.Body className="fs-12">
-                <div className="d-flex gap-2 align-items-center justify-content-center fw-semibold text-primary-emphasis mb-1">
-                  <FiZap size={20} />
-                  {title}
+              {/* <Popover.Body
+                className="fs-12 rounded shadow-sm"
+                style={{
+                  minWidth: "300px",
+                  backgroundColor: isDark ? "#1e1e1e" : "#ffffff",
+                  color: isDark ? "#ffffff" : "#212529",
+                }}
+              >
+                <div
+                  className="d-flex gap-2 align-items-center justify-content-center fw-semibold mb-3"
+                  style={{
+                    color: isDark ? "#5ee8e8" : "#007777",
+                  }}
+                >
+                  <FiZap size={18} />
+                  <span>{title}</span>
                 </div>
+
                 {loading ? (
-                  <p className="text-center small mb-0">Analyzing…</p>
+                  <div className="text-center py-2">
+                    <Spinner
+                      animation="border"
+                      variant="secondary"
+                      size="sm"
+                      className="me-2"
+                    />
+                    <span className="small">Analyzing...</span>
+                  </div>
                 ) : bullets.length === 0 ? (
-                  <p className="text-center small mb-0">{description}</p>
+                  <p className="text-center text-muted small mb-0">
+                    Insight Unavailable
+                  </p>
                 ) : (
                   <>
                     <div
                       style={{
                         maxHeight: "280px",
                         overflowY: "auto",
-                        paddingRight: "4px",
+                        paddingRight: "6px",
                       }}
                     >
-                      <div
-                        style={{
-                          maxHeight: "280px",
-                          overflowY: "auto",
-                          paddingRight: "4px",
-                        }}
-                      >
-                        {bullets.slice(0, visible).map((b, i) => (
+                      {hasMounted &&
+                        bullets.slice(0, visible).map((b, i) => (
                           <div
                             key={i}
-                            style={{
-                              marginBottom: "1rem",
-                              fontSize: "0.875rem",
-                              lineHeight: 1.5,
-                            }}
+                            className="mb-3 rounded"
+                            style={bulletStyle}
                           >
-                            <ReactMarkdown>{b}</ReactMarkdown>
+                            <ReactMarkdown components={markdownComponents}>
+                              {b}
+                            </ReactMarkdown>
                           </div>
                         ))}
-                      </div>
                     </div>
+
+                    {visible === bullets.length && (
+                      <div className="text-center text-success small mt-2">
+                        ✔ Done analyzing
+                      </div>
+                    )}
                   </>
                 )}
               </Popover.Body> */}
-              <Popover.Body className="fs-12">
-                <div className="d-flex gap-2 align-items-center justify-content-center fw-semibold text-primary-emphasis mb-1">
-                  <FiZap size={20} />
-                  {title}
+              <Popover.Body
+                className="fs-12 rounded shadow-sm"
+                style={{
+                  minWidth: "300px",
+                  backgroundColor: isDark ? "#1e1e1e" : "#ffffff",
+                  color: isDark ? "#ffffff" : "#212529",
+                }}
+              >
+                <div
+                  className="d-flex gap-2 align-items-center justify-content-center fw-semibold mb-3"
+                  style={{
+                    color: isDark ? "#5ee8e8" : "#007777",
+                  }}
+                >
+                  <FiZap size={18} />
+                  <span>{title}</span>
                 </div>
-                <p className="text-center small mb-0">{description}</p>
+
+                {loading ? (
+                  <div className="text-center py-2">
+                    <Spinner
+                      animation="border"
+                      variant="secondary"
+                      size="sm"
+                      className="me-2"
+                    />
+                    <span className="small">Analyzing...</span>
+                  </div>
+                ) : bullets.length === 0 ? (
+                  <p className="text-center text-muted small mb-0">
+                    Insight Unavailable
+                  </p>
+                ) : (
+                  <>
+                    <div
+                      style={{
+                        maxHeight: "280px",
+                        overflowY: "auto",
+                        paddingRight: "6px",
+                      }}
+                    >
+                      {hasMounted && (
+                        <div className="mb-3 rounded" style={bulletStyle}>
+                          <ReactMarkdown components={markdownComponents}>
+                            {` Insight Unavailable : WIP `}
+                          </ReactMarkdown>
+                        </div>
+                      )}
+                    </div>
+
+                    {visible === bullets.length && (
+                      <div className="text-center text-success small mt-2">
+                        ✔ Done analyzing
+                      </div>
+                    )}
+                  </>
+                )}
               </Popover.Body>
             </Popover>
           )}
@@ -170,7 +312,7 @@ export default function InfoPopover({
         <ChatBotWidget
           open={open}
           setOpen={setOpen}
-          aiInput={{ payload, kpi, targets }} // ✅ this aiInput is scoped per section
+          aiInput={{ payload, kpi, targets }}
           contextTitle={title}
         />
       )}

@@ -74,7 +74,7 @@ export default function CampaignAnalytics() {
               <InfoPopover
                 title="Top Campaigns – AI Insight"
                 payload={{ campaigns }}
-                placement="left"
+                placement="bottom"
                 description="Replicate Campaign A's targeting in weaker campaigns."
               />
             </div>
