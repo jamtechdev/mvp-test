@@ -37,68 +37,6 @@
   },
   "campaign_funnel": {
     "stages": [
-      {
-        "name": "Impressions",
-        "value": 12000
-      },
-      {
-        "name": "Clicks",
-        "value": 7800
-      },
-      {
-        "name": "Leads",
-        "value": 3400
-      },
-      {
-        "name": "Conversions",
-        "value": 850
-      },
-      {
-        "name": "Revenue",
-        "value": 120
-      }
-    ]
-  },
-
-  "kpi_cards": {
-    "metrics": [
-      {
-        "key": "spend",
-        "label": "Spend",
-        "value": 3450,
-        "target": 4000,
-        "unit": "USD",
-        "percentage": 86.25
-      },
-      {
-        "key": "impressions",
-        "label": "Impressions",
-        "value": 88000,
-        "target": 100000,
-        "unit": "impressions",
-        "percentage": 88.0
-      },
-      {
-        "key": "leads",
-        "label": "Leads",
-        "value": 560,
-        "target": 800,
-        "unit": "leads",
-        "percentage": 70.0
-      },
-      {
-        "key": "revenue",
-        "label": "Revenue",
-        "value": 2400,
-        "target": 3000,
-        "unit": "USD",
-        "percentage": 80.0
-      }
-    ]
-  },
-
-  "campaign_funnel": {
-    "stages": [
       { "name": "Impressions", "value": 12000 },
       { "name": "Clicks", "value": 7800 },
       { "name": "Leads", "value": 3400 },
@@ -106,7 +44,6 @@
       { "name": "Revenue", "value": 120 }
     ]
   },
-
   "kpi_trend": {
     "metrics": [
       {
@@ -176,7 +113,6 @@
       }
     ]
   },
-
   "channel_metrics": {
     "device_sessions": {
       "labels": ["Mobile", "Desktop", "Tablet"],

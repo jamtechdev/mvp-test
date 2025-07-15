@@ -104,41 +104,127 @@ export default function InfoPopover({
   };
 
   const markdownComponents = {
-    h1: ({ node, ...props }) => (
-      <h5
-        style={{ color: bulletStyle.color }}
-        className="fw-bold mb-2"
-        {...props}
-      />
+    // Dynamic heading rendering for h1–h6
+    ...Object.fromEntries(
+      Array.from({ length: 6 }, (_, i) => {
+        const level = i + 1;
+        return [
+          `h${level}`,
+          ({ node, ...props }) => (
+            <div
+              style={{
+                color: bulletStyle.color,
+                fontWeight: 700 - i * 100, // h1:700 → h6:200
+                fontSize: `${1.25 - i * 0.1}rem`, // h1:1.25rem → h6:0.75rem
+                marginBottom: "0.5rem",
+              }}
+              {...props}
+            />
+          ),
+        ];
+      })
     ),
-    h2: ({ node, ...props }) => (
-      <h6
-        style={{ color: bulletStyle.color }}
-        className="fw-semibold mb-2"
-        {...props}
-      />
-    ),
-    h3: ({ node, ...props }) => (
-      <h6 style={{ color: bulletStyle.color }} className="mb-2" {...props} />
-    ),
+
     p: ({ node, ...props }) => (
       <p
-        style={{ color: bulletStyle.color, fontSize: "0.9rem" }}
-        className="mb-1"
+        style={{
+          color: bulletStyle.color,
+          fontSize: "0.9rem",
+          lineHeight: 1.5,
+          marginBottom: "0.5rem",
+        }}
         {...props}
       />
     ),
+
     li: ({ node, ...props }) => (
       <li
-        style={{ color: bulletStyle.color, marginBottom: "0.25rem" }}
+        style={{
+          color: bulletStyle.color,
+          fontSize: "0.9rem",
+          marginBottom: "0.3rem",
+          paddingLeft: "0.5rem",
+        }}
         {...props}
       />
     ),
+
     strong: ({ node, ...props }) => (
-      <strong style={{ color: bulletStyle.color }} {...props} />
+      <strong
+        style={{ color: bulletStyle.color, fontWeight: 600 }}
+        {...props}
+      />
     ),
+
     em: ({ node, ...props }) => (
-      <em style={{ color: bulletStyle.color }} {...props} />
+      <em
+        style={{ color: bulletStyle.color, fontStyle: "italic" }}
+        {...props}
+      />
+    ),
+
+    blockquote: ({ node, ...props }) => (
+      <blockquote
+        style={{
+          color: bulletStyle.color,
+          borderLeft: `4px solid ${isDark ? "#5ae6e2" : "#0dcaf0"}`,
+          paddingLeft: "1rem",
+          margin: "0.75rem 0",
+          fontStyle: "italic",
+          backgroundColor: isDark ? "#2a2a2a" : "#f1f1f1",
+          borderRadius: "0.25rem",
+        }}
+        {...props}
+      />
+    ),
+
+    code: ({ node, inline, className, children, ...props }) => {
+      if (inline) {
+        return (
+          <code
+            style={{
+              backgroundColor: isDark ? "#333" : "#eee",
+              color: bulletStyle.color,
+              padding: "0.15rem 0.4rem",
+              borderRadius: "4px",
+              fontSize: "0.85rem",
+            }}
+            {...props}
+          >
+            {children}
+          </code>
+        );
+      }
+
+      return (
+        <pre
+          style={{
+            backgroundColor: isDark ? "#1d1f21" : "#f8f9fa",
+            color: bulletStyle.color,
+            padding: "0.75rem",
+            borderRadius: "0.375rem",
+            overflowX: "auto",
+            fontSize: "0.85rem",
+            marginBottom: "1rem",
+          }}
+        >
+          <code {...props}>{children}</code>
+        </pre>
+      );
+    },
+
+    a: ({ node, href, ...props }) => (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          color: isDark ? "#7de9f2" : "#0d6efd",
+          textDecoration: "underline",
+          fontWeight: 500,
+        }}
+        {...props}
+      />
     ),
   };
 
@@ -182,10 +268,10 @@ export default function InfoPopover({
               onMouseEnter={() => setShow(true)}
               onMouseLeave={leave}
             >
-              {/* <Popover.Body
+              <Popover.Body
                 className="fs-12 rounded shadow-sm"
                 style={{
-                  minWidth: "300px",
+                  minWidth: "315px",
                   backgroundColor: isDark ? "#1e1e1e" : "#ffffff",
                   color: isDark ? "#ffffff" : "#212529",
                 }}
@@ -244,8 +330,8 @@ export default function InfoPopover({
                     )}
                   </>
                 )}
-              </Popover.Body> */}
-              <Popover.Body
+              </Popover.Body>
+              {/* <Popover.Body
                 className="fs-12 rounded shadow-sm"
                 style={{
                   minWidth: "300px",
@@ -302,7 +388,7 @@ export default function InfoPopover({
                     )}
                   </>
                 )}
-              </Popover.Body>
+              </Popover.Body> */}
             </Popover>
           )}
         </Overlay>
