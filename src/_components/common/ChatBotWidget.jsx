@@ -13,14 +13,23 @@ import ReactMarkdown from "react-markdown";
 
 const LIGHT = {
   brand: "#37BEB0",
+
   bg: "#37BEB0",
-  bodyBg: "rgb(165 229 223)",
+
+  bodyBg: "#ffffff",
+
   headerText: "#ffffff",
+
   userBubbleBg: "#37BEB0",
+
   userBubbleText: "#ffffff",
+
   assistantBubbleBg: "#ffffff",
+
   assistantBubbleText: "#212529",
+
   inputBg: "#ffffff",
+
   inputText: "#212529",
 };
 
@@ -70,6 +79,7 @@ export default function ChatBotWidget({
   contextTitle,
 }) {
   const theme = useTheme();
+
   return (
     <>
       {open && (
@@ -145,11 +155,17 @@ function ChatBox({ onClose, theme, aiInput, contextTitle }) {
 
   const bubbleStyle = (isUser) => ({
     borderRadius: "1rem",
+
     padding: "0.6rem 1rem",
+
     maxWidth: "85%",
-    boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+
+    boxShadow: theme.scheme === "dark" ? "0 6px 24px rgba(0,0,0,0.6)" : "",
+
     fontStyle: "italic",
+
     backgroundColor: isUser ? theme.userBubbleBg : theme.assistantBubbleBg,
+
     color: isUser ? theme.userBubbleText : theme.assistantBubbleText,
   });
 
@@ -157,22 +173,41 @@ function ChatBox({ onClose, theme, aiInput, contextTitle }) {
     <div
       style={{
         position: "fixed",
+
         bottom: 0,
+
         right: 2,
+
         width: "90%",
+
         maxWidth: 440,
+
         height: 440,
+
         borderRadius: "1rem",
+
         display: "flex",
+
         flexDirection: "column",
+
         zIndex: 1050,
+
         overflow: "hidden",
+
         fontFamily: "Segoe UI, sans-serif",
+
         backgroundColor: theme.bg,
+
         boxShadow:
-          theme.scheme === "dark"
-            ? "0 6px 24px rgba(0,0,0,0.6)"
-            : "0 6px 24px rgba(0,0,0,0.2)",
+          // theme.scheme === "dark"
+
+          //   ? "0 6px 24px rgba(0,0,0,0.6)"
+
+          //   : "0 6px 24px rgba(0,0,0,0.2)",
+
+          theme.scheme === "dark" ? "0 6px 24px rgba(0,0,0,0.6)" : "",
+
+        border: theme.scheme === "dark" ? "" : "1px solid rgb(55, 190, 176)",
       }}
     >
       <div

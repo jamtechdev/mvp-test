@@ -14,7 +14,7 @@ import unifiedPayload from "/src/_data/unifiedPayload.json";
 import InfoPopover from "./InsightModel";
 import TopAdCreative from "./TopAdCreative";
 import AdPerformanceTable from "./AdPerformanceTable";
-import ClicksGauge from "./ClicksGauge";
+import AcquisitionCostGauge from "./ClicksGauge";
 
 const n0 = (n) => n.toLocaleString("en-US");
 const n2 = (n) =>
@@ -57,7 +57,7 @@ export default function CampaignAnalytics() {
       {/* Clicks Gauge + Ads Table */}
       <Row className="g-4 mb-4">
         <Col xl={4} md={12}>
-          <ClicksGauge kpi={{ clicks: totalClicks }} cpa={cpa} />
+          <AcquisitionCostGauge />
         </Col>
         <Col xl={8} md={12}>
           <AdPerformanceTable ads={ads} />

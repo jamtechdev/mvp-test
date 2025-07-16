@@ -4,33 +4,36 @@ import { Card } from "react-bootstrap";
 import GaugeComponent from "react-gauge-component";
 import { FiArrowUpRight } from "react-icons/fi";
 import InfoPopover from "./InsightModel";
-import unified from "/src/_data/unifiedPayload.json";
+import unified from "../../_data/unifiedPayload.json";
 
+// Format thousands as "k" and apply $
 const kFmt = (n) => {
-  if (n < 1_000) return n.toString();
+  if (n < 1_000) return `$${n}`;
   const v = n / 1_000;
-  return v % 1 === 0 ? `${v}k` : `${v.toFixed(1)}k`;
+  return `$${v % 1 === 0 ? v : v.toFixed(1)}k`;
 };
+
+// Format number with 2 decimal places and add $
 const n2 = (n) =>
-  n.toLocaleString("en-US", {
+  `$${n.toLocaleString("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-  });
+  })}`;
 
 const palette = ["#FF5160", "#FFC107", "#12C99B"];
 const labelStyle = { fontSize: "0.72rem", color: "#8A8F9A" };
 const dotStyle = { width: 10, height: 10, borderRadius: "50%", marginRight: 6 };
 
-export default function ClicksGauge({ maxClicks = 150_000 }) {
-  const clicks = unified.analytics.kpi.clicks || 0;
+export default function AcquisitionCostGauge({ maxCost = 150_000 }) {
+  const acquisitionCost = unified.analytics.kpi.acquisitionCost || 0;
   const cpa = unified.analytics.kpi.cpa || 0;
 
-  const percent = Math.min(clicks / maxClicks, 1);
+  const percent = Math.min(acquisitionCost / maxCost, 1);
   const activeColor =
     percent < 0.33 ? palette[0] : percent < 0.66 ? palette[1] : palette[2];
 
-  const t1 = Math.round(maxClicks * 0.33);
-  const t2 = Math.round(maxClicks * 0.66);
+  const t1 = Math.round(maxCost * 0.33);
+  const t2 = Math.round(maxCost * 0.66);
   const ranges = [
     { color: palette[0], label: `≤ ${kFmt(t1)}` },
     { color: palette[1], label: `${kFmt(t1 + 1)}‑${kFmt(t2)}` },
@@ -42,9 +45,9 @@ export default function ClicksGauge({ maxClicks = 150_000 }) {
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h6 className="fw-semibold mb-0">Cost Per Acquisition</h6>
         <InfoPopover
-          title="Clicks Trend – AI Insight"
-          payload={{ clicks, cpa }}
-          description="Clicks are rising steadily; consider scaling top‑performing creatives."
+          title="Acquisition Cost Trend – AI Insight"
+          payload={{ acquisitionCost, cpa }}
+          description="Your acquisition cost is increasing. Consider optimizing your funnel or pausing underperforming campaigns."
           placement="bottom"
         />
       </div>
@@ -107,10 +110,10 @@ export default function ClicksGauge({ maxClicks = 150_000 }) {
             lineHeight: 1.1,
           }}
         >
-          {kFmt(clicks)}
+          {kFmt(acquisitionCost)}
         </div>
         <small style={{ ...labelStyle, marginTop: 6, display: "block" }}>
-          Clicks
+          Acquisition Cost
         </small>
       </div>
 
@@ -125,7 +128,7 @@ export default function ClicksGauge({ maxClicks = 150_000 }) {
         >
           CPA
           <FiArrowUpRight style={{ color: activeColor }} />
-          <span style={{ color: activeColor }}>${n2(cpa)}</span>
+          <span style={{ color: activeColor }}>{kFmt(cpa)}</span>
         </span>
       </div>
     </Card>

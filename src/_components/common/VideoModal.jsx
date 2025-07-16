@@ -1,9 +1,11 @@
 import React, { useRef, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { Modal, Button } from "react-bootstrap";
-import "plyr-react/plyr.css"; 
+import "plyr-react/plyr.css";
 
-const ACCENT = "#A4E5DF";
+// const ACCENT = "#A4E5DF";
+const ACCENT = "#baf0eb"; // mint highlight
+
 const ACCENT_DARK = "#04524A";
 const BG_LIGHT = "#F6FFFD";
 

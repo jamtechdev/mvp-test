@@ -134,9 +134,9 @@
       "series": [120000, 95000, 40000, 55000]
     }
   },
-  "analytics": {
+   "analytics": {
     "kpi": {
-      "clicks": 91200,
+      "acquisitionCost": 91200,
       "cpa": 8.4
     }
   },

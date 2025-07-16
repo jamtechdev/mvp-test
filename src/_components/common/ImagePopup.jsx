@@ -1,8 +1,10 @@
 import React from "react";
 import { Modal, Button } from "react-bootstrap";
 import Image from "next/image";
+// #baf0eb
+// const ACCENT = "#A4E5DF"; // mint highlight
+const ACCENT = "#baf0eb"; // mint highlight
 
-const ACCENT = "#A4E5DF"; // mint highlight
 const ACCENT_DARK = "#04524A"; // readable text over light mint
 const BG_LIGHT = "#F6FFFD"; // very light mint‑tinted background
 

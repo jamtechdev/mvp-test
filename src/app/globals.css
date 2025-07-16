@@ -1614,3 +1614,19 @@ table {
   object-fit: cover;
   border-radius: 8px;
 }
+/* Base style for unselected buttons */
+.channel-toggle-btn.unselected-btn {
+  background-color: white !important;
+  color: black !important;
+  border: 1px solid #ccc;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Hover effect */
+.channel-toggle-btn.unselected-btn:hover {
+  background-color: #e7f1ff !important; /* soft blue */
+  color: #0d6efd !important;            /* Bootstrap primary blue */
+  border-color: #0d6efd !important;
+}
+
+/* Selected style handled by Bootstrap's btn-primary */

@@ -42,7 +42,6 @@ export default function CampaignFilterBar({
           </Form.Select>
         </Form.Group>
       </Col>
-
       <Col md={3}>
         <Form.Label className="small fw-semibold d-block">Channel</Form.Label>
         <ButtonGroup className="flex-wrap">
@@ -52,11 +51,13 @@ export default function CampaignFilterBar({
               id={`ch-${ch}`}
               type="radio"
               size="sm"
-              variant={selectedChannel === ch ? "primary" : "outline-secondary"}
               value={ch}
               checked={selectedChannel === ch}
               onChange={() => onChannelChange(ch)}
-              className="me-1 mb-1"
+              variant={selectedChannel === ch ? "primary" : "outline-light"}
+              className={`me-1 mb-1 channel-toggle-btn ${
+                selectedChannel !== ch ? "unselected-btn" : ""
+              }`}
             >
               {ch}
             </ToggleButton>

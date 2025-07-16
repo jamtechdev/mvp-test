@@ -6,7 +6,9 @@ import ImagePopup from "./ImagePopup";
 import VideoPopup from "./VideoModal";
 
 const PLACEHOLDER = "/images/img-placeholder.jpg";
-const ACCENT = "#A4E5DF";
+// const ACCENT = "#A4E5DF";
+const ACCENT = "#baf0eb"; // mint highlight
+
 const ACCENT_DARK = "#04524A";
 const CHIP_SIZE = 28;
 export default function TopAdCreative({ ad = [] }) {
