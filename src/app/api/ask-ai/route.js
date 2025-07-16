@@ -8,7 +8,7 @@ const openai = new OpenAI({
 });
 
 const PREFERRED_MODEL = process.env.OPENAI_MODEL || "gpt-4o";
-const FALLBACK_MODEL = "gpt-3.5-turbo"; // backup model
+const FALLBACK_MODEL = "gpt-3.5-turbo";
 
 export async function POST(req) {
   let body;
@@ -20,29 +20,43 @@ export async function POST(req) {
 
   const { messages, aiInput } = body ?? {};
 
-  const summarizedContext = `You are an expert AI assistant for marketing analytics and campaign performance.
+  const summarizedContext = `You are a senior AI assistant specialized in marketing analytics and performance optimization.
 
-Here is the provided campaign data you MUST use as the main source:
+Your job is to **analyze the following campaign data** and provide smart, specific insights:
 
-📊 Payload:
+📊 **Payload**:
 ${JSON.stringify(aiInput?.payload || {}, null, 2)}
 
-📈 KPI:
-${JSON.stringify(aiInput?.kpi || {})}
+📈 **KPI Metrics**:
+${JSON.stringify(aiInput?.kpi || {}, null, 2)}
 
-🎯 Targets:
-${JSON.stringify(aiInput?.targets || [])}
+🎯 **Targets**:
+${JSON.stringify(aiInput?.targets || [], null, 2)}
 
-Guidelines:
-- Use ONLY the above data if it's present.
-- If specific data is missing (e.g., industry benchmarks, estimated costs, optimal CTRs), you MAY use reasonable industry knowledge — BUT clearly state it's an assumption or general reference.
-- Provide direct, concise insights and 2–3 data-backed suggestions.
-- Avoid generic phrases like "it depends" unless you qualify why.
-- Use markdown for important points or structure (e.g., bullet points, **bold** KPIs, etc.).
-- Your role is to be as helpful as possible while remaining grounded in real data.
+---
+
+### 🔍 Key Responsibilities:
+- **Use the above data ONLY**. If data is missing, clearly label assumptions.
+- Highlight **best and worst performing dates** from any KPI trend or time series data.
+- For revenue or spend breakdowns:
+  - Rank channels by ROI (Revenue / Spend).
+  - Flag **underperformers** with high cost and low return.
+  - Mention **best-performing campaign or day**, if determinable.
+- Give 2–3 **data-driven** improvement suggestions.
+
+---
+
+### 🧠 Formatting & Style:
+- Use markdown:
+  - **Bold** key metrics (e.g., revenue, CTR)
+  - 📌 Bullet points for suggestions
+  - 📅 Emojis for dates or highlights
+- Do NOT say "not enough data" — give fallback estimates or industry-based advice when needed.
+- Be clear, specific, and practical — never vague.
+
+You are a smart analytics expert trained to **scrutinize patterns** and **recommend action**, not just summarize.
 `;
 
-  // --- Prepare OpenAI call ---
   const callOpenAI = async (model) =>
     openai.chat.completions.create({
       model,
@@ -50,7 +64,6 @@ Guidelines:
       temperature: 0.5,
     });
 
-  // --- Try primary model, fallback if needed ---
   try {
     const completion = await callOpenAI(PREFERRED_MODEL);
     return NextResponse.json({

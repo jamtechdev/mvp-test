@@ -31,7 +31,7 @@ function buildPrompt(caseId, data) {
       ];
 
     case "trend":
-      const seriesTxt = data.series
+      const seriesText = data.series
         .map((p) => {
           const d = new Date(p.x);
           return `${d.toISOString().slice(0, 10)}: ${p.y}`;
@@ -41,11 +41,26 @@ function buildPrompt(caseId, data) {
       return [
         {
           role: "system",
-          content: `You are a metric trend analyst. Analyze anomalies and recommend actions.\n${base.fallbackRule}`,
+          content: `You're a KPI trend analyst.
+
+Given a time series of metric data (e.g. daily KPI values), your job is to:
+
+- Identify the **best performing day** (highest value).
+- Identify the **worst performing day** (lowest value).
+- Calculate total sum and average value.
+- Comment on overall trend (e.g. growth, drop, fluctuation).
+- Suggest **2–3 specific actions** based on these trends.
+
+Respond clearly using **Markdown**:
+- Bold key values and dates.
+- Use emojis if helpful.
+- If data is missing, use thoughtful assumptions but mention they're inferred.
+
+${base.fallbackRule}`,
         },
         {
           role: "user",
-          content: `Metric: ${data.metric}\nTrend:\n${seriesTxt}`,
+          content: `Metric: ${data.metric}\nTrend Data:\n${seriesText}`,
         },
       ];
 
@@ -53,7 +68,11 @@ function buildPrompt(caseId, data) {
       return [
         {
           role: "system",
-          content: `You're an ad performance specialist. Flag best/worst performers and suggest fixes or reallocations.\n${base.fallbackRule}`,
+          content:
+            `You're an ad performance specialist. Based on the ad data:\n\n` +
+            `- Highlight best and worst performers\n` +
+            `- Mention if any ad overperforms on cost-efficiency (ROAS, CPC, etc.)\n` +
+            `- Recommend reallocation or copy/design optimizations\n\n${base.fallbackRule}`,
         },
         {
           role: "user",
@@ -65,7 +84,11 @@ function buildPrompt(caseId, data) {
       return [
         {
           role: "system",
-          content: `You're a campaign reviewer. Rank performance, flag issues (e.g., high spend, low return), and suggest next steps.\n${base.fallbackRule}`,
+          content:
+            `You're a campaign performance analyst. Analyze campaigns to:\n\n` +
+            `- Rank them by ROI or engagement\n` +
+            `- Flag poor performers or high-cost/low-return ones\n` +
+            `- Suggest 2–3 improvements or A/B test recommendations\n\n${base.fallbackRule}`,
         },
         {
           role: "user",
@@ -77,7 +100,10 @@ function buildPrompt(caseId, data) {
       return [
         {
           role: "system",
-          content: `You're a KPI specialist. Compare actuals to targets and provide 2–3 concise suggestions.\n${base.fallbackRule}`,
+          content:
+            `You're a KPI review expert. Compare actuals vs targets:\n\n` +
+            `- Highlight missed or exceeded goals\n` +
+            `- Suggest 2–3 tactical recommendations to improve underperforming KPIs\n\n${base.fallbackRule}`,
         },
         {
           role: "user",
@@ -91,7 +117,10 @@ function buildPrompt(caseId, data) {
       return [
         {
           role: "system",
-          content: `You're a channel engagement expert. Identify top/weak platforms and suggest 2 optimizations.\n${base.fallbackRule}`,
+          content:
+            `You're a channel performance expert. Analyze the session split:\n\n` +
+            `- Identify the most and least effective channels\n` +
+            `- Suggest ways to boost weak channels or double down on strong ones\n\n${base.fallbackRule}`,
         },
         {
           role: "user",
@@ -105,7 +134,10 @@ function buildPrompt(caseId, data) {
       return [
         {
           role: "system",
-          content: `You're a UX device analyst. Based on session share by device, suggest if mobile/desktop UX should be optimized.\n${base.fallbackRule}`,
+          content:
+            `You're a UX strategist. Based on device sessions:\n\n` +
+            `- Detect over/under-utilized platforms (mobile, tablet, desktop)\n` +
+            `- Suggest if UX improvements are needed for certain devices\n\n${base.fallbackRule}`,
         },
         {
           role: "user",
@@ -119,13 +151,22 @@ function buildPrompt(caseId, data) {
       return [
         {
           role: "system",
-          content: `You're a revenue analyst. Spot most/least efficient channels and suggest budget shifts or focus areas.\n${base.fallbackRule}`,
+          content:
+            `You're a senior revenue analyst. Use the revenue data (and optionally campaign/ad data) to:\n\n` +
+            `- Rank channels by **ROI** or revenue contribution\n` +
+            `- Flag channels with high spend but poor return\n` +
+            `- Recommend 2–3 specific optimizations or reallocations\n` +
+            `- Mention the **best day or campaign** if determinable from available data\n\n` +
+            `Use clear **Markdown formatting** with bold, bullets, and emojis where appropriate.\n${base.fallbackRule}`,
         },
         {
           role: "user",
-          content: `Revenue by Channel:\n${data.labels
-            .map((label, i) => `${label}: $${data.series[i]}`)
-            .join("\n")}`,
+          content:
+            `Revenue by Channel:\n${data.labels
+              .map((label, i) => `${label}: $${data.series[i]}`)
+              .join("\n")}` +
+            `\n\nCampaigns:\n${JSON.stringify(data.campaigns || [], null, 2)}` +
+            `\n\nAds:\n${JSON.stringify(data.ads || [], null, 2)}`,
         },
       ];
 
@@ -133,7 +174,7 @@ function buildPrompt(caseId, data) {
       return [
         {
           role: "system",
-          content: `You're a marketing assistant. Summarize insights and recommend 2–3 improvements.\n${base.fallbackRule}`,
+          content: `You're a marketing assistant. Summarize helpful insights and suggest 2–3 improvements.\n${base.fallbackRule}`,
         },
         {
           role: "user",
@@ -177,7 +218,11 @@ export async function POST(req) {
       promptData = payload;
     } else if (payload?.label?.toLowerCase().includes("revenue per channel")) {
       caseId = "revenueByChannel";
-      promptData = payload;
+      promptData = {
+        ...payload,
+        campaigns: payload.campaign_analytics?.campaigns,
+        ads: payload.campaign_analytics?.ads,
+      };
     } else if (kpi && targets) {
       caseId = "kpiTargets";
       promptData = { kpi, targets };
