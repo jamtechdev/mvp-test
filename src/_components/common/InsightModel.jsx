@@ -268,7 +268,7 @@ export default function InfoPopover({
               onMouseEnter={() => setShow(true)}
               onMouseLeave={leave}
             >
-              {/* <Popover.Body
+              <Popover.Body
                 className="fs-12 rounded shadow-sm"
                 style={{
                   minWidth: "315px",
@@ -321,64 +321,6 @@ export default function InfoPopover({
                             </ReactMarkdown>
                           </div>
                         ))}
-                    </div>
-
-                    {visible === bullets.length && (
-                      <div className="text-center text-success small mt-2">
-                        ✔ Done analyzing
-                      </div>
-                    )}
-                  </>
-                )}
-              </Popover.Body> */}
-              <Popover.Body
-                className="fs-12 rounded shadow-sm"
-                style={{
-                  minWidth: "300px",
-                  backgroundColor: isDark ? "#1e1e1e" : "#ffffff",
-                  color: isDark ? "#ffffff" : "#212529",
-                }}
-              >
-                <div
-                  className="d-flex gap-2 align-items-center justify-content-center fw-semibold mb-3"
-                  style={{
-                    color: isDark ? "#5ee8e8" : "#007777",
-                  }}
-                >
-                  <FiZap size={18} />
-                  <span>{title}</span>
-                </div>
-
-                {loading ? (
-                  <div className="text-center py-2">
-                    <Spinner
-                      animation="border"
-                      variant="secondary"
-                      size="sm"
-                      className="me-2"
-                    />
-                    <span className="small">Analyzing...</span>
-                  </div>
-                ) : bullets.length === 0 ? (
-                  <p className="text-center text-muted small mb-0">
-                    Insight Unavailable
-                  </p>
-                ) : (
-                  <>
-                    <div
-                      style={{
-                        maxHeight: "280px",
-                        overflowY: "auto",
-                        paddingRight: "6px",
-                      }}
-                    >
-                      {hasMounted && (
-                        <div className="mb-3 rounded" style={bulletStyle}>
-                          <ReactMarkdown components={markdownComponents}>
-                            {` Insight Unavailable : WIP `}
-                          </ReactMarkdown>
-                        </div>
-                      )}
                     </div>
 
                     {visible === bullets.length && (
