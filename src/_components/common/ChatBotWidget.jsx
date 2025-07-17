@@ -155,20 +155,39 @@ function ChatBox({ onClose, theme, aiInput, contextTitle, sessionId }) {
     onClose();
   };
 
+  // const bubbleStyle1 = (isUser) => ({
+  //   borderRadius: "1rem",
+
+  //   padding: "0.6rem 1rem",
+
+  //   maxWidth: "85%",
+
+  //   boxShadow: theme.scheme === "dark" ? "0 6px 24px rgba(0,0,0,0.6)" : "",
+
+  //   fontStyle: "italic",
+
+  //   backgroundColor: isUser ? theme.userBubbleBg : theme.assistantBubbleBg,
+
+  //   color: isUser ? theme.userBubbleText : theme.assistantBubbleText,
+  // });
+
   const bubbleStyle = (isUser) => ({
     borderRadius: "1rem",
-
-    padding: "0.6rem 1rem",
-
+    padding: "0.8rem 1.3rem",
     maxWidth: "85%",
-
-    boxShadow: theme.scheme === "dark" ? "0 6px 24px rgba(0,0,0,0.6)" : "",
-
-    fontStyle: "italic",
-
     backgroundColor: isUser ? theme.userBubbleBg : theme.assistantBubbleBg,
-
     color: isUser ? theme.userBubbleText : theme.assistantBubbleText,
+    fontStyle: "italic",
+    fontSize: "1rem",
+    border: "1px solid rgba(0, 0, 0, 0.06)",
+
+    // 🧱 Clearer, crisper gray shadow
+    boxShadow:
+      theme.scheme === "dark"
+        ? "0 6px 20px rgba(0, 0, 0, 0.5)"
+        : "0 8px 24px rgba(0, 0, 0, 0.25)",
+
+    transition: "box-shadow 0.3s ease, transform 0.3s ease",
   });
 
   return (
