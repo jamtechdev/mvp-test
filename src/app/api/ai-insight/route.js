@@ -20,13 +20,25 @@ function buildPrompt(caseId, data) {
       return [
         {
           role: "system",
-          content: `You're a funnel expert. Identify biggest drop-offs and suggest 2–3 improvements.\n${base.fallbackRule}`,
+          content: `You're a **funnel analyst**. Correlate funnel drop-offs with **device type**, **session sources**, and **channel performance**. Identify where most users fall off and why, linking back to top devices or traffic sources. Recommend 2–3 improvements with attribution logic.
+
+${base.fallbackRule}`,
         },
         {
           role: "user",
           content:
-            "Funnel stages:\n" +
-            data.stages.map((s) => `${s.name}: ${s.value}`).join("\n"),
+            `Funnel stages:\n${data.stages
+              .map((s) => `${s.name}: ${s.value}`)
+              .join("\n")}` +
+            `\n\nDevice Sessions:\n${JSON.stringify(
+              data.deviceSessions || {},
+              null,
+              2
+            )}\n\nSessions by Channel:\n${JSON.stringify(
+              data.sessionsByChannel || {},
+              null,
+              2
+            )}\n\nCampaigns:\n${JSON.stringify(data.campaigns || [], null, 2)}`,
         },
       ];
 
@@ -43,24 +55,26 @@ function buildPrompt(caseId, data) {
           role: "system",
           content: `You're a KPI trend analyst.
 
-Given a time series of metric data (e.g. daily KPI values), your job is to:
-
-- Identify the **best performing day** (highest value).
-- Identify the **worst performing day** (lowest value).
-- Calculate total sum and average value.
-- Comment on overall trend (e.g. growth, drop, fluctuation).
-- Suggest **2–3 specific actions** based on these trends.
-
-Respond clearly using **Markdown**:
-- Bold key values and dates.
-- Use emojis if helpful.
-- If data is missing, use thoughtful assumptions but mention they're inferred.
+- Identify best and worst performing days.
+- Relate changes to funnel drop-offs, revenue shifts, or traffic surges.
+- Link spikes/dips to campaigns or devices.
+- Recommend specific day-based optimizations.
 
 ${base.fallbackRule}`,
         },
         {
           role: "user",
-          content: `Metric: ${data.metric}\nTrend Data:\n${seriesText}`,
+          content:
+            `Metric: ${data.metric}\n\nTrend Data:\n${seriesText}` +
+            `\n\nFunnels:\n${JSON.stringify(
+              data.funnel || {},
+              null,
+              2
+            )}\n\nRevenue by Channel:\n${JSON.stringify(
+              data.revenueByChannel || {},
+              null,
+              2
+            )}\n\nCampaigns:\n${JSON.stringify(data.campaigns || [], null, 2)}`,
         },
       ];
 
@@ -68,15 +82,27 @@ ${base.fallbackRule}`,
       return [
         {
           role: "system",
-          content:
-            `You're an ad performance specialist. Based on the ad data:\n\n` +
-            `- Highlight best and worst performers\n` +
-            `- Mention if any ad overperforms on cost-efficiency (ROAS, CPC, etc.)\n` +
-            `- Recommend reallocation or copy/design optimizations\n\n${base.fallbackRule}`,
+          content: `You're an **ad performance specialist**. Rank ads by **ROAS**, **Cost/KPI**, and **conversions**.
+- Link ad performance to revenue per channel, funnel conversion, and session source.
+- Suggest actionable improvements per ad.
+
+${base.fallbackRule}`,
         },
         {
           role: "user",
-          content: `Ad Data:\n${JSON.stringify(data.ads, null, 2)}`,
+          content: `Ads:\n${JSON.stringify(
+            data.ads,
+            null,
+            2
+          )}\n\nCampaigns:\n${JSON.stringify(
+            data.campaigns || [],
+            null,
+            2
+          )}\n\nRevenue by Channel:\n${JSON.stringify(
+            data.revenueByChannel || {},
+            null,
+            2
+          )}\n\nFunnels:\n${JSON.stringify(data.funnel || {}, null, 2)}`,
         },
       ];
 
@@ -84,15 +110,29 @@ ${base.fallbackRule}`,
       return [
         {
           role: "system",
-          content:
-            `You're a campaign performance analyst. Analyze campaigns to:\n\n` +
-            `- Rank them by ROI or engagement\n` +
-            `- Flag poor performers or high-cost/low-return ones\n` +
-            `- Suggest 2–3 improvements or A/B test recommendations\n\n${base.fallbackRule}`,
+          content: `You're a campaign performance analyst.
+
+- Rank campaigns by ROI and Cost per KPI.
+- Connect campaign performance to session traffic, device engagement, and final funnel conversion.
+- Suggest reallocations based on results.
+
+${base.fallbackRule}`,
         },
         {
           role: "user",
-          content: `Campaigns:\n${JSON.stringify(data.campaigns, null, 2)}`,
+          content: `Campaigns:\n${JSON.stringify(
+            data.campaigns,
+            null,
+            2
+          )}\n\nSessions by Channel:\n${JSON.stringify(
+            data.sessionsByChannel || {},
+            null,
+            2
+          )}\n\nDevice Sessions:\n${JSON.stringify(
+            data.deviceSessions || {},
+            null,
+            2
+          )}\n\nFunnels:\n${JSON.stringify(data.funnel || {}, null, 2)}`,
         },
       ];
 
@@ -100,16 +140,25 @@ ${base.fallbackRule}`,
       return [
         {
           role: "system",
-          content:
-            `You're a KPI review expert. Compare actuals vs targets:\n\n` +
-            `- Highlight missed or exceeded goals\n` +
-            `- Suggest 2–3 tactical recommendations to improve underperforming KPIs\n\n${base.fallbackRule}`,
+          content: `You're a KPI expert. Compare actual vs target KPIs, identify shortfalls, and relate them to revenue, ad campaigns, and funnel issues.
+
+${base.fallbackRule}`,
         },
         {
           role: "user",
           content: `KPIs:\n${JSON.stringify(
             data.kpi
-          )}\nTargets:\n${JSON.stringify(data.targets)}`,
+          )}\n\nTargets:\n${JSON.stringify(
+            data.targets
+          )}\n\nFunnels:\n${JSON.stringify(
+            data.funnel || {},
+            null,
+            2
+          )}\n\nRevenue:\n${JSON.stringify(
+            data.revenueByChannel || {},
+            null,
+            2
+          )}\n\nCampaigns:\n${JSON.stringify(data.campaigns || [], null, 2)}`,
         },
       ];
 
@@ -117,16 +166,27 @@ ${base.fallbackRule}`,
       return [
         {
           role: "system",
-          content:
-            `You're a channel performance expert. Analyze the session split:\n\n` +
-            `- Identify the most and least effective channels\n` +
-            `- Suggest ways to boost weak channels or double down on strong ones\n\n${base.fallbackRule}`,
+          content: `You're a channel acquisition strategist.
+
+- Analyze session volumes per channel.
+- Connect to funnel entry rates and channel-specific conversion or drop-off.
+- Mention impact on revenue and possible redirections.
+
+${base.fallbackRule}`,
         },
         {
           role: "user",
-          content: `Sessions by channel:\n${data.labels
+          content: `Sessions by Channel:\n${data.labels
             .map((label, i) => `${label}: ${data.series[i]}`)
-            .join("\n")}`,
+            .join("\n")}\n\nRevenue by Channel:\n${JSON.stringify(
+            data.revenueByChannel || {},
+            null,
+            2
+          )}\n\nFunnels:\n${JSON.stringify(
+            data.funnel || {},
+            null,
+            2
+          )}\n\nCampaigns:\n${JSON.stringify(data.campaigns || [], null, 2)}`,
         },
       ];
 
@@ -134,16 +194,27 @@ ${base.fallbackRule}`,
       return [
         {
           role: "system",
-          content:
-            `You're a UX strategist. Based on device sessions:\n\n` +
-            `- Detect over/under-utilized platforms (mobile, tablet, desktop)\n` +
-            `- Suggest if UX improvements are needed for certain devices\n\n${base.fallbackRule}`,
+          content: `You're a UX + CRO analyst.
+
+- Compare session volumes by device type.
+- Link usage patterns to funnel drop-off or completion.
+- Mention channel/device overlaps or problems.
+
+${base.fallbackRule}`,
         },
         {
           role: "user",
-          content: `Device sessions:\n${data.labels
+          content: `Device Sessions:\n${data.labels
             .map((label, i) => `${label}: ${data.series[i]}`)
-            .join("\n")}`,
+            .join("\n")}\n\nFunnels:\n${JSON.stringify(
+            data.funnel || {},
+            null,
+            2
+          )}\n\nSessions by Channel:\n${JSON.stringify(
+            data.sessionsByChannel || {},
+            null,
+            2
+          )}\n\nCampaigns:\n${JSON.stringify(data.campaigns || [], null, 2)}`,
         },
       ];
 
@@ -151,22 +222,41 @@ ${base.fallbackRule}`,
       return [
         {
           role: "system",
-          content:
-            `You're a senior revenue analyst. Use the revenue data (and optionally campaign/ad data) to:\n\n` +
-            `- Rank channels by **ROI** or revenue contribution\n` +
-            `- Flag channels with high spend but poor return\n` +
-            `- Recommend 2–3 specific optimizations or reallocations\n` +
-            `- Mention the **best day or campaign** if determinable from available data\n\n` +
-            `Use clear **Markdown formatting** with bold, bullets, and emojis where appropriate.\n${base.fallbackRule}`,
+          content: `You're a **senior revenue analyst**. Your job is to provide revenue-based insights with **deep attribution logic**.
+
+- Rank channels by revenue.
+- Attribute revenue to relevant **campaigns and ads**.
+- Connect revenue results to **sessions**, **devices**, and **funnel performance**.
+- If revenue is high but conversions are low, suggest improvements.
+- Recommend budget reallocations only if justified.
+
+${base.fallbackRule}`,
         },
         {
           role: "user",
-          content:
-            `Revenue by Channel:\n${data.labels
-              .map((label, i) => `${label}: $${data.series[i]}`)
-              .join("\n")}` +
-            `\n\nCampaigns:\n${JSON.stringify(data.campaigns || [], null, 2)}` +
-            `\n\nAds:\n${JSON.stringify(data.ads || [], null, 2)}`,
+          content: `Revenue by Channel:\n${data.labels
+            .map((label, i) => `${label}: $${data.series[i]}`)
+            .join("\n")}\n\nFunnels:\n${JSON.stringify(
+            data.funnel || {},
+            null,
+            2
+          )}\n\nCampaigns:\n${JSON.stringify(
+            data.campaigns || [],
+            null,
+            2
+          )}\n\nAds:\n${JSON.stringify(
+            data.ads || [],
+            null,
+            2
+          )}\n\nDevice Sessions:\n${JSON.stringify(
+            data.deviceSessions || {},
+            null,
+            2
+          )}\n\nSessions by Channel:\n${JSON.stringify(
+            data.sessionsByChannel || {},
+            null,
+            2
+          )}`,
         },
       ];
 
@@ -174,7 +264,9 @@ ${base.fallbackRule}`,
       return [
         {
           role: "system",
-          content: `You're a marketing assistant. Summarize helpful insights and suggest 2–3 improvements.\n${base.fallbackRule}`,
+          content: `You're a marketing analyst. Provide 360° insights across revenue, sessions, funnel, campaigns, and KPIs.
+
+${base.fallbackRule}`,
         },
         {
           role: "user",

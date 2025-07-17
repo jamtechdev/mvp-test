@@ -27,13 +27,21 @@ export default function KPIStatCards() {
         const metric = kpiData.find((m) => m.key === key);
         if (!metric) return null;
 
-        const { value, target = 1, percentage = 0 } = metric;
+        const { value, target = 1, percentage = 0, trend, change } = metric;
+
         const variant =
           percentage >= 100
             ? "success"
             : percentage >= 75
             ? "warning"
             : "danger";
+
+        const trendIcon =
+          trend === "increasing" ? (
+            <span className="text-success ms-2">↑ {change}%</span>
+          ) : trend === "decreasing" ? (
+            <span className="text-danger ms-2">↓ {Math.abs(change)}%</span>
+          ) : null;
 
         return (
           <Col xl={3} md={6} key={key}>
@@ -43,6 +51,7 @@ export default function KPIStatCards() {
                 placement="bottom"
                 kpi={{ [key]: value }}
                 targets={{ [key]: target }}
+                related={metric.related} // ✅ pass for chat insight prompts
                 description="Progress toward target"
               />
 
@@ -58,6 +67,7 @@ export default function KPIStatCards() {
                       >
                         {percentage.toFixed(0)}%
                       </span>
+                      {trendIcon}
                     </h3>
                   </div>
                   <div style={{ fontSize: 28 }}>{icon}</div>

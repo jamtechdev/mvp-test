@@ -6,11 +6,10 @@ import ImagePopup from "./ImagePopup";
 import VideoPopup from "./VideoModal";
 
 const PLACEHOLDER = "/images/img-placeholder.jpg";
-// const ACCENT = "#A4E5DF";
-const ACCENT = "#baf0eb"; // mint highlight
-
+const ACCENT = "#baf0eb";
 const ACCENT_DARK = "#04524A";
 const CHIP_SIZE = 28;
+
 export default function TopAdCreative({ ad = [] }) {
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [videoUrl, setVideoUrl] = useState("");
@@ -45,7 +44,6 @@ export default function TopAdCreative({ ad = [] }) {
     setShowImageModal(true);
   };
 
-  /* play button overlay style (centre of thumbnail) */
   const thumbOverlay = {
     position: "absolute",
     top: "50%",
@@ -60,6 +58,8 @@ export default function TopAdCreative({ ad = [] }) {
     justifyContent: "center",
     pointerEvents: "none",
   };
+
+  const safeNumber = (n) => (n != null ? n.toLocaleString() : "-");
 
   return (
     <>
@@ -81,6 +81,7 @@ export default function TopAdCreative({ ad = [] }) {
           const ctr = creative.impressions
             ? ((creative.clicks / creative.impressions) * 100).toFixed(2)
             : "—";
+
           const cpl =
             creative.leads && creative.leads > 0
               ? (creative.spend / creative.leads).toFixed(2)
@@ -157,16 +158,15 @@ export default function TopAdCreative({ ad = [] }) {
               <div className="flex-grow-1">
                 <h6 className="fw-semibold mb-1">{creative.ad_name}</h6>
                 <div className="small text-muted mb-2">
-                  {creative.platform} • {creative.objective}
+                  {creative.platform ?? "—"} • {creative.objective ?? "—"}
                 </div>
 
                 <div className="d-flex flex-wrap gap-4 small value-text">
                   <span>
-                    <strong>{creative.clicks.toLocaleString()}</strong> clicks
+                    <strong>{safeNumber(creative.clicks)}</strong> clicks
                   </span>
                   <span>
-                    <strong>{creative.impressions.toLocaleString()}</strong>{" "}
-                    impr.
+                    <strong>{safeNumber(creative.impressions)}</strong> impr.
                   </span>
                   <span>
                     CTR <strong>{ctr}%</strong>

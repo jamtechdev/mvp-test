@@ -73,9 +73,23 @@ export default function CampaignAnalytics() {
 
               <InfoPopover
                 title="Top Campaigns – AI Insight"
-                payload={{ campaigns }}
                 placement="bottom"
-                description="Replicate Campaign A's targeting in weaker campaigns."
+                description="Performance summary across clicks, spend, and revenue."
+                payload={{
+                  type: "campaign_leaderboard",
+                  context: {
+                    max_clicks: maxClicks,
+                    max_spend: maxSpend,
+                    max_revenue: maxRevenue,
+                    total_campaigns: campaigns.length,
+                  },
+                  campaigns: campaigns.map((c) => ({
+                    name: c.campaign_name,
+                    clicks: c.clicks,
+                    spend: c.media_cost,
+                    revenue: c.revenue,
+                  })),
+                }}
               />
             </div>
 

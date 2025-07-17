@@ -4,230 +4,410 @@
       {
         "key": "spend",
         "label": "Spend",
-        "value": 3450,
-        "target": 4000,
-        "unit": "USD",
-        "percentage": 86.25
+        "value": 3200,
+        "target": 5000,
+        "percentage": 64,
+        "trend": "increasing",
+        "change": 8.2,
+        "related": {
+          "ads": ["ad_1", "ad_2"],
+          "channels": ["Google", "Facebook"],
+          "funnel_stage": "awareness",
+          "dates": ["2024-07-10", "2024-07-11", "2024-07-12"]
+        }
       },
       {
         "key": "impressions",
         "label": "Impressions",
-        "value": 88000,
-        "target": 100000,
-        "unit": "impressions",
-        "percentage": 88.0
+        "value": 125000,
+        "target": 150000,
+        "percentage": 83,
+        "trend": "increasing",
+        "change": 5.4,
+        "related": {
+          "ads": ["ad_1", "ad_3"],
+          "channels": ["Google"],
+          "funnel_stage": "awareness",
+          "dates": ["2024-07-10", "2024-07-13"]
+        }
       },
       {
         "key": "leads",
         "label": "Leads",
-        "value": 560,
-        "target": 800,
-        "unit": "leads",
-        "percentage": 70.0
+        "value": 230,
+        "target": 300,
+        "percentage": 77,
+        "trend": "decreasing",
+        "change": -4.1,
+        "related": {
+          "ads": ["ad_4", "ad_5"],
+          "channels": ["LinkedIn"],
+          "funnel_stage": "consideration",
+          "dates": ["2024-07-10", "2024-07-12"]
+        }
       },
       {
         "key": "revenue",
         "label": "Revenue",
-        "value": 2400,
-        "target": 3000,
-        "unit": "USD",
-        "percentage": 80.0
+        "value": 4800,
+        "target": 7000,
+        "percentage": 69,
+        "trend": "increasing",
+        "change": 6.7,
+        "related": {
+          "ads": ["ad_4", "ad_5", "ad_6"],
+          "channels": ["Facebook", "Google"],
+          "funnel_stage": "conversion",
+          "dates": ["2024-07-12", "2024-07-13", "2024-07-14"]
+        }
       }
     ]
   },
+
   "campaign_funnel": {
     "stages": [
-      { "name": "Impressions", "value": 12000 },
-      { "name": "Clicks", "value": 7800 },
-      { "name": "Leads", "value": 3400 },
-      { "name": "Conversions", "value": 850 },
-      { "name": "Revenue", "value": 120 }
+      {
+        "name": "Impressions",
+        "value": 120000,
+        "related": {
+          "channels": ["Google", "Facebook"],
+          "ads": ["ad_1", "ad_2"],
+          "campaigns": ["Spring Push", "Retargeting"],
+          "dates": ["2025-07-10", "2025-07-12"]
+        }
+      },
+      {
+        "name": "Clicks",
+        "value": 18000,
+        "related": {
+          "channels": ["Google"],
+          "ads": ["ad_1"],
+          "campaigns": ["Spring Push"],
+          "dates": ["2025-07-10"]
+        }
+      },
+      {
+        "name": "Leads",
+        "value": 2300,
+        "related": {
+          "channels": ["Facebook"],
+          "ads": ["ad_2"],
+          "campaigns": ["Retargeting"],
+          "dates": ["2025-07-11"]
+        }
+      },
+      {
+        "name": "Conversions",
+        "value": 540,
+        "related": {
+          "channels": ["Google", "Facebook"],
+          "ads": ["ad_1", "ad_2"],
+          "campaigns": ["Spring Push", "Retargeting"],
+          "dates": ["2025-07-12"]
+        }
+      },
+      {
+        "name": "Revenue",
+        "value": 12800,
+        "related": {
+          "channels": ["Google"],
+          "ads": ["ad_1"],
+          "campaigns": ["Spring Push"],
+          "dates": ["2025-07-12"]
+        }
+      }
+    ],
+    "drop_off": [
+      {
+        "from": "Impressions",
+        "to": "Clicks",
+        "rate": 85,
+        "related": {
+          "channels": ["Facebook"],
+          "ads": ["ad_2"]
+        }
+      },
+      {
+        "from": "Leads",
+        "to": "Conversions",
+        "rate": 76.5,
+        "related": {
+          "channels": ["Google"],
+          "campaigns": ["Spring Push"]
+        }
+      }
+    ],
+    "by_date": [
+      {
+        "date": "2025-07-10",
+        "Impressions": 40000,
+        "Clicks": 6000,
+        "Leads": 800,
+        "Conversions": 200,
+        "Revenue": 5000
+      },
+      {
+        "date": "2025-07-11",
+        "Impressions": 50000,
+        "Clicks": 9000,
+        "Leads": 9000,
+        "Conversions": 150,
+        "Revenue": 4200
+      },
+      {
+        "date": "2025-07-12",
+        "Impressions": 30000,
+        "Clicks": 3000,
+        "Leads": 500,
+        "Conversions": 190,
+        "Revenue": 3600
+      }
     ]
   },
+
   "kpi_trend": {
     "metrics": [
       {
         "key": "spend",
-        "label": "Spend",
-        "unit": "USD",
-        "total": 150000,
+        "label": "Ad Spend",
+        "total": 158000,
+        "trend": "up",
+        "change": 12.5,
         "daily": [
-          { "date": "2024-07-01", "value": 5200 },
-          { "date": "2024-07-02", "value": 5100 },
-          { "date": "2024-07-03", "value": 5000 },
-          { "date": "2024-07-04", "value": 4900 },
-          { "date": "2024-07-05", "value": 5300 }
+          {
+            "date": "2025-07-10",
+            "value": 52000,
+            "related_campaigns": ["Summer Push"],
+            "related_ads": ["ad_1", "ad_3"],
+            "related_channels": ["Google"]
+          },
+          {
+            "date": "2025-07-11",
+            "value": 48000,
+            "related_campaigns": ["Summer Push"],
+            "related_ads": ["ad_1"],
+            "related_channels": ["Meta"]
+          },
+          {
+            "date": "2025-07-12",
+            "value": 58000,
+            "related_campaigns": ["Retargeting Blast"],
+            "related_ads": ["ad_4"],
+            "related_channels": ["Instagram"]
+          }
         ]
       },
       {
         "key": "impressions",
         "label": "Impressions",
-        "unit": "impressions",
-        "total": 2700000,
+        "total": 800000,
+        "trend": "down",
+        "change": -5.2,
         "daily": [
-          { "date": "2024-07-01", "value": 91000 },
-          { "date": "2024-07-02", "value": 89000 },
-          { "date": "2024-07-03", "value": 87000 },
-          { "date": "2024-07-04", "value": 93000 },
-          { "date": "2024-07-05", "value": 91000 }
+          {
+            "date": "2025-07-10",
+            "value": 260000,
+            "related_campaigns": ["Awareness"],
+            "related_ads": ["ad_1", "ad_2"],
+            "related_channels": ["YouTube", "Google"]
+          },
+          {
+            "date": "2025-07-11",
+            "value": 270000,
+            "related_campaigns": ["Awareness"],
+            "related_ads": ["ad_3"],
+            "related_channels": ["Google"]
+          },
+          {
+            "date": "2025-07-12",
+            "value": 270000,
+            "related_campaigns": ["Brand Recall"],
+            "related_ads": ["ad_4"],
+            "related_channels": ["Facebook"]
+          }
         ]
       },
       {
         "key": "clicks",
         "label": "Clicks",
-        "unit": "clicks",
-        "total": 240000,
+        "total": 12400,
+        "trend": "up",
+        "change": 9.3,
         "daily": [
-          { "date": "2024-07-01", "value": 8000 },
-          { "date": "2024-07-02", "value": 7900 },
-          { "date": "2024-07-03", "value": 8200 },
-          { "date": "2024-07-04", "value": 7800 },
-          { "date": "2024-07-05", "value": 8100 }
+          {
+            "date": "2025-07-10",
+            "value": 4000,
+            "related_campaigns": ["Summer Push"],
+            "related_ads": ["ad_1"],
+            "related_channels": ["Google"]
+          },
+          {
+            "date": "2025-07-11",
+            "value": 3800,
+            "related_campaigns": ["Retargeting"],
+            "related_ads": ["ad_2"],
+            "related_channels": ["Meta"]
+          },
+          {
+            "date": "2025-07-12",
+            "value": 4600,
+            "related_campaigns": ["Brand Blast"],
+            "related_ads": ["ad_3", "ad_4"],
+            "related_channels": ["YouTube"]
+          }
         ]
       },
       {
         "key": "leads",
         "label": "Leads",
-        "unit": "leads",
-        "total": 36000,
+        "total": 2100,
+        "trend": "flat",
+        "change": 0,
         "daily": [
-          { "date": "2024-07-01", "value": 1200 },
-          { "date": "2024-07-02", "value": 1100 },
-          { "date": "2024-07-03", "value": 1150 },
-          { "date": "2024-07-04", "value": 1180 },
-          { "date": "2024-07-05", "value": 1170 }
+          {
+            "date": "2025-07-10",
+            "value": 700,
+            "related_campaigns": ["Lead Magnet A"],
+            "related_ads": ["ad_2"],
+            "related_channels": ["Meta"]
+          },
+          {
+            "date": "2025-07-11",
+            "value": 700,
+            "related_campaigns": ["Lead Magnet A"],
+            "related_ads": ["ad_2", "ad_5"],
+            "related_channels": ["Facebook"]
+          },
+          {
+            "date": "2025-07-12",
+            "value": 700,
+            "related_campaigns": ["Lead Magnet B"],
+            "related_ads": ["ad_6"],
+            "related_channels": ["Instagram"]
+          }
         ]
       },
       {
         "key": "revenue",
         "label": "Revenue",
-        "unit": "USD",
-        "total": 18000,
+        "total": 61200,
+        "trend": "up",
+        "change": 15.9,
         "daily": [
-          { "date": "2024-07-01", "value": 600 },
-          { "date": "2024-07-02", "value": 590 },
-          { "date": "2024-07-03", "value": 620 },
-          { "date": "2024-07-04", "value": 580 },
-          { "date": "2024-07-05", "value": 610 }
+          {
+            "date": "2025-07-10",
+            "value": 20000,
+            "related_campaigns": ["Conversion Booster"],
+            "related_ads": ["ad_3"],
+            "related_channels": ["Google"]
+          },
+          {
+            "date": "2025-07-11",
+            "value": 18000,
+            "related_campaigns": ["Conversion Booster"],
+            "related_ads": ["ad_3", "ad_5"],
+            "related_channels": ["Meta"]
+          },
+          {
+            "date": "2025-07-12",
+            "value": 23200,
+            "related_campaigns": ["Flash Sale"],
+            "related_ads": ["ad_6", "ad_7"],
+            "related_channels": ["Instagram", "YouTube"]
+          }
         ]
       }
     ]
   },
+
   "channel_metrics": {
     "device_sessions": {
       "labels": ["Mobile", "Desktop", "Tablet"],
-      "series": [550, 350, 100]
+      "series": [1234, 512, 800]
     },
     "sessions_by_channel": {
-      "labels": [
-        "Snapchat",
-        "TikTok",
-        "X",
-        "Pinterest",
-        "LinkedIn",
-        "Google Ads"
-      ],
-      "series": [176000, 149000, 122000, 95000, 73300, 42150]
+      "labels": ["Google", "Facebook", "Instagram", "LinkedIn"],
+      "series": [12000, 9500, 4100, 2900],
+      "change": [4.2, -2.1, 6.4, 1.1]
     },
     "revenue_per_channel": {
-      "labels": ["Google Ads", "Facebook Ads", "LinkedIn", "Email"],
-      "series": [120000, 95000, 40000, 55000]
+      "labels": ["Google", "Facebook", "Instagram", "LinkedIn"],
+      "series": [5800, 4200, 1900, 7500]
     }
   },
-   "analytics": {
+
+  "analytics": {
     "kpi": {
       "acquisitionCost": 91200,
       "cpa": 8.4
     }
   },
+
   "campaign_analytics": {
+    "summary": {
+      "total_clicks": 30860,
+      "total_spend": 5650.8,
+      "total_revenue": 11277.7,
+      "average_cpa": 3.98,
+      "top_channel": "Google",
+      "top_device": "Mobile"
+    },
     "campaigns": [
       {
-        "campaign_name": "Campaign P",
-        "clicks": 9642,
-        "media_cost": 4112.68,
-        "revenue": 8520
+        "campaign_name": "Campaign A",
+        "clicks": 15230,
+        "media_cost": 2480.5,
+        "revenue": 5842.2,
+        "device_breakdown": {
+          "Mobile": 8720,
+          "Desktop": 4780,
+          "Tablet": 730
+        },
+        "channel": "Google",
+        "date": "2025-07-15",
+        "trend": {
+          "clicks_change_pct": 12.5,
+          "spend_change_pct": -5.8,
+          "revenue_change_pct": 10.2
+        }
       },
       {
-        "campaign_name": "Campaign G",
-        "clicks": 9015,
-        "media_cost": 3210.44,
-        "revenue": 7900
+        "campaign_name": "Campaign B",
+        "clicks": 9200,
+        "media_cost": 1950.0,
+        "revenue": 3260.0,
+        "device_breakdown": {
+          "Mobile": 5100,
+          "Desktop": 3500,
+          "Tablet": 600
+        },
+        "channel": "Facebook",
+        "date": "2025-07-15",
+        "trend": {
+          "clicks_change_pct": -3.2,
+          "spend_change_pct": -1.5,
+          "revenue_change_pct": -2.8
+        }
       },
       {
-        "campaign_name": "Campaign F",
-        "clicks": 8767,
-        "media_cost": 1520.78,
-        "revenue": 6250
-      },
-      {
-        "campaign_name": "Campaign A",
-        "clicks": 8276,
-        "media_cost": 2345.12,
-        "revenue": 7050
-      },
-      {
-        "campaign_name": "Campaign N",
-        "clicks": 8103,
-        "media_cost": 3480.91,
-        "revenue": 6980
-      },
-      {
-        "campaign_name": "Campaign I",
-        "clicks": 7498,
-        "media_cost": 2978.35,
-        "revenue": 6020
-      },
-      {
-        "campaign_name": "Campaign D",
-        "clicks": 6567,
-        "media_cost": 2541.87,
-        "revenue": 5430
-      },
-      {
-        "campaign_name": "Campaign K",
-        "clicks": 6121,
-        "media_cost": 2640.27,
-        "revenue": 5110
-      },
-      {
-        "campaign_name": "Campaign E",
-        "clicks": 5688,
-        "media_cost": 7847.6,
-        "revenue": 4000
-      },
-      {
-        "campaign_name": "Campaign O",
-        "clicks": 5437,
-        "media_cost": 2233.07,
-        "revenue": 4880
-      },
-      {
-        "campaign_name": "Campaign B",
-        "clicks": 5120,
-        "media_cost": 1880.5,
-        "revenue": 4600
-      },
-      {
-        "campaign_name": "Campaign M",
-        "clicks": 4955,
-        "media_cost": 1925.49,
-        "revenue": 4520
-      },
-      {
-        "campaign_name": "Campaign H",
-        "clicks": 4332,
-        "media_cost": 1145.2,
-        "revenue": 3920
-      },
-      {
-        "campaign_name": "Campaign C",
-        "clicks": 3901,
-        "media_cost": 1220.99,
-        "revenue": 3700
+        "campaign_name": "Campaign C",
+        "clicks": 6430,
+        "media_cost": 1220.5,
+        "revenue": 2175.5,
+        "device_breakdown": {
+          "Mobile": 3400,
+          "Desktop": 2400,
+          "Tablet": 630
+        },
+        "channel": "Instagram",
+        "date": "2025-07-15",
+        "trend": {
+          "clicks_change_pct": 4.1,
+          "spend_change_pct": 2.2,
+          "revenue_change_pct": 6.4
+        }
       }
     ],
-
     "ads": [
       {
         "ad_id": "fb‑001",

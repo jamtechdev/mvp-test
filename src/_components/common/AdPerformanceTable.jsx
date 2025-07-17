@@ -2,37 +2,35 @@ import { Card, Table } from "react-bootstrap";
 import InfoPopover from "./InsightModel";
 
 function getKPI(ad) {
-  switch (ad.objective.toLowerCase()) {
+  const obj = ad?.objective?.toLowerCase?.();
+  switch (obj) {
     case "traffic":
       return "CPC";
     case "leads":
       return "CPL";
-    case "conversions":
+    case "sales":
       return "CPA";
-    case "engagement":
-      return "CPE";
     default:
-      return "-";
+      return "KPI";
   }
 }
 
-function getKPIValue(ad) {
-  const { objective, spend, clicks, leads, conversions, engagements } = ad;
-  if (!spend || spend <= 0) return "-";
-
-  switch (objective.toLowerCase()) {
+const getKPIValue = (ad) => {
+  switch (ad.objective.toLowerCase()) {
     case "traffic":
-      return clicks ? (spend / clicks).toFixed(2) : "-";
+      return ad.clicks;
     case "leads":
-      return leads ? (spend / leads).toFixed(2) : "-";
+      return ad.leads;
     case "conversions":
-      return conversions ? (spend / conversions).toFixed(2) : "-";
+      return ad.conversions;
     case "engagement":
-      return engagements ? (spend / engagements).toFixed(2) : "-";
+      return ad.engagements;
+    case "revenue":
+      return ad.revenue;
     default:
-      return "-";
+      return null;
   }
-}
+};
 
 export default function AdPerformanceTable({ ads = [] }) {
   return (
@@ -82,8 +80,18 @@ export default function AdPerformanceTable({ ads = [] }) {
 
                 <td>{ad.objective}</td>
                 <td>{getKPI(ad)}</td>
-                <td className="text-end">${getKPIValue(ad)}</td>
-                <td className="text-end">{ad.impressions.toLocaleString()}</td>
+                <td>
+                  {getKPIValue(ad) && ad.spend
+                    ? `$${(ad.spend / getKPIValue(ad)).toFixed(2)}`
+                    : "—"}
+                </td>
+
+                <td className="text-end">
+                  {ad.impressions != null
+                    ? ad.impressions.toLocaleString()
+                    : "-"}
+                </td>
+
                 <td className="text-end">{ad.clicks.toLocaleString()}</td>
               </tr>
             ))

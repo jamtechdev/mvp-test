@@ -45,8 +45,22 @@ export default function KPITrendCard() {
   const pctToday = best ? Math.round((todayVal / best) * 100) : 0;
 
   const aiPayload = useMemo(
-    () => ({ metric, series: seriesData }),
-    [metric, seriesData]
+    () => ({
+      metric,
+      label: selectedMetric.label,
+      total: selectedMetric.total,
+      trend: selectedMetric.trend,
+      change: selectedMetric.change,
+      series: seriesData,
+      related:
+        selectedMetric.daily?.flatMap((d) => ({
+          date: d.date,
+          ads: d.related_ads || [],
+          campaigns: d.related_campaigns || [],
+          channels: d.related_channels || [],
+        })) || [],
+    }),
+    [metric, selectedMetric, seriesData]
   );
 
   const options = {

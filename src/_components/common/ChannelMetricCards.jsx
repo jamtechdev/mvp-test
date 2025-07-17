@@ -117,6 +117,8 @@ export default function ChannelMetricCards() {
           },
         };
 
+        const maxVal = Math.max(...data.series) * 1.2; // 20% buffer
+
         const barOptions = {
           chart: { type: "bar", toolbar: { show: false } },
           plotOptions: {
@@ -129,7 +131,7 @@ export default function ChannelMetricCards() {
           xaxis: {
             categories,
             min: 0,
-            max: 200_000,
+            max: maxVal, // ✅ dynamically calculated
             tickAmount: 4,
             labels: { formatter: fmtAxis },
           },
@@ -157,12 +159,33 @@ export default function ChannelMetricCards() {
                   placement="bottom"
                   payload={{
                     label,
+                    type,
                     series: data.series,
                     labels: data.labels,
-                    type,
+                    context: {
+                      total: total,
+                      kpis: {
+                        revenue: unified.kpi_cards?.metrics?.find(
+                          (m) => m.key === "revenue"
+                        )?.value,
+                        sessions: unified.kpi_cards?.metrics?.find(
+                          (m) => m.key === "sessions"
+                        )?.value,
+                        spend: unified.kpi_cards?.metrics?.find(
+                          (m) => m.key === "spend"
+                        )?.value,
+                      },
+                      comparison: {
+                        revenue_per_channel:
+                          unified.channel_metrics?.revenue_per_channel || {},
+                        sessions_by_channel:
+                          unified.channel_metrics?.sessions_by_channel || {},
+                        device_sessions:
+                          unified.channel_metrics?.device_sessions || {},
+                      },
+                    },
                   }}
                 />
-              
               </div>
 
               <Chart

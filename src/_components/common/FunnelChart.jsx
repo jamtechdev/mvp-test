@@ -27,7 +27,22 @@ export default function CampaignFunnel() {
           title="Campaign Funnel – AI Insight"
           description="Identify the biggest drop‑offs and optimise."
           placement="bottom"
-          payload={{ stages }}
+          payload={{
+            stages,
+            drop_off: unified.campaign_funnel?.drop_off || [],
+            funnel_by_date: unified.campaign_funnel?.by_date || [],
+            context: {
+              linked_metrics: {
+                cpa: unified.analytics.kpi?.cpa,
+                spend: unified.kpi_cards.metrics.find((m) => m.key === "spend")
+                  ?.value,
+                revenue: unified.kpi_cards.metrics.find(
+                  (m) => m.key === "revenue"
+                )?.value,
+                campaign_count: unified.campaign_analytics?.campaigns?.length,
+              },
+            },
+          }}
         />
       </div>
       <div className="d-flex gap-4 mt-5">
