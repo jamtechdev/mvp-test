@@ -163,7 +163,7 @@ export default function ChannelMetricCards() {
                     series: data.series,
                     labels: data.labels,
                     context: {
-                      total: total,
+                      total,
                       kpis: {
                         revenue: unified.kpi_cards?.metrics?.find(
                           (m) => m.key === "revenue"
@@ -182,7 +182,16 @@ export default function ChannelMetricCards() {
                           unified.channel_metrics?.sessions_by_channel || {},
                         device_sessions:
                           unified.channel_metrics?.device_sessions || {},
+                        channel_device_sessions:
+                          unified.channel_device_sessions || [],
                       },
+                      trends: {
+                        revenue_by_channel_daily:
+                          unified.revenue_by_channel_daily || [],
+                        funnel_by_date: unified.campaign_funnel?.by_date || [],
+                      },
+                      campaigns: unified.campaign_analytics?.campaigns || [],
+                      ads: unified.campaign_analytics?.ads || [],
                     },
                   }}
                 />

@@ -29,9 +29,12 @@ Your job is to analyze interconnected campaign data and provide deeply contextua
 - 📱 **Device Sessions**
 - 🌐 **Sessions by Channel**
 - 💰 **Revenue per Channel**
-- 🎯 **Campaign Funnel** (drop-offs, completions, conversion paths)
+- 📅 **Revenue by Channel Over Time**
+- 🧭 **Channel + Device Cross-Mapping**
+- 🕳️ **Campaign Funnel** (drop-offs, completions, conversion paths)
+- 🗓️ **Funnel by Date** (stage breakdowns over time)
 - 📈 **KPI Trends**
-- 🧩 **Cross-referencing campaign, ad, channel, device, and funnel breakdowns**
+- 🧩 **Cross-referencing campaign, ad, channel, device, and funnel behavior**
 
 ---
 
@@ -47,18 +50,22 @@ ${JSON.stringify(targets || {}, null, 2)}
 ---
 
 📌 Responsibilities:
-- Identify **interdependencies** between KPIs, funnels, revenue, and user behavior by device/channel.
-- Reference funnel stages vs. session sources to detect cause-effect patterns.
-- Rank ads, devices, or channels based on ROI or conversion contributions.
-- Mention **best/worst performing** campaigns, dates, devices, or stages.
-- Flag high-cost low-performing paths.
-- Provide 2–3 **data-driven** recommendations to optimize performance.
+- Identify **interdependencies** between KPIs, funnels, sessions, and revenue over time.
+- Cross-analyze **device sessions by channel** to understand traffic patterns and possible friction points.
+- Highlight **daily revenue trends** by channel and correlate with funnel stage shifts and campaign actions.
+- Detect **date-based changes** in funnel performance using funnel-by-date.
+- Compare **channel-device sessions** to identify platform or device drop-off points.
+- Rank campaigns, ads, devices, or channels based on **ROI**, **conversion lift**, or **session quality**.
+- Mention **top/bottom performers** by revenue, sessions, funnel stage, or device breakdown.
+- Flag high-spend / low-conversion patterns.
+- Provide 2–3 **data-driven optimizations** grounded in measurable metrics.
 
 🧠 Formatting:
 - Use **markdown**
-- Use 📌 bullets, 📅 emojis for date-based insight, and **bold** for key stats
-- Be practical, precise, and **interconnect** different metrics when explaining trends
-- If data is missing, infer reasonably (but mark as an assumption)
+- Use 📌 bullets and 📅 emojis for date insights
+- Bold **key stats** and highlight deltas or drop-offs
+- Be practical, precise, and **interlink metrics** when giving recommendations
+- If a field is missing, intelligently infer or mention it is unavailable
 `;
 
   const openaiCall = async (model) => {

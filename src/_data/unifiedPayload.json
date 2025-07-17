@@ -326,10 +326,11 @@
       "series": [1234, 512, 800]
     },
     "sessions_by_channel": {
-      "labels": ["Google", "Facebook", "Instagram", "LinkedIn"],
-      "series": [12000, 9500, 4100, 2900],
-      "change": [4.2, -2.1, 6.4, 1.1]
+      "labels": ["Google", "Facebook", "Instagram", "LinkedIn", "Snapchat"],
+      "series": [12000, 9500, 4100, 2900, 3200],
+      "change": [4.2, -2.1, 6.4, 1.1, 3.8]
     },
+
     "revenue_per_channel": {
       "labels": ["Google", "Facebook", "Instagram", "LinkedIn"],
       "series": [5800, 4200, 1900, 7500]
@@ -408,6 +409,58 @@
         }
       }
     ],
+    "revenue_by_channel_daily": [
+      {
+        "date": "2025-07-10",
+        "channels": {
+          "Google": 5800,
+          "Facebook": 4200,
+          "Snapchat": 1500
+        }
+      },
+      {
+        "date": "2025-07-11",
+        "channels": {
+          "Google": 4900,
+          "Facebook": 3900,
+          "Snapchat": 1400
+        }
+      },
+      {
+        "date": "2025-07-12",
+        "channels": {
+          "Google": 5100,
+          "Facebook": 4600,
+          "Snapchat": 1700
+        }
+      }
+    ],
+    "channel_device_sessions": [
+      {
+        "channel": "Google",
+        "devices": {
+          "Mobile": 6800,
+          "Desktop": 3800,
+          "Tablet": 1800
+        }
+      },
+      {
+        "channel": "Facebook",
+        "devices": {
+          "Mobile": 6100,
+          "Desktop": 2900,
+          "Tablet": 500
+        }
+      },
+      {
+        "channel": "Snapchat",
+        "devices": {
+          "Mobile": 5200,
+          "Tablet": 700
+        }
+      }
+    ],
+
     "ads": [
       {
         "ad_id": "fb‑001",
@@ -417,7 +470,8 @@
         "impressions": 82450,
         "clicks": 3214,
         "spend": 1500,
-        "thumbnail_url": "/images/advertisement-1.jpg"
+        "thumbnail_url": "/images/advertisement-1.jpg",
+        "revenue": 2200
       },
       {
         "ad_id": "gg‑002",
@@ -429,7 +483,9 @@
         "spend": 3200,
         "leads": 250,
         "video_url": "advertisement-vdo-2.mp4",
-        "thumbnail_url": "/images/advertisement-2.jpg"
+        "thumbnail_url": "/images/advertisement-2.jpg",
+
+        "revenue": 4100
       },
       {
         "ad_id": "li‑003",
@@ -440,7 +496,8 @@
         "clicks": 1120,
         "spend": 2400,
         "conversions": 70,
-        "thumbnail_url": "/images/advertisement-3.webp"
+        "thumbnail_url": "/images/advertisement-3.webp",
+        "revenue": 3600
       },
       {
         "ad_id": "tt‑004",
@@ -452,7 +509,8 @@
         "spend": 800,
         "engagements": 2800,
         "thumbnail_url": "/images/advertisement-4.webp",
-        "video_url": "advertisement-vdo.mp4"
+        "video_url": "advertisement-vdo.mp4",
+        "revenue": 3800
       },
       {
         "ad_id": "tw‑005",
@@ -463,7 +521,8 @@
         "clicks": 2450,
         "spend": 1600,
         "leads": 120,
-        "thumbnail_url": "/images/advertisement-5.jpg"
+        "thumbnail_url": "/images/advertisement-5.jpg",
+        "revenue": 4500
       }
     ]
   }
