@@ -67,9 +67,11 @@ export default function CampaignFilterBar({
 
       <Col className="text-md-end">
         {lastUpdated && (
-          <small className="text-muted me-2">Updated {lastUpdated}</small>
+          <small className="text-white me-2 fw-bolder">
+            Updated {lastUpdated}
+          </small>
         )}
-        <Button size="sm" variant="outline-secondary" onClick={onRefresh}>
+        <Button size="sm" variant="outline-secondary" className="text-black bg-white" onClick={onRefresh}>
           ⟳ Refresh
         </Button>
       </Col>
