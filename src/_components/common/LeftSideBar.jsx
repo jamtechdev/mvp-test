@@ -18,6 +18,7 @@ import DarkModeSwitcher from "./DarkModeSwitcher";
 import Image from "next/image";
 import { toast } from "react-toastify";
 import { Button } from "react-bootstrap";
+import useThemeScheme from "@/hooks/useThemeScheme";
 
 const nav = [
   // {
@@ -49,7 +50,8 @@ export default function LeftSidebar({ manageToggleButton, setToggleButton }) {
   const pathname = usePathname();
   const router = useRouter();
   const [showLogout, setShowLogout] = useState(false);
-
+  const scheme = useThemeScheme();
+  const isDark = scheme === "dark";
   const active = (p) => pathname === p || pathname.startsWith(p + "/");
 
   const logout = () => {
@@ -66,7 +68,9 @@ export default function LeftSidebar({ manageToggleButton, setToggleButton }) {
           className="d-block text-decoration-none position-relative"
         >
           <Image
-            src="/images/new-logo.png"
+            src={
+              isDark ? "/images/dark-logo-version.jpg" : "/images/new-logo.png"
+            }
             alt="Logo"
             width={0}
             height={0}

@@ -15,8 +15,11 @@ import {
 import { toast } from "react-toastify";
 import Link from "next/link";
 import DarkModeSwitcher from "@/_components/common/DarkModeSwitcher";
+import useThemeScheme from "@/hooks/useThemeScheme";
 
 export default function SignIn() {
+  const scheme = useThemeScheme();
+  const isDark = scheme === "dark";
   const router = useRouter();
 
   const validationSchema = Yup.object().shape({
@@ -63,7 +66,11 @@ export default function SignIn() {
                 {/* <div className="logo-container"> */}
 
                 <Image
-                  src="/images/new-logo.png"
+                  src={
+                    isDark
+                      ? "/images/dark-logo-version.jpg"
+                      : "/images/new-logo.png"
+                  }
                   className="rounded-3 for-light-logo bg-white"
                   alt="logo"
                   width={25}

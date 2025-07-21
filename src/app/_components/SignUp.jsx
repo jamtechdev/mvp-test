@@ -14,8 +14,11 @@ import {
 import { toast } from "react-toastify";
 import Link from "next/link";
 import DarkModeSwitcher from "@/_components/common/DarkModeSwitcher";
+import useThemeScheme from "@/hooks/useThemeScheme";
 
 export default function SignUp() {
+  const scheme = useThemeScheme();
+  const isDark = scheme === "dark";
   const router = useRouter();
 
   const validationSchema = Yup.object({
@@ -42,7 +45,6 @@ export default function SignUp() {
       <Container className="ps-xl-0">
         <Row className="align-items-center">
           <Col lg={7} className="d-none d-lg-block px-0">
-
             <Image
               // src="/images/authpage.png"
               src="/images/authpage-2.jpg"
@@ -58,8 +60,12 @@ export default function SignUp() {
               {/* Logo */}
               <div className="d-flex align-items-center gap-2 mb-4">
                 <Image
-                  src="/images/new-logo.png"
-                 className="rounded-3 for-light-logo bg-white"
+                  src={
+                    isDark
+                      ? "/images/dark-logo-version.jpg"
+                      : "/images/new-logo.png"
+                  }
+                  className="rounded-3 for-light-logo bg-white"
                   alt="logo"
                   width={25}
                   height={25}
