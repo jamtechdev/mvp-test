@@ -132,6 +132,7 @@ export default function LeftSidebar({ manageToggleButton, setToggleButton }) {
         confirmText="Logout"
         onConfirm={logout}
         onCancel={() => setShowLogout(false)}
+        isDark={isDark}
       />
     </div>
   );

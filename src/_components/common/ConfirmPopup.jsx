@@ -22,6 +22,7 @@ export default function ConfirmPopup({
   cancelText = "Cancel",
   onConfirm,
   onCancel,
+  isDark,
 }) {
   return (
     <Modal centered show={show} onHide={onCancel} backdrop="static">
@@ -29,7 +30,9 @@ export default function ConfirmPopup({
         <Modal.Title className="fs-6">{title}</Modal.Title>
       </Modal.Header>
 
-      <Modal.Body>{message}</Modal.Body>
+      <Modal.Body className={isDark ? "text-white" : "text-dark"}>
+        {message}
+      </Modal.Body>
 
       <Modal.Footer>
         <Button variant="secondary" onClick={onCancel}>
