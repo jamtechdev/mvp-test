@@ -71,6 +71,7 @@ export default function TopAdCreative({ ad = [] }) {
             payload={{ ads: sortedAds }}
             placement="bottom"
             description="This ad drives the most clicks vs its objective."
+            caseId="topAdCreative"
           />
         </div>
 

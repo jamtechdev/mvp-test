@@ -7,11 +7,11 @@ export const openAIServices = {
 
 const API = "/api";
 
-async function sendChat(messages, aiInput = null, token = null) {
+async function sendChat(messages, aiInput = null, unified, token = null) {
   try {
     const res = await axios.post(
       `${API}/ask-ai`,
-      { messages, aiInput }, // ✅ send both messages + aiInput
+      { messages, aiInput, unified }, // ✅ send both messages + aiInput
       {
         headers: {
           ...(token && { Authorization: `Bearer ${token}` }),
@@ -40,9 +40,9 @@ async function sendChat(messages, aiInput = null, token = null) {
   }
 }
 
-async function getAIInsight({ payload, kpi, targets }) {
+async function getAIInsight({ payload, kpi, targets, caseId, unified }) {
   try {
-    const body = payload ? { payload } : { kpi, targets };
+    const body = payload ? { payload } : { kpi, targets, caseId, unified };
 
     const response = await axios.post(`${API}/ai-insight`, body, {
       headers: { "Content-Type": "application/json" },

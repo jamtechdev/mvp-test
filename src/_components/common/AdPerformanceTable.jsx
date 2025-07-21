@@ -42,6 +42,7 @@ export default function AdPerformanceTable({ ads = [] }) {
           payload={{ ads }}
           placement="bottom"
           description="Surface your best ad on each platform and objective."
+          caseId="topAdsByObjective"
         />
       </div>
 
@@ -97,7 +98,7 @@ export default function AdPerformanceTable({ ads = [] }) {
             ))
           ) : (
             <tr>
-              <td colSpan={8} className="text-center text-muted">
+              <td colSpan={8} className="text-center ">
                 No ad-level data
               </td>
             </tr>

@@ -5,57 +5,62 @@ import GaugeComponent from "react-gauge-component";
 import { FiArrowUpRight } from "react-icons/fi";
 import InfoPopover from "./InsightModel";
 import unified from "../../_data/unifiedPayload.json";
+import useThemeScheme from "@/hooks/useThemeScheme";
 
-// Format thousands as "k" and apply $
-const kFmt = (n) => {
-  if (n < 1_000) return `$${n}`;
-  const v = n / 1_000;
-  return `$${v % 1 === 0 ? v : v.toFixed(1)}k`;
-};
-
-// Format number with 2 decimal places and add $
-const n2 = (n) =>
+const dollarFmt = (n) =>
   `$${n.toLocaleString("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })}`;
 
-const palette = ["#FF5160", "#FFC107", "#12C99B"];
-const labelStyle = { fontSize: "0.72rem", color: "#8A8F9A" };
+const shortFmt = (n) => `$${n}`;
+
+const palette = ["#12C99B", "#FFC107", "#FF5160"];
 const dotStyle = { width: 10, height: 10, borderRadius: "50%", marginRight: 6 };
 
-export default function AcquisitionCostGauge({ maxCost = 150_000 }) {
-  const acquisitionCost = unified.analytics.kpi.acquisitionCost || 0;
-  const cpa = unified.analytics.kpi.cpa || 0;
+export default function AcquisitionCostGauge({ maxCost = 100 }) {
+  const scheme = useThemeScheme();
+  const isDark = scheme === "dark";
 
-  const percent = Math.min(acquisitionCost / maxCost, 1);
+  const textColor = isDark ? "#ffffff" : "#212529"; // Bootstrap text-dark
+  const mutedTextColor = isDark ? "#cccccc" : "#6C757D";
+
+  const acquisitionCost = 24;
+  const cpa = unified.analytics.kpi?.cpa || 0;
+  const percent = Math.min((acquisitionCost / maxCost) * 100, 100);
+
   const activeColor =
-    percent < 0.33 ? palette[0] : percent < 0.66 ? palette[1] : palette[2];
+    acquisitionCost <= 50
+      ? palette[0]
+      : acquisitionCost <= 70
+      ? palette[1]
+      : palette[2];
 
-  const t1 = Math.round(maxCost * 0.33);
-  const t2 = Math.round(maxCost * 0.66);
   const ranges = [
-    { color: palette[0], label: `≤ ${kFmt(t1)}` },
-    { color: palette[1], label: `${kFmt(t1 + 1)}‑${kFmt(t2)}` },
-    { color: palette[2], label: `> ${kFmt(t2)}` },
+    { color: palette[0], label: "$0–50" },
+    { color: palette[1], label: "$51–70" },
+    { color: palette[2], label: "$71+" },
   ];
 
   return (
     <Card className="p-4 shadow-sm h-100 d-flex flex-column">
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <h6 className="fw-semibold mb-0">Cost Per Acquisition</h6>
+        <h6 className="fw-semibold mb-0" style={{ color: textColor }}>
+          Cost Per Acquisition
+        </h6>
         <InfoPopover
-          title="Acquisition Cost Trend – AI Insight"
+          title="Salary Estimate – AI Insight"
           payload={{ acquisitionCost, cpa }}
-          description="Your acquisition cost is increasing. Consider optimizing your funnel or pausing underperforming campaigns."
+          description="This shows the estimated hourly rate for the cosplay position. Adjust your budget or expectations accordingly."
           placement="bottom"
+          caseId="acquisitionCost"
         />
       </div>
 
       <div className="d-flex justify-content-center align-items-center">
         <GaugeComponent
           type="semicircle"
-          value={percent * 100}
+          value={percent}
           minValue={0}
           maxValue={100}
           arc={{
@@ -63,8 +68,8 @@ export default function AcquisitionCostGauge({ maxCost = 150_000 }) {
             padding: 0.008,
             cornerRadius: 3,
             subArcs: [
-              { limit: 33, color: palette[0] },
-              { limit: 66, color: palette[1] },
+              { limit: 50, color: palette[0] },
+              { limit: 70, color: palette[1] },
               { limit: 100, color: palette[2] },
             ],
           }}
@@ -93,7 +98,7 @@ export default function AcquisitionCostGauge({ maxCost = 150_000 }) {
           <div
             key={color}
             className="d-flex align-items-center"
-            style={{ fontSize: "0.75rem", color: "#6C757D" }}
+            style={{ fontSize: "0.75rem", color: mutedTextColor }}
           >
             <span style={{ ...dotStyle, backgroundColor: color }} />
             {label}
@@ -110,10 +115,17 @@ export default function AcquisitionCostGauge({ maxCost = 150_000 }) {
             lineHeight: 1.1,
           }}
         >
-          {kFmt(acquisitionCost)}
+          {shortFmt(acquisitionCost)}
         </div>
-        <small style={{ ...labelStyle, marginTop: 6, display: "block" }}>
-          Acquisition Cost
+        <small
+          style={{
+            fontSize: "0.72rem",
+            color: mutedTextColor,
+            marginTop: 6,
+            display: "block",
+          }}
+        >
+          Cost Per Acquisition
         </small>
       </div>
 
@@ -128,7 +140,7 @@ export default function AcquisitionCostGauge({ maxCost = 150_000 }) {
         >
           CPA
           <FiArrowUpRight style={{ color: activeColor }} />
-          <span style={{ color: activeColor }}>{kFmt(cpa)}</span>
+          <span style={{ color: activeColor }}>{shortFmt(cpa)}</span>
         </span>
       </div>
     </Card>

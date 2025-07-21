@@ -6,6 +6,7 @@ import { Overlay, Popover, Spinner } from "react-bootstrap";
 import { FiZap } from "react-icons/fi";
 import ReactMarkdown from "react-markdown";
 import { useChatBot } from "@/_context/ChatBotContext";
+import unified from "../../_data/unifiedPayload.json";
 
 export default function InfoPopover({
   title,
@@ -14,6 +15,7 @@ export default function InfoPopover({
   targets,
   payload,
   revealDelay = 600,
+  caseId,
 }) {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -32,13 +34,17 @@ export default function InfoPopover({
 
   const fetchInsight = async () => {
     if (loading || insight || (!kpi && !payload)) return;
+
     setLoading(true);
     try {
       const result = await openAIServices.getAIInsight({
         payload,
         kpi,
         targets,
+        caseId,
+        unified,
       });
+
       if (result.success) setInsight(result.data);
       else setInsight(result.error);
     } finally {

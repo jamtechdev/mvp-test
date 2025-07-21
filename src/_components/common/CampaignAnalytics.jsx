@@ -90,6 +90,7 @@ export default function CampaignAnalytics() {
                     revenue: c.revenue,
                   })),
                 }}
+                caseId="topCampaigns"
               />
             </div>
 

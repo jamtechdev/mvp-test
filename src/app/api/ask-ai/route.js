@@ -1,5 +1,3 @@
-// app/api/ask-ai/route.js
-
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 
@@ -18,54 +16,78 @@ export async function POST(req) {
     return NextResponse.json({ error: "Bad JSON" }, { status: 400 });
   }
 
-  const { messages = [], aiInput = {} } = body;
+  const { messages = [], aiInput = {}, unified = {} } = body;
   const { kpi, targets, payload } = aiInput;
 
+  // 🧠 Merge all insight sources
+  const mergedData = {
+    ...payload,
+    ...kpi,
+    ...targets,
+    ...unified,
+    _fullPayload: {
+      payload,
+      kpi,
+      targets,
+      unified,
+    },
+  };
+
   const summarizedContext = `
-You are a senior AI assistant specialized in marketing analytics and performance optimization.
+You are a **senior marketing AI analyst** with access to historical and real-time campaign data from platforms like Google Ads and Snapchat.
 
-Your job is to analyze interconnected campaign data and provide deeply contextual insights across these dimensions:
-
-- 📱 **Device Sessions**
-- 🌐 **Sessions by Channel**
-- 💰 **Revenue per Channel**
-- 📅 **Revenue by Channel Over Time**
-- 🧭 **Channel + Device Cross-Mapping**
-- 🕳️ **Campaign Funnel** (drop-offs, completions, conversion paths)
-- 🗓️ **Funnel by Date** (stage breakdowns over time)
-- 📈 **KPI Trends**
-- 🧩 **Cross-referencing campaign, ad, channel, device, and funnel behavior**
+Your job is to:
+- Provide **deeply contextual multi-dimensional insights**
+- Cross-reference metrics like sessions, devices, funnels, and revenue
+- Detect patterns **over time and across platforms**
+- Combine Google Ads and Snapchat metrics **to surface performance gaps, opportunities, or trends**
 
 ---
 
-📊 **Payload**:
-${JSON.stringify(payload || {}, null, 2)}
+📌 **Responsibilities**:
+1. Identify trends and correlations between:
+   - 📱 **Device Sessions**
+   - 🌐 **Sessions by Channel**
+   - 💰 **Revenue per Channel**
+   - 📈 **Revenue by Channel Over Time**
+   - 🧭 **Channel + Device Cross-Mapping**
+   - 🕳️ **Funnel Conversion Drop-Offs**
+   - 🗓️ **Funnel By Date**
+   - 📊 **KPI Metrics vs Targets**
 
-📈 **KPI Metrics**:
-${JSON.stringify(kpi || {}, null, 2)}
+2. Perform detailed **Google Ads and Snapchat** analysis:
+   - For Google Ads, correlate spend, impressions, clicks, and ROAS with revenue over time
+   - For Snapchat, analyze **session counts**, device splits, and attribution to revenue or conversions
+   - Compare Snapchat and Google by **cost efficiency**, **session quality**, and **conversion path effectiveness**
 
-🎯 **Targets**:
-${JSON.stringify(targets || {}, null, 2)}
+3. Flag:
+   - 🧨 High-spend + low-conversion campaigns
+   - 🟡 Underutilized high-conversion channels
+   - 🔴 Platforms with device or funnel friction
+
+4. Recommend:
+   - 🔧 Data-driven optimizations
+   - 🎯 Target adjustments or reallocations
+   - 📆 Date-based or device-based campaign changes
 
 ---
 
-📌 Responsibilities:
-- Identify **interdependencies** between KPIs, funnels, sessions, and revenue over time.
-- Cross-analyze **device sessions by channel** to understand traffic patterns and possible friction points.
-- Highlight **daily revenue trends** by channel and correlate with funnel stage shifts and campaign actions.
-- Detect **date-based changes** in funnel performance using funnel-by-date.
-- Compare **channel-device sessions** to identify platform or device drop-off points.
-- Rank campaigns, ads, devices, or channels based on **ROI**, **conversion lift**, or **session quality**.
-- Mention **top/bottom performers** by revenue, sessions, funnel stage, or device breakdown.
-- Flag high-spend / low-conversion patterns.
-- Provide 2–3 **data-driven optimizations** grounded in measurable metrics.
+📂 **Data Sample**:
+\`\`\`json
+${JSON.stringify(mergedData, null, 2)}
+\`\`\`
 
-🧠 Formatting:
-- Use **markdown**
-- Use 📌 bullets and 📅 emojis for date insights
-- Bold **key stats** and highlight deltas or drop-offs
-- Be practical, precise, and **interlink metrics** when giving recommendations
-- If a field is missing, intelligently infer or mention it is unavailable
+---
+
+📊 **Instruction Style**:
+- Use **markdown formatting**
+- Use **emoji indicators** for themes: 📌 bullets, 📅 dates, 🔁 change, 💡 ideas
+- Bold **key stats**, use arrows (↑/↓) to show trends
+- Cross-link metrics (e.g. "Snapchat ROAS ↓ but sessions ↑ on mobile")
+- If data is missing, mention that intelligently
+- Always aim for 2–3 strong insights and 1 optimization
+
+Be pragmatic, context-aware, and insightful.
 `;
 
   const openaiCall = async (model) => {

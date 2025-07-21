@@ -53,6 +53,7 @@ export default function KPIStatCards() {
                 targets={{ [key]: target }}
                 related={metric.related} // ✅ pass for chat insight prompts
                 description="Progress toward target"
+                caseId="kpiTargets" // 👈 manually set or infer from title
               />
 
               <div className="card-body p-4">

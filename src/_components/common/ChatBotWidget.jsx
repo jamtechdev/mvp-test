@@ -10,6 +10,7 @@ import {
   CloseButton,
 } from "react-bootstrap";
 import ReactMarkdown from "react-markdown";
+import unified from "../../_data/unifiedPayload.json";
 
 const LIGHT = {
   brand: "#37BEB0",
@@ -128,7 +129,7 @@ function ChatBox({ onClose, theme, aiInput, contextTitle, sessionId }) {
     setInput("");
     setLoading(true);
 
-    const result = await openAIServices.sendChat(draft, aiInput);
+    const result = await openAIServices.sendChat(draft, aiInput, unified);
 
     setMessages([
       ...draft,

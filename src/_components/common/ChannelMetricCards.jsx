@@ -4,6 +4,8 @@ import { Row, Col, Card } from "react-bootstrap";
 import dynamic from "next/dynamic";
 import InfoPopover from "./InsightModel";
 import unified from "../../_data/unifiedPayload.json";
+import useThemeScheme from "../../hooks/useThemeScheme";
+import { useEffect, useState } from "react";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
@@ -33,7 +35,12 @@ const COLORS = [
 ];
 
 export default function ChannelMetricCards() {
+  const scheme = useThemeScheme();
+  const isDarkMode = scheme === "dark";
+  const [isMounted, setIsMounted] = useState(false);
+
   const metrics = unified.channel_metrics || {};
+
   const CARDS = [
     {
       label: "Device Sessions",
@@ -55,6 +62,12 @@ export default function ChannelMetricCards() {
     },
   ];
 
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) return null;
+
   return (
     <Row className="g-4 mb-4">
       {CARDS.map(({ label, data, formatter, type }) => {
@@ -68,7 +81,11 @@ export default function ChannelMetricCards() {
         );
 
         const pieOptions = {
-          chart: { type: "donut", toolbar: { show: false } },
+          chart: {
+            type: "donut",
+            toolbar: { show: false },
+            foreColor: isDarkMode ? "#ffffff" : "#343a40",
+          },
           labels: categories,
           colors: COLORS,
           stroke: { show: false },
@@ -81,21 +98,25 @@ export default function ChannelMetricCards() {
             style: {
               fontSize: "16px",
               fontWeight: 700,
-              colors: ["#ffffff"],
+              colors: categories.map(() =>
+                isDarkMode ? "#ffffff" : "#ffffff"
+              ),
             },
           },
           tooltip: {
-            y: {
-              formatter: (val) => `${val}`,
-            },
+            theme: isDarkMode ? "dark" : "light",
+            y: { formatter: (val) => `${val}` },
           },
           legend: {
             position: "bottom",
             fontSize: "13px",
+            labels: {
+              colors: isDarkMode ? "#ffffff" : "#495057",
+            },
             formatter: (_n, opts) => {
               const raw = data.series[opts.seriesIndex] ?? 0;
               const pct = total ? ((raw / total) * 100).toFixed(1) : "0.0";
-              return `<span class="fw-bold text-muted">${_n}: ${raw} (${pct}%)</span>`;
+              return `<span class="fw-bold">${_n}: ${raw} (${pct}%)</span>`;
             },
           },
           plotOptions: {
@@ -110,6 +131,7 @@ export default function ChannelMetricCards() {
                     fontSize: "16px",
                     fontWeight: 700,
                     formatter: () => formatter(total),
+                    color: isDarkMode ? "#ffffff" : "#212529",
                   },
                 },
               },
@@ -117,10 +139,14 @@ export default function ChannelMetricCards() {
           },
         };
 
-        const maxVal = Math.max(...data.series) * 1.2; // 20% buffer
+        const maxVal = Math.max(...data.series) * 1.2;
 
         const barOptions = {
-          chart: { type: "bar", toolbar: { show: false } },
+          chart: {
+            type: "bar",
+            toolbar: { show: false },
+            foreColor: isDarkMode ? "#f8f9faff" : "#343a40",
+          },
           plotOptions: {
             bar: {
               horizontal: true,
@@ -131,18 +157,28 @@ export default function ChannelMetricCards() {
           xaxis: {
             categories,
             min: 0,
-            max: maxVal, // ✅ dynamically calculated
+            max: maxVal,
             tickAmount: 4,
-            labels: { formatter: fmtAxis },
+            labels: {
+              formatter: fmtAxis,
+              style: { colors: isDarkMode ? "#e9ecef" : "#495057" },
+            },
           },
           colors: COLORS,
           dataLabels: {
             enabled: true,
             formatter,
             offsetX: 6,
-            style: { fontSize: "12px", fontWeight: 500 },
+            style: {
+              fontSize: "12px",
+              fontWeight: 500,
+              colors: [isDarkMode ? "#ffffff" : "#ffffff"],
+            },
           },
-          tooltip: { y: { formatter } },
+          tooltip: {
+            theme: isDarkMode ? "dark" : "light",
+            y: { formatter },
+          },
           legend: { show: false },
         };
 
@@ -194,6 +230,13 @@ export default function ChannelMetricCards() {
                       ads: unified.campaign_analytics?.ads || [],
                     },
                   }}
+                  caseId={
+                    label === "Device Sessions"
+                      ? "deviceSessions"
+                      : label === "Sessions by Channel"
+                      ? "sessionsByChannel"
+                      : "revenuePerChannel"
+                  }
                 />
               </div>
 
