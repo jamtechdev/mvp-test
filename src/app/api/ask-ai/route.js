@@ -105,22 +105,19 @@ Be pragmatic, context-aware, and insightful.
       modelUsed: PREFERRED_MODEL,
     });
   } catch (err) {
-    if (err?.status === 404 || err?.code === "model_not_found") {
-      try {
-        const fallback = await openaiCall(FALLBACK_MODEL);
-        return NextResponse.json({
-          response: fallback.choices[0].message.content,
-          modelUsed: FALLBACK_MODEL,
-          note: `Fallback from ${PREFERRED_MODEL}`,
-        });
-      } catch (err2) {
-        console.error("Fallback model error:", err2);
-      }
+    console.error("AI Insight Error:", err);
+
+    let message = "❌ Failed to generate AI insights.";
+    if (err?.code === "insufficient_quota" || err?.status === 402) {
+      message =
+        "🚫 The AI assistant is currently unavailable due to exhausted credits or billing issues. Please try again later.";
+    } else if (err?.status === 429) {
+      message =
+        "⚠️ Rate limit exceeded. Please slow down and try again shortly.";
     }
 
-    console.error("AI error:", err);
     return NextResponse.json(
-      { error: "AI processing failed" },
+      { error: message, internal: err?.message || err },
       { status: 500 }
     );
   }

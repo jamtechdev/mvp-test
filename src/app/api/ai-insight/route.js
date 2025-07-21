@@ -179,9 +179,19 @@ export async function POST(req) {
       insight: insight || "⚠️ No insight generated.",
     });
   } catch (err) {
-    console.error("AI Insight Route Error:", err);
+    console.error("AI Insight Error:", err);
+
+    let message = "❌ Failed to generate AI insights.";
+    if (err?.code === "insufficient_quota" || err?.status === 402) {
+      message =
+        "🚫 The AI assistant is currently unavailable due to exhausted credits or billing issues. Please try again later.";
+    } else if (err?.status === 429) {
+      message =
+        "⚠️ Rate limit exceeded. Please slow down and try again shortly.";
+    }
+
     return NextResponse.json(
-      { error: err.message || "Unhandled error" },
+      { error: message, internal: err?.message || err },
       { status: 500 }
     );
   }
