@@ -128,21 +128,6 @@ export default function AcquisitionCostGauge({ maxCost = 100 }) {
           Cost Per Acquisition
         </small>
       </div>
-
-      <div className="text-center mt-3">
-        <span
-          className="d-inline-flex align-items-center gap-1 px-3 py-2 fw-medium"
-          style={{
-            backgroundColor: "#F3F4F6",
-            borderRadius: 99,
-            fontSize: "0.85rem",
-          }}
-        >
-          CPA
-          <FiArrowUpRight style={{ color: activeColor }} />
-          <span style={{ color: activeColor }}>{shortFmt(cpa)}</span>
-        </span>
-      </div>
     </Card>
   );
 }
