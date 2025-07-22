@@ -69,7 +69,7 @@ export default function LeftSidebar({ manageToggleButton, setToggleButton }) {
         >
           <Image
             src={
-              isDark ? "/images/dark-logo-version.jpg" : "/images/new-logo.png"
+              isDark ? "/images/white-logo.png" : "/images/new-logo.png"
             }
             alt="Logo"
             width={0}

@@ -44,7 +44,7 @@ export default function SignIn() {
   return (
     <div className="auth-main-content m-auto m-1230 px-0">
       <Container className="ps-xl-0">
-        <Row className="align-items-center">
+        <Row className="align-items-center full-screen-height">
           <Col lg={7} className="d-none d-lg-block px-0">
             <Card className="border-0 shadow-sm rounded-3 overflow-hidden h-100">
               <Image
@@ -68,10 +68,10 @@ export default function SignIn() {
                 <Image
                   src={
                     isDark
-                      ? "/images/dark-logo-version.jpg"
+                      ? "/images/white-logo.png"
                       : "/images/new-logo.png"
                   }
-                  className="rounded-3 for-light-logo bg-white"
+                  className="rounded-3 for-light-logo"
                   alt="logo"
                   width={25}
                   height={25}

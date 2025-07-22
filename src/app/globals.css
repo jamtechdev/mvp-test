@@ -1630,3 +1630,17 @@ table {
 }
 
 /* Selected style handled by Bootstrap's btn-primary */
+
+
+.full-screen-height, .full-screen-height >*{
+  min-height: 100vh;
+}
+
+
+.full-screen-height .sign-in-banner{
+  min-height: 100vh;
+}
+
+.full-screen-height .col-lg-5{
+display: flex;
+}

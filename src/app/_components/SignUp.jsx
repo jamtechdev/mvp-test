@@ -43,7 +43,7 @@ export default function SignUp() {
   return (
     <div className="auth-main-content m-auto m-1230 px-0">
       <Container className="ps-xl-0">
-        <Row className="align-items-center">
+        <Row className="align-items-center full-screen-height">
           <Col lg={7} className="d-none d-lg-block px-0">
             <Image
               // src="/images/authpage.png"
@@ -62,10 +62,10 @@ export default function SignUp() {
                 <Image
                   src={
                     isDark
-                      ? "/images/dark-logo-version.jpg"
+                      ? "/images/white-logo.png"
                       : "/images/new-logo.png"
                   }
-                  className="rounded-3 for-light-logo bg-white"
+                  className="rounded-3 for-light-logo"
                   alt="logo"
                   width={25}
                   height={25}
