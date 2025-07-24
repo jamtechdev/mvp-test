@@ -1,5 +1,4 @@
-"use client";
-
+import React from "react";
 import {
   FunnelChart,
   Funnel,
@@ -41,16 +40,30 @@ const sanitizeFunnelStages = (stages = []) => {
     });
 };
 
+// Function to format numbers in K format (e.g., 7800 -> 7.8K)
+const formatNumber = (value) => {
+  if (value >= 1000) {
+    return (value / 1000).toFixed(1) + "K";
+  }
+  return value;
+};
+
 export default function CampaignFunnel() {
   const scheme = useThemeScheme();
   const isDark = scheme === "dark";
 
   const rawStages = unified.campaign_funnel?.stages || [];
 
+  // Sanitize funnel stages to ensure no issues with empty data
   const stages = sanitizeFunnelStages(rawStages).map((s, i) => ({
     ...s,
     fill: COLORS[i % COLORS.length],
   }));
+
+  // Prevent rendering if there are no valid stages
+  if (stages.length === 0) {
+    return <div>No data available for the funnel chart.</div>;
+  }
 
   return (
     <Card className="p-3 campign-card h-100 flex-fill">
@@ -82,61 +95,65 @@ export default function CampaignFunnel() {
 
       <div className="d-flex gap-4 mt-5">
         <div className="flex-grow-1">
-          <ResponsiveContainer width="100%" height={420}>
-            <FunnelChart>
-              <Tooltip
-                formatter={(v, name, props) => {
-                  const pct = props?.payload?.percentage || "";
-                  return [
-                    `${v.toLocaleString()}${pct ? ` (${pct})` : ""}`,
-                    name,
-                  ];
-                }}
-                contentStyle={{
-                  backgroundColor: isDark ? "#2b2b2b" : "#fff",
-                  borderColor: isDark ? "#444" : "#ccc",
-                  color: isDark ? "#fff" : "#000",
-                }}
-                labelStyle={{ color: isDark ? "#fff" : "#000" }}
-                itemStyle={{ color: isDark ? "#fff" : "#000" }}
-              />
+          {/* Ensure that the parent div has enough space */}
+          <div style={{ width: "100%", height: "500px" }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <FunnelChart>
+                <Tooltip
+                  formatter={(v, name, props) => {
+                    const pct = props?.payload?.percentage || "";
+                    return [
+                      `${formatNumber(v)}${pct ? ` (${pct})` : ""}`,
+                      name,
+                    ];
+                  }}
+                  contentStyle={{
+                    backgroundColor: isDark ? "#2b2b2b" : "#fff",
+                    borderColor: isDark ? "#444" : "#ccc",
+                    color: isDark ? "#fff" : "#000",
+                  }}
+                  labelStyle={{ color: isDark ? "#fff" : "#000" }}
+                  itemStyle={{ color: isDark ? "#fff" : "#000" }}
+                />
 
-              <Funnel
-                data={stages}
-                dataKey="value"
-                cx="50%"
-                cy="50%"
-                neckWidth="90%"
-                neckHeight={60}
-                gap={10}
-                cornerRadius={8}
-                stroke="none"
-                minPointSize={90}
-                isAnimationActive
-              >
-                {/* Value labels inside (use contrast-aware fill) */}
-                <LabelList
+                <Funnel
+                  data={stages}
                   dataKey="value"
-                  position="center"
-                  fill={isDark ? "#fff" : "#000"} // ⬅️ dynamic contrast for center
-                  fontSize={13}
-                  fontWeight="bold"
-                  formatter={(val) => val.toLocaleString()}
-                />
+                  cx="50%"
+                  cy="50%"
+                  neckWidth="80%" // Increased neck width to 80% to ensure even smaller values fit inside
+                  neckHeight={1200} // Increased neck height to 1200 for more space
+                  gap={60} // Increased gap between stages
+                  cornerRadius={8}
+                  stroke="none"
+                  minPointSize={120} // Reduced minPointSize to fit smaller values
+                  isAnimationActive
+                >
+                  <LabelList
+                    dataKey="value"
+                    position="inside"
+                    dy={4}
+                    fill={isDark ? "#fff" : "#000"}
+                    fontSize={({ value }) =>
+                      value <= 10000 ? 11 : value <= 25000 ? 12 : 13
+                    }
+                    fontWeight="bold"
+                    formatter={(val) => formatNumber(val)} // Apply K format to labels
+                  />
 
-                {/* Percentage labels outside (right) */}
-                <LabelList
-                  dataKey="percentage"
-                  position="right"
-                  offset={20}
-                  fill={isDark ? "#fff" : "#000"} // ⬅️ ensures visibility in light mode
-                  fontSize={12}
-                  fontWeight="500"
-                  formatter={(val) => val}
-                />
-              </Funnel>
-            </FunnelChart>
-          </ResponsiveContainer>
+                  <LabelList
+                    dataKey="percentage"
+                    position="right"
+                    offset={20}
+                    fill={isDark ? "#fff" : "#000"}
+                    fontSize={12}
+                    fontWeight="500"
+                    formatter={(val) => val}
+                  />
+                </Funnel>
+              </FunnelChart>
+            </ResponsiveContainer>
+          </div>
         </div>
 
         {/* Legend */}
