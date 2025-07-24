@@ -23,11 +23,17 @@ const COLORS = [
 // 🧠 Enforce clean descending funnel
 const sanitizeFunnelStages = (stages = []) => {
   let lastValue = Infinity;
+  const max = stages[0]?.value || 1;
+
   return stages
-    .map((s) => ({
-      ...s,
-      value: typeof s.value === "number" && s.value >= 0 ? s.value : 0,
-    }))
+    .map((s) => {
+      const value = typeof s.value === "number" && s.value >= 0 ? s.value : 0;
+      return {
+        ...s,
+        value,
+        percentage: `${((value / max) * 100).toFixed(1)}%`,
+      };
+    })
     .filter((s) => {
       const valid = s.value <= lastValue;
       if (valid) lastValue = s.value;
@@ -91,12 +97,8 @@ export default function CampaignFunnel() {
                   borderColor: isDark ? "#444" : "#ccc",
                   color: isDark ? "#fff" : "#000",
                 }}
-                labelStyle={{
-                  color: isDark ? "#fff" : "#000",
-                }}
-                itemStyle={{
-                  color: isDark ? "#fff" : "#000",
-                }}
+                labelStyle={{ color: isDark ? "#fff" : "#000" }}
+                itemStyle={{ color: isDark ? "#fff" : "#000" }}
               />
 
               <Funnel
@@ -104,20 +106,33 @@ export default function CampaignFunnel() {
                 dataKey="value"
                 cx="50%"
                 cy="50%"
-                neckWidth="65%" // ✅ Wider neck
-                neckHeight={100}
-                gap={4}
+                neckWidth="90%"
+                neckHeight={60}
+                gap={10}
                 cornerRadius={8}
                 stroke="none"
-                minPointSize={50} // ✅ More vertical space for Revenue
+                minPointSize={90}
                 isAnimationActive
               >
+                {/* Value labels inside (use contrast-aware fill) */}
+                <LabelList
+                  dataKey="value"
+                  position="center"
+                  fill={isDark ? "#fff" : "#000"} // ⬅️ dynamic contrast for center
+                  fontSize={13}
+                  fontWeight="bold"
+                  formatter={(val) => val.toLocaleString()}
+                />
+
+                {/* Percentage labels outside (right) */}
                 <LabelList
                   dataKey="percentage"
-                  position="center"
-                  fill="white" // ✅ Always white
-                  fontSize={10} // ✅ Reduced slightly for fit
-                  fontWeight="bold"
+                  position="right"
+                  offset={20}
+                  fill={isDark ? "#fff" : "#000"} // ⬅️ ensures visibility in light mode
+                  fontSize={12}
+                  fontWeight="500"
+                  formatter={(val) => val}
                 />
               </Funnel>
             </FunnelChart>
