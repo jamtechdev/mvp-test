@@ -68,7 +68,8 @@
     "stages": [
       {
         "name": "Impressions",
-        "value": 120000,
+        "value": 160000,
+        "percentage": "100%",
         "related": {
           "channels": ["Google", "Facebook"],
           "ads": ["ad_1", "ad_2"],
@@ -78,7 +79,8 @@
       },
       {
         "name": "Clicks",
-        "value": 18000,
+        "value": 112000,
+        "percentage": "70%",
         "related": {
           "channels": ["Google"],
           "ads": ["ad_1"],
@@ -88,7 +90,8 @@
       },
       {
         "name": "Leads",
-        "value": 2300,
+        "value": 58000,
+        "percentage": "51.8%",
         "related": {
           "channels": ["Facebook"],
           "ads": ["ad_2"],
@@ -98,7 +101,8 @@
       },
       {
         "name": "Conversions",
-        "value": 540,
+        "value": 21000,
+        "percentage": "36.2%",
         "related": {
           "channels": ["Google", "Facebook"],
           "ads": ["ad_1", "ad_2"],
@@ -108,59 +112,14 @@
       },
       {
         "name": "Revenue",
-        "value": 12800,
+        "value": 7800,
+        "percentage": "7%",
         "related": {
           "channels": ["Google"],
           "ads": ["ad_1"],
           "campaigns": ["Spring Push"],
           "dates": ["2025-07-12"]
         }
-      }
-    ],
-    "drop_off": [
-      {
-        "from": "Impressions",
-        "to": "Clicks",
-        "rate": 85,
-        "related": {
-          "channels": ["Facebook"],
-          "ads": ["ad_2"]
-        }
-      },
-      {
-        "from": "Leads",
-        "to": "Conversions",
-        "rate": 76.5,
-        "related": {
-          "channels": ["Google"],
-          "campaigns": ["Spring Push"]
-        }
-      }
-    ],
-    "by_date": [
-      {
-        "date": "2025-07-10",
-        "Impressions": 40000,
-        "Clicks": 6000,
-        "Leads": 800,
-        "Conversions": 200,
-        "Revenue": 5000
-      },
-      {
-        "date": "2025-07-11",
-        "Impressions": 50000,
-        "Clicks": 9000,
-        "Leads": 9000,
-        "Conversions": 150,
-        "Revenue": 4200
-      },
-      {
-        "date": "2025-07-12",
-        "Impressions": 30000,
-        "Clicks": 3000,
-        "Leads": 500,
-        "Conversions": 190,
-        "Revenue": 3600
       }
     ]
   },

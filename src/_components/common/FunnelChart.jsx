@@ -1,6 +1,12 @@
 "use client";
 
-import { FunnelChart, Funnel, Tooltip, ResponsiveContainer } from "recharts";
+import {
+  FunnelChart,
+  Funnel,
+  Tooltip,
+  ResponsiveContainer,
+  LabelList,
+} from "recharts";
 import InfoPopover from "./InsightModel";
 import { Card } from "react-bootstrap";
 import unified from "../../_data/unifiedPayload.json";
@@ -30,7 +36,7 @@ const sanitizeFunnelStages = (stages = []) => {
 };
 
 export default function CampaignFunnel() {
-  const scheme = useThemeScheme(); // ✅ Detect theme
+  const scheme = useThemeScheme();
   const isDark = scheme === "dark";
 
   const rawStages = unified.campaign_funnel?.stages || [];
@@ -70,20 +76,26 @@ export default function CampaignFunnel() {
 
       <div className="d-flex gap-4 mt-5">
         <div className="flex-grow-1">
-          <ResponsiveContainer width="100%" height={350}>
+          <ResponsiveContainer width="100%" height={420}>
             <FunnelChart>
               <Tooltip
-                formatter={(v) => v.toLocaleString()}
+                formatter={(v, name, props) => {
+                  const pct = props?.payload?.percentage || "";
+                  return [
+                    `${v.toLocaleString()}${pct ? ` (${pct})` : ""}`,
+                    name,
+                  ];
+                }}
                 contentStyle={{
                   backgroundColor: isDark ? "#2b2b2b" : "#fff",
                   borderColor: isDark ? "#444" : "#ccc",
                   color: isDark ? "#fff" : "#000",
                 }}
                 labelStyle={{
-                  color: isDark ? "#fff" : "#000", // 🟢 fixes top label text
+                  color: isDark ? "#fff" : "#000",
                 }}
                 itemStyle={{
-                  color: isDark ? "#fff" : "#000", // 🟢 fixes name-value pairs
+                  color: isDark ? "#fff" : "#000",
                 }}
               />
 
@@ -92,14 +104,22 @@ export default function CampaignFunnel() {
                 dataKey="value"
                 cx="50%"
                 cy="50%"
-                neckWidth={0}
-                neckHeight={0}
-                gap={6}
-                cornerRadius={4}
+                neckWidth="65%" // ✅ Wider neck
+                neckHeight={100}
+                gap={4}
+                cornerRadius={8}
                 stroke="none"
-                minPointSize={40}
+                minPointSize={50} // ✅ More vertical space for Revenue
                 isAnimationActive
-              />
+              >
+                <LabelList
+                  dataKey="percentage"
+                  position="center"
+                  fill="white" // ✅ Always white
+                  fontSize={10} // ✅ Reduced slightly for fit
+                  fontWeight="bold"
+                />
+              </Funnel>
             </FunnelChart>
           </ResponsiveContainer>
         </div>
@@ -122,7 +142,7 @@ export default function CampaignFunnel() {
                 className="fw-semibold"
                 style={{
                   fontSize: 14,
-                  color: isDark ? "#fff" : "#212529", // ✅ Color adjusts with theme
+                  color: isDark ? "#fff" : "#212529",
                 }}
               >
                 {stage.name}

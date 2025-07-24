@@ -126,7 +126,7 @@ export default function KPITrendCard() {
   return (
     <Card className="p-4 h-100 flex-fill shadow-sm rounded-4">
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <h6 className="fw-semibold mb-0">KPI Trend</h6>
+<h6 className={`fw-semibold mb-0 ${isDark ? "text-white" : ""}`}>KPI Trend</h6>
         <InfoPopover
           title="KPI Trend – AI Insight"
           payload={aiPayload}
@@ -195,13 +195,16 @@ export default function KPITrendCard() {
 }
 
 function Stat({ icon, label, value }) {
+  const scheme = useThemeScheme();
+  const isDark = scheme === "dark";
+
   return (
     <Card className="shadow-sm border-0 p-3 h-100">
       <div className="d-flex align-items-center gap-3">
         <span className="fs-3 text-primary">{icon}</span>
         <div>
-          <div className="text-muted small">{label}</div>
-          <div className="fw-bold text-muted fs-5">{value}</div>
+          <div className={`small ${isDark ? "text-white" : "text-muted"}`}>{label}</div>
+          <div className={`fw-bold fs-5 ${isDark ? "text-white" : "text-muted"}`}>{value}</div>
         </div>
       </div>
     </Card>
