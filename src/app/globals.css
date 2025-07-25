@@ -1644,3 +1644,28 @@ table {
 .full-screen-height .col-lg-5{
 display: flex;
 }
+.funnel-wrapper {
+  width: 100%;
+  overflow-x: hidden;
+  padding: 0 1rem;
+}
+
+.funnel-inner {
+  width: 100%;
+  max-width: 800px;
+  height: 480px;
+  margin: 0 auto;
+}
+
+@media (max-width: 834px) {
+  .funnel-inner {
+    height: 420px;
+    max-width: 100%;
+    min-width: 0;
+    padding-bottom: 24px;
+  }
+
+  .funnel-legend span {
+    font-size: 12px !important;
+  }
+}

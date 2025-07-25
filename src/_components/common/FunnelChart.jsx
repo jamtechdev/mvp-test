@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   FunnelChart,
   Funnel,
@@ -11,19 +11,11 @@ import { Card } from "react-bootstrap";
 import unified from "../../_data/unifiedPayload.json";
 import useThemeScheme from "@/hooks/useThemeScheme";
 
-const COLORS = [
-  "#ff6384", // Impressions
-  "#ff9f40", // Clicks
-  "#ffcd56", // Leads
-  "#4bc0c0", // Conversions
-  "#36a2eb", // Revenue
-];
+const COLORS = ["#ff6384", "#ff9f40", "#ffcd56", "#4bc0c0", "#36a2eb"];
 
-// 🧠 Enforce clean descending funnel
 const sanitizeFunnelStages = (stages = []) => {
   let lastValue = Infinity;
   const max = stages[0]?.value || 1;
-
   return stages
     .map((s) => {
       const value = typeof s.value === "number" && s.value >= 0 ? s.value : 0;
@@ -40,33 +32,38 @@ const sanitizeFunnelStages = (stages = []) => {
     });
 };
 
-// Function to format numbers in K format (e.g., 7800 -> 7.8K)
 const formatNumber = (value) => {
-  if (value >= 1000) {
-    return (value / 1000).toFixed(1) + "K";
-  }
+  if (value >= 1000000) return (value / 1000000).toFixed(1) + "M";
+  if (value >= 1000) return (value / 1000).toFixed(1) + "K";
   return value;
 };
 
 export default function CampaignFunnel() {
   const scheme = useThemeScheme();
   const isDark = scheme === "dark";
+  const [isTablet, setIsTablet] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsTablet(window.innerWidth <= 834);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const rawStages = unified.campaign_funnel?.stages || [];
-
-  // Sanitize funnel stages to ensure no issues with empty data
   const stages = sanitizeFunnelStages(rawStages).map((s, i) => ({
     ...s,
     fill: COLORS[i % COLORS.length],
   }));
 
-  // Prevent rendering if there are no valid stages
   if (stages.length === 0) {
     return <div>No data available for the funnel chart.</div>;
   }
 
   return (
-    <Card className="p-3 campign-card h-100 flex-fill">
+    <Card className="p-3 campign-card h-100 flex-fill overflow-hidden">
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h6 className="fw-semibold text-muted mb-0">Campaign Funnel</h6>
         <InfoPopover
@@ -93,80 +90,101 @@ export default function CampaignFunnel() {
         />
       </div>
 
-      <div className="d-flex gap-4 mt-5">
-        <div className="flex-grow-1">
-          {/* Ensure that the parent div has enough space */}
-          <div style={{ width: "100%", height: "500px" }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <FunnelChart>
-                <Tooltip
-                  formatter={(v, name, props) => {
-                    const pct = props?.payload?.percentage || "";
-                    return [
-                      `${formatNumber(v)}${pct ? ` (${pct})` : ""}`,
-                      name,
-                    ];
-                  }}
-                  contentStyle={{
-                    backgroundColor: isDark ? "#2b2b2b" : "#fff",
-                    borderColor: isDark ? "#444" : "#ccc",
-                    color: isDark ? "#fff" : "#000",
-                  }}
-                  labelStyle={{ color: isDark ? "#fff" : "#000" }}
-                  itemStyle={{ color: isDark ? "#fff" : "#000" }}
-                />
+      <div
+        className="funnel-wrapper d-flex flex-column align-items-center w-100 mt-5"
+        style={{ overflowX: "auto" }}
+      >
+        <div
+          className="funnel-inner"
+          style={{
+            width: "100%",
+            maxWidth: "1000px",
+            minWidth: "600px",
+            height: "480px",
+            maxHeight: "480px",
+            overflow: "hidden",
+          }}
+        >
+          <ResponsiveContainer width="100%" height="100%">
+            <FunnelChart>
+              <Tooltip
+                formatter={(v, name, props) => {
+                  const pct = props?.payload?.percentage || "";
+                  return [`${formatNumber(v)}${pct ? ` (${pct})` : ""}`, name];
+                }}
+                contentStyle={{
+                  backgroundColor: isDark ? "#2b2b2b" : "#fff",
+                  borderColor: isDark ? "#444" : "#ccc",
+                  color: isDark ? "#fff" : "#000",
+                }}
+                labelStyle={{ color: isDark ? "#fff" : "#000" }}
+                itemStyle={{ color: isDark ? "#fff" : "#000" }}
+              />
 
-                <Funnel
-                  data={stages}
+              <Funnel
+                data={stages}
+                dataKey="value"
+                cx="50%"
+                cy="50%"
+                neckWidth="80%"
+                neckHeight={450}
+                gap={isTablet ? 30 : 40}
+                cornerRadius={6}
+                stroke="none"
+                minPointSize={Math.max(100, 460 / stages.length)}
+                isAnimationActive
+              >
+                <LabelList
                   dataKey="value"
-                  cx="50%"
-                  cy="50%"
-                  neckWidth="80%" // Increased neck width to 80% to ensure even smaller values fit inside
-                  neckHeight={1200} // Increased neck height to 1200 for more space
-                  gap={60} // Increased gap between stages
-                  cornerRadius={8}
-                  stroke="none"
-                  minPointSize={120} // Reduced minPointSize to fit smaller values
-                  isAnimationActive
-                >
-                  <LabelList
-                    dataKey="value"
-                    position="inside"
-                    dy={4}
-                    fill={isDark ? "#fff" : "#000"}
-                    fontSize={({ value }) =>
-                      value <= 10000 ? 11 : value <= 25000 ? 12 : 13
+                  position="center"
+                  dy={0}
+                  textAnchor="middle"
+                  fill={isDark ? "#fff" : "#000"}
+                  fontSize={10}
+                  fontWeight="bolder"
+                  formatter={(val, entry) => {
+                    const text = formatNumber(val);
+                    const lastStage = stages[stages.length - 1];
+                    const isBottom =
+                      entry && lastStage && lastStage.name === entry.name;
+                    if (isBottom && isTablet) {
+                      return text.length > 5 ? text.slice(0, 5) + "…" : text;
                     }
-                    fontWeight="bold"
-                    formatter={(val) => formatNumber(val)} // Apply K format to labels
-                  />
-
-                  <LabelList
-                    dataKey="percentage"
-                    position="right"
-                    offset={20}
-                    fill={isDark ? "#fff" : "#000"}
-                    fontSize={12}
-                    fontWeight="500"
-                    formatter={(val) => val}
-                  />
-                </Funnel>
-              </FunnelChart>
-            </ResponsiveContainer>
-          </div>
+                    return text.length > 6 ? text.slice(0, 6) + "…" : text;
+                  }}
+                />
+                <LabelList
+                  dataKey="percentage"
+                  position="right"
+                  offset={14}
+                  fill={isDark ? "#fff" : "#000"}
+                  fontSize={11}
+                  fontWeight="500"
+                  formatter={(val) => val}
+                />
+              </Funnel>
+            </FunnelChart>
+          </ResponsiveContainer>
         </div>
 
-        {/* Legend */}
-        <div className="d-flex flex-column justify-content-center">
+        {/* ✅ Legends */}
+        <div
+          className="funnel-legend d-flex flex-wrap justify-content-center mt-4 px-2 w-100"
+          style={{ gap: "8px 16px" }}
+        >
           {stages.map((stage) => (
-            <div key={stage.name} className="d-flex align-items-center mb-2">
+            <div
+              key={stage.name}
+              className="d-flex align-items-center"
+              style={{ minWidth: 100 }}
+            >
               <span
                 style={{
-                  display: "inline-block",
                   width: 12,
                   height: 12,
                   borderRadius: "50%",
                   backgroundColor: stage.fill,
+                  display: "inline-block",
                   marginRight: 8,
                 }}
               />
@@ -175,6 +193,7 @@ export default function CampaignFunnel() {
                 style={{
                   fontSize: 14,
                   color: isDark ? "#fff" : "#212529",
+                  wordBreak: "break-word",
                 }}
               >
                 {stage.name}

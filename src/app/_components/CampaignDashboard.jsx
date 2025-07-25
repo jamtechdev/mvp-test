@@ -58,11 +58,11 @@ export default function CampaignDashboard({ channel1 = "all" }) {
         <KPIStatCards />
 
         <Row className="g-4 mb-4">
-          <Col xl={8} md={12} className="d-flex">
+          <Col xl={12} md={12} className="d-flex">
             {/*----------------------- FUNNEL ------------------------*/}
             <CampaignFunnel />
           </Col>
-          <Col xl={4} md={12} className="d-flex">
+          <Col xl={12} md={12} className="d-flex">
             {/*-------------- KPI TREND DROPDOWN ------------------------*/}
             <KpiTrendCard />
           </Col>
