@@ -62,10 +62,23 @@ export default function CampaignFunnel() {
     return <div>No data available for the funnel chart.</div>;
   }
 
+  const textColor = isDark ? "#fff" : "#000";
+  const textShadow = isDark
+    ? "0px 0px 3px rgba(255,255,255,0.2)"
+    : "0px 0px 2px rgba(0,0,0,0.15)";
+
   return (
     <Card className="p-3 campign-card h-100 flex-fill overflow-hidden">
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <h6 className="fw-semibold text-muted mb-0">Campaign Funnel</h6>
+        <h6
+          className="fw-semibold mb-0"
+          style={{
+            color: textColor,
+            textShadow,
+          }}
+        >
+          Campaign Funnel
+        </h6>
         <InfoPopover
           title="Campaign Funnel – AI Insight"
           description="Identify the biggest drop‑offs and optimise."
@@ -115,10 +128,10 @@ export default function CampaignFunnel() {
                 contentStyle={{
                   backgroundColor: isDark ? "#2b2b2b" : "#fff",
                   borderColor: isDark ? "#444" : "#ccc",
-                  color: isDark ? "#fff" : "#000",
+                  color: textColor,
                 }}
-                labelStyle={{ color: isDark ? "#fff" : "#000" }}
-                itemStyle={{ color: isDark ? "#fff" : "#000" }}
+                labelStyle={{ color: textColor }}
+                itemStyle={{ color: textColor }}
               />
 
               <Funnel
@@ -139,9 +152,10 @@ export default function CampaignFunnel() {
                   position="center"
                   dy={0}
                   textAnchor="middle"
-                  fill={isDark ? "#fff" : "#000"}
+                  fill={textColor}
                   fontSize={10}
                   fontWeight="bolder"
+                  style={{ textShadow }}
                   formatter={(val, entry) => {
                     const text = formatNumber(val);
                     const lastStage = stages[stages.length - 1];
@@ -157,9 +171,10 @@ export default function CampaignFunnel() {
                   dataKey="percentage"
                   position="right"
                   offset={14}
-                  fill={isDark ? "#fff" : "#000"}
+                  fill={textColor}
                   fontSize={11}
                   fontWeight="500"
+                  style={{ textShadow }}
                   formatter={(val) => val}
                 />
               </Funnel>
@@ -192,7 +207,8 @@ export default function CampaignFunnel() {
                 className="fw-semibold"
                 style={{
                   fontSize: 14,
-                  color: isDark ? "#fff" : "#212529",
+                  color: textColor,
+                  textShadow,
                   wordBreak: "break-word",
                 }}
               >
