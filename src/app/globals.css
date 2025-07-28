@@ -479,7 +479,7 @@ body.sidebar-collapsed {
   white-space: nowrap;
 }
 
-.sidebar-area .logo a{
+.sidebar-area .logo a {
   align-items: center;
   justify-content: center;
 
@@ -1614,6 +1614,7 @@ table {
   object-fit: cover;
   border-radius: 8px;
 }
+
 /* Base style for unselected buttons */
 .channel-toggle-btn.unselected-btn {
   background-color: white !important;
@@ -1624,26 +1625,30 @@ table {
 
 /* Hover effect */
 .channel-toggle-btn.unselected-btn:hover {
-  background-color: #e7f1ff !important; /* soft blue */
-  color: #0d6efd !important;            /* Bootstrap primary blue */
+  background-color: #e7f1ff !important;
+  /* soft blue */
+  color: #0d6efd !important;
+  /* Bootstrap primary blue */
   border-color: #0d6efd !important;
 }
 
 /* Selected style handled by Bootstrap's btn-primary */
 
 
-.full-screen-height, .full-screen-height >*{
+.full-screen-height,
+.full-screen-height>* {
   min-height: 100vh;
 }
 
 
-.full-screen-height .sign-in-banner{
+.full-screen-height .sign-in-banner {
   min-height: 100vh;
 }
 
-.full-screen-height .col-lg-5{
-display: flex;
+.full-screen-height .col-lg-5 {
+  display: flex;
 }
+
 .funnel-wrapper {
   width: 100%;
   overflow-x: hidden;
@@ -1657,7 +1662,7 @@ display: flex;
   margin: 0 auto;
 }
 
-@media (max-width: 834px) {
+@media (max-width: 1080x) {
   .funnel-inner {
     height: 420px;
     max-width: 100%;
@@ -1666,6 +1671,12 @@ display: flex;
   }
 
   .funnel-legend span {
-    font-size: 12px !important;
+    font-size: 13px !important;
   }
+}
+
+.popover.bs-popover-bottom {
+  width: 100%;
+  max-width: 450px;
+
 }

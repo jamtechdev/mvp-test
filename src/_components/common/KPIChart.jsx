@@ -35,10 +35,13 @@ export default function KPITrendCard() {
   }, [metric]);
 
   const seriesData = useMemo(() => {
-    return selectedMetric.daily.map((point) => ({
-      x: new Date(point.date),
-      y: point.value,
-    }));
+    return selectedMetric.daily.map((point) => {
+      const [year, month, day] = point.date.split("-").map(Number);
+      return {
+        x: new Date(year, month - 1, day), // 👈 this avoids timezone offset issues
+        y: point.value,
+      };
+    });
   }, [selectedMetric]);
 
   const total = n0(selectedMetric.total);
@@ -126,7 +129,9 @@ export default function KPITrendCard() {
   return (
     <Card className="p-4 h-100 flex-fill shadow-sm rounded-4">
       <div className="d-flex justify-content-between align-items-center mb-3">
-<h6 className={`fw-semibold mb-0 ${isDark ? "text-white" : ""}`}>KPI Trend</h6>
+        <h6 className={`fw-semibold mb-0 ${isDark ? "text-white" : ""}`}>
+          KPI Trend
+        </h6>
         <InfoPopover
           title="KPI Trend – AI Insight"
           payload={aiPayload}
@@ -203,8 +208,14 @@ function Stat({ icon, label, value }) {
       <div className="d-flex align-items-center gap-3">
         <span className="fs-3 text-primary">{icon}</span>
         <div>
-          <div className={`small ${isDark ? "text-white" : "text-muted"}`}>{label}</div>
-          <div className={`fw-bold fs-5 ${isDark ? "text-white" : "text-muted"}`}>{value}</div>
+          <div className={`small ${isDark ? "text-white" : "text-muted"}`}>
+            {label}
+          </div>
+          <div
+            className={`fw-bold fs-5 ${isDark ? "text-white" : "text-muted"}`}
+          >
+            {value}
+          </div>
         </div>
       </div>
     </Card>

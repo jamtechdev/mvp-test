@@ -308,7 +308,7 @@ export default function InfoPopover({
                   <>
                     <div
                       style={{
-                        maxHeight: "280px",
+                        maxHeight: "380px",
                         overflowY: "auto",
                         paddingRight: "6px",
                       }}

@@ -153,7 +153,19 @@
             "related_campaigns": ["Retargeting Blast"],
             "related_ads": ["ad_4"],
             "related_channels": ["Instagram"]
-          }
+          },
+          { "date": "2025-07-13", "value": 9000 },
+          { "date": "2025-07-14", "value": 650 },
+          { "date": "2025-07-15", "value": 0 },
+          { "date": "2025-07-16", "value": 0 },
+          { "date": "2025-07-17", "value": 675 },
+          { "date": "2025-07-18", "value": 1000 },
+          { "date": "2025-07-19", "value": 0 },
+          { "date": "2025-07-20", "value": 0 },
+          { "date": "2025-07-21", "value": 0 },
+          { "date": "2025-07-22", "value": 5000 },
+          { "date": "2025-07-23", "value": 0 },
+          { "date": "2025-07-24", "value": 0 }
         ]
       },
       {
@@ -163,27 +175,39 @@
         "trend": "down",
         "change": -5.2,
         "daily": [
+          { "date": "2025-07-10", "value": 0 },
+          { "date": "2025-07-11", "value": 0 },
+          { "date": "2025-07-12", "value": 0 },
           {
-            "date": "2025-07-10",
+            "date": "2025-07-13",
             "value": 260000,
             "related_campaigns": ["Awareness"],
             "related_ads": ["ad_1", "ad_2"],
             "related_channels": ["YouTube", "Google"]
           },
           {
-            "date": "2025-07-11",
+            "date": "2025-07-14",
             "value": 270000,
             "related_campaigns": ["Awareness"],
             "related_ads": ["ad_3"],
             "related_channels": ["Google"]
           },
           {
-            "date": "2025-07-12",
+            "date": "2025-07-15",
             "value": 270000,
             "related_campaigns": ["Brand Recall"],
             "related_ads": ["ad_4"],
             "related_channels": ["Facebook"]
-          }
+          },
+          { "date": "2025-07-16", "value": 0 },
+          { "date": "2025-07-17", "value": 0 },
+          { "date": "2025-07-18", "value": 0 },
+          { "date": "2025-07-19", "value": 0 },
+          { "date": "2025-07-20", "value": 0 },
+          { "date": "2025-07-21", "value": 0 },
+          { "date": "2025-07-22", "value": 0 },
+          { "date": "2025-07-23", "value": 0 },
+          { "date": "2025-07-24", "value": 0 }
         ]
       },
       {
@@ -193,27 +217,39 @@
         "trend": "up",
         "change": 9.3,
         "daily": [
+          { "date": "2025-07-10", "value": 0 },
+          { "date": "2025-07-11", "value": 0 },
+          { "date": "2025-07-12", "value": 0 },
+          { "date": "2025-07-13", "value": 0 },
+          { "date": "2025-07-14", "value": 0 },
+          { "date": "2025-07-15", "value": 0 },
           {
-            "date": "2025-07-10",
+            "date": "2025-07-16",
             "value": 4000,
             "related_campaigns": ["Summer Push"],
             "related_ads": ["ad_1"],
             "related_channels": ["Google"]
           },
           {
-            "date": "2025-07-11",
+            "date": "2025-07-17",
             "value": 3800,
             "related_campaigns": ["Retargeting"],
             "related_ads": ["ad_2"],
             "related_channels": ["Meta"]
           },
           {
-            "date": "2025-07-12",
+            "date": "2025-07-18",
             "value": 4600,
             "related_campaigns": ["Brand Blast"],
             "related_ads": ["ad_3", "ad_4"],
             "related_channels": ["YouTube"]
-          }
+          },
+          { "date": "2025-07-19", "value": 0 },
+          { "date": "2025-07-20", "value": 0 },
+          { "date": "2025-07-21", "value": 0 },
+          { "date": "2025-07-22", "value": 0 },
+          { "date": "2025-07-23", "value": 0 },
+          { "date": "2025-07-24", "value": 0 }
         ]
       },
       {
@@ -223,27 +259,39 @@
         "trend": "flat",
         "change": 0,
         "daily": [
+          { "date": "2025-07-10", "value": 0 },
+          { "date": "2025-07-11", "value": 0 },
+          { "date": "2025-07-12", "value": 0 },
+          { "date": "2025-07-13", "value": 0 },
+          { "date": "2025-07-14", "value": 0 },
+          { "date": "2025-07-15", "value": 0 },
+          { "date": "2025-07-16", "value": 0 },
+          { "date": "2025-07-17", "value": 0 },
+          { "date": "2025-07-18", "value": 0 },
           {
-            "date": "2025-07-10",
+            "date": "2025-07-19",
             "value": 700,
             "related_campaigns": ["Lead Magnet A"],
             "related_ads": ["ad_2"],
             "related_channels": ["Meta"]
           },
           {
-            "date": "2025-07-11",
+            "date": "2025-07-20",
             "value": 700,
             "related_campaigns": ["Lead Magnet A"],
             "related_ads": ["ad_2", "ad_5"],
             "related_channels": ["Facebook"]
           },
           {
-            "date": "2025-07-12",
+            "date": "2025-07-21",
             "value": 700,
             "related_campaigns": ["Lead Magnet B"],
             "related_ads": ["ad_6"],
             "related_channels": ["Instagram"]
-          }
+          },
+          { "date": "2025-07-22", "value": 0 },
+          { "date": "2025-07-23", "value": 0 },
+          { "date": "2025-07-24", "value": 0 }
         ]
       },
       {
@@ -253,22 +301,34 @@
         "trend": "up",
         "change": 15.9,
         "daily": [
+          { "date": "2025-07-10", "value": 35000 },
+          { "date": "2025-07-11", "value": 0 },
+          { "date": "2025-07-12", "value": 0 },
+          { "date": "2025-07-13", "value": 0 },
+          { "date": "2025-07-14", "value": 50005 },
+          { "date": "2025-07-15", "value": 0 },
+          { "date": "2025-07-16", "value": 0 },
+          { "date": "2025-07-17", "value": 0 },
+          { "date": "2025-07-18", "value": 42050 },
+          { "date": "2025-07-19", "value": 0 },
+          { "date": "2025-07-20", "value": 200555 },
+          { "date": "2025-07-21", "value": 0 },
           {
-            "date": "2025-07-10",
+            "date": "2025-07-22",
             "value": 20000,
             "related_campaigns": ["Conversion Booster"],
             "related_ads": ["ad_3"],
             "related_channels": ["Google"]
           },
           {
-            "date": "2025-07-11",
+            "date": "2025-07-23",
             "value": 18000,
             "related_campaigns": ["Conversion Booster"],
             "related_ads": ["ad_3", "ad_5"],
             "related_channels": ["Meta"]
           },
           {
-            "date": "2025-07-12",
+            "date": "2025-07-24",
             "value": 23200,
             "related_campaigns": ["Flash Sale"],
             "related_ads": ["ad_6", "ad_7"],

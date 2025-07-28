@@ -52,6 +52,8 @@ export default function CampaignFunnel() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const GAP_SPACING = isTablet ? 60 : 70;
+
   const rawStages = unified.campaign_funnel?.stages || [];
   const stages = sanitizeFunnelStages(rawStages).map((s, i) => ({
     ...s,
@@ -111,10 +113,10 @@ export default function CampaignFunnel() {
           className="funnel-inner"
           style={{
             width: "100%",
-            maxWidth: "1000px",
-            minWidth: "600px",
-            height: "480px",
-            maxHeight: "480px",
+            maxWidth: "100%", // wider funnel for text spacing
+            minWidth: "100%", // prevent text squishing
+            height: "500px",
+            maxHeight: "550px",
             overflow: "hidden",
           }}
         >
@@ -133,15 +135,16 @@ export default function CampaignFunnel() {
                 labelStyle={{ color: textColor }}
                 itemStyle={{ color: textColor }}
               />
-
               <Funnel
                 data={stages}
                 dataKey="value"
-                cx="50%"
-                cy="50%"
-                neckWidth="80%"
-                neckHeight={450}
-                gap={isTablet ? 30 : 40}
+                cx="100%"
+                width={"100%"}
+                cy="60%"
+                // neckWidth="100%"         // allow wider body
+                neckWidth="100%"
+                neckHeight={850}
+                gap={GAP_SPACING} // more space between segments
                 cornerRadius={6}
                 stroke="none"
                 minPointSize={Math.max(100, 460 / stages.length)}
@@ -150,10 +153,10 @@ export default function CampaignFunnel() {
                 <LabelList
                   dataKey="value"
                   position="center"
-                  dy={0}
+                  dy={-15}
                   textAnchor="middle"
                   fill={textColor}
-                  fontSize={10}
+                  fontSize={14}
                   fontWeight="bolder"
                   style={{ textShadow }}
                   formatter={(val, entry) => {
@@ -170,9 +173,10 @@ export default function CampaignFunnel() {
                 <LabelList
                   dataKey="percentage"
                   position="right"
-                  offset={14}
+                  offset={45}
+                  dy={-15}
                   fill={textColor}
-                  fontSize={11}
+                  fontSize={14}
                   fontWeight="500"
                   style={{ textShadow }}
                   formatter={(val) => val}
