@@ -14,23 +14,14 @@ import unified from "../../_data/unifiedPayload.json";
 
 const LIGHT = {
   brand: "#37BEB0",
-
   bg: "#37BEB0",
-
   bodyBg: "#ffffff",
-
   headerText: "#ffffff",
-
   userBubbleBg: "#37BEB0",
-
   userBubbleText: "#ffffff",
-
   assistantBubbleBg: "#ffffff",
-
   assistantBubbleText: "#212529",
-
   inputBg: "#ffffff",
-
   inputText: "#212529",
 };
 
@@ -155,22 +146,6 @@ function ChatBox({ onClose, theme, aiInput, contextTitle, sessionId }) {
   const handleClose = () => {
     onClose();
   };
-
-  // const bubbleStyle1 = (isUser) => ({
-  //   borderRadius: "1rem",
-
-  //   padding: "0.6rem 1rem",
-
-  //   maxWidth: "85%",
-
-  //   boxShadow: theme.scheme === "dark" ? "0 6px 24px rgba(0,0,0,0.6)" : "",
-
-  //   fontStyle: "italic",
-
-  //   backgroundColor: isUser ? theme.userBubbleBg : theme.assistantBubbleBg,
-
-  //   color: isUser ? theme.userBubbleText : theme.assistantBubbleText,
-  // });
 
   const bubbleStyle = (isUser) => ({
     borderRadius: "1rem",

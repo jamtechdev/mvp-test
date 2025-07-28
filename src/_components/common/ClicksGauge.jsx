@@ -7,12 +7,6 @@ import InfoPopover from "./InsightModel";
 import unified from "../../_data/unifiedPayload.json";
 import useThemeScheme from "@/hooks/useThemeScheme";
 
-const dollarFmt = (n) =>
-  `$${n.toLocaleString("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })}`;
-
 const shortFmt = (n) => `$${n}`;
 
 const palette = ["#12C99B", "#FFC107", "#FF5160"];

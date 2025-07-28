@@ -22,7 +22,7 @@ const METRIC_COLORS = {
 export default function KPITrendCard() {
   const [metric, setMetric] = useState("spend");
   const color = METRIC_COLORS[metric];
-  const scheme = useThemeScheme(); // 👈 Detect dark/light theme
+  const scheme = useThemeScheme();
   const isDark = scheme === "dark";
 
   const selectedMetric = useMemo(() => {

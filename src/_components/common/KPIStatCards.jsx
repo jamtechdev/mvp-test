@@ -51,9 +51,9 @@ export default function KPIStatCards() {
                 placement="bottom"
                 kpi={{ [key]: value }}
                 targets={{ [key]: target }}
-                related={metric.related} // ✅ pass for chat insight prompts
+                related={metric.related} 
                 description="Progress toward target"
-                caseId="kpiTargets" // 👈 manually set or infer from title
+                caseId="kpiTargets"
               />
 
               <div className="card-body p-4">
