@@ -72,6 +72,7 @@ export default function KPITrendCard() {
     chart: {
       type: "line",
       toolbar: { show: false },
+      zoom: { enabled: false }, // 🚫 disable zooming
       fontFamily: "Inter, sans-serif",
     },
     stroke: { width: 3, curve: "smooth", colors: [color] },
