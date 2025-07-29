@@ -54,9 +54,9 @@ export default function AdPerformanceTable({ ads = [] }) {
             <th>Platform</th>
             <th>Objective</th>
             <th>KPI</th>
-            <th className="text-end">Cost / KPI ($)</th>
-            <th className="text-end">Impr.</th>
-            <th className="text-end">Clicks</th>
+            <th className="text-start">Cost / KPI ($)</th>
+            <th className="text-start">Impr.</th>
+            <th className="text-start">Clicks</th>
           </tr>
         </thead>
         <tbody>
@@ -87,13 +87,13 @@ export default function AdPerformanceTable({ ads = [] }) {
                     : "—"}
                 </td>
 
-                <td className="text-end">
+                <td className="text-start">
                   {ad.impressions != null
                     ? ad.impressions.toLocaleString()
                     : "-"}
                 </td>
 
-                <td className="text-end">{ad.clicks.toLocaleString()}</td>
+                <td className="text-start">{ad.clicks.toLocaleString()}</td>
               </tr>
             ))
           ) : (

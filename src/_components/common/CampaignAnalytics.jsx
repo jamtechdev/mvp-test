@@ -103,9 +103,9 @@ export default function CampaignAnalytics() {
                 <tr>
                   <th className="ps-3">Rank</th>
                   <th>Campaign</th>
-                  <th className="text-center">Clicks</th>
-                  <th className="text-center">Spend</th>
-                  <th className="text-center">Revenue</th>
+                  <th className="text-start">Clicks</th>
+                  <th className="text-start">Spend</th>
+                  <th className="text-start">Revenue</th>
                 </tr>
               </thead>
               <tbody>
@@ -114,8 +114,8 @@ export default function CampaignAnalytics() {
                     <td className="ps-3 fw-semibold">{medal(i)}</td>
                     <td className="fw-semibold">{c.campaign_name}</td>
 
-                    <td className="text-end">
-                      <div className="d-flex align-items-center gap-2 justify-content-end">
+                    <td className="text-start">
+                      <div className="d-flex align-items-center gap-2 justify-content-start">
                         <span className="fw-semibold">{n0(c.clicks)}</span>
                         <OverlayTrigger
                           overlay={<Tooltip>{n0(c.clicks)} clicks</Tooltip>}
@@ -125,8 +125,8 @@ export default function CampaignAnalytics() {
                       </div>
                     </td>
 
-                    <td className="text-end">
-                      <div className="d-flex align-items-center gap-2 justify-content-end">
+                    <td className="text-start">
+                      <div className="d-flex align-items-center gap-2 justify-content-start">
                         <span className="fw-semibold">${n2(c.media_cost)}</span>
                         <OverlayTrigger
                           overlay={<Tooltip>${n2(c.media_cost)} spent</Tooltip>}
@@ -136,8 +136,8 @@ export default function CampaignAnalytics() {
                       </div>
                     </td>
 
-                    <td className="text-end">
-                      <div className="d-flex align-items-center gap-2 justify-content-end">
+                    <td className="text-start">
+                      <div className="d-flex align-items-center gap-2 justify-content-start">
                         <span className="fw-semibold">${n2(c.revenue)}</span>
                         <OverlayTrigger
                           overlay={<Tooltip>${n2(c.revenue)} revenue</Tooltip>}
