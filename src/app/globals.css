@@ -1493,22 +1493,28 @@ table {
 }
 
 .auth-main-content .btn.btn-primary {
-  background-color: #605dff;
-  border: 1px solid #605dff;
+  background-color: #37BEB0;
+  border: 1px solid #37BEB0;
+   /* background-color: #605dff;
+  border: 1px solid #605dff; */
 }
 
 .auth-main-content .btn.btn-primary:hover,
 .auth-main-content .btn.btn-primary:focus,
 .auth-main-content .btn.btn-primary:active {
   background-color: #ffffff;
-  border: 1px solid #605dff;
-  color: #605dff !important;
+  border: 1px solid#37BEB0;
+  color: #37BEB0 !important;
+   /* border: 1px solid #605dff;
+  color: #605dff !important; */
 }
 
 .auth-main-content .btn.btn-primary:hover span,
 .auth-main-content .btn.btn-primary:focus span,
 .auth-main-content .btn.btn-primary:active span {
-  color: #605dff !important;
+  color:#37BEB0 !important;
+    /* color: #605dff !important;W */
+
 }
 
 .auth-main-content .btn.btn-primary.fw-medium span {
@@ -1523,7 +1529,9 @@ table {
   position: fixed;
   bottom: 10px;
   right: 10px;
-  background-color: #3c50e0;
+  background-color: #37BEB0;
+    /* background-color: #3c50e0; */
+
   width: 50px;
   height: 50px;
   border-radius: 100px;

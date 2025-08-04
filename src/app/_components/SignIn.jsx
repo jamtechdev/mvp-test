@@ -211,7 +211,7 @@ export default function SignIn() {
                     </BootstrapForm.Group>
 
                     {/* Sign Up */}
-                    <BootstrapForm.Group>
+                    {/* <BootstrapForm.Group>
                       <p>
                         Don’t have an account?{" "}
                         <Link
@@ -221,7 +221,7 @@ export default function SignIn() {
                           Sign Up
                         </Link>
                       </p>
-                    </BootstrapForm.Group>
+                    </BootstrapForm.Group> */}
                   </BootstrapForm>
                 )}
               </Formik>
