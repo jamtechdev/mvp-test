@@ -50,7 +50,14 @@ export default function SignIn() {
               <Image
                 // src="/images/authpage.png"
                 //  src="/images/authpage2.jpg"
-                src="/images/authpage-2.jpg"
+                // src="/images/authpage-2.jpg"
+                //  src="/images/light-auth.jpg"
+
+                 src={
+                    isDark
+                      ? "/images/dark-auth.png"
+                      : "/images/light-auth.jpg"
+                  }
                 className="rounded-3 sign-in-banner"
                 alt="login"
                 width={646}
