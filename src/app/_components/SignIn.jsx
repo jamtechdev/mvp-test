@@ -196,7 +196,7 @@ export default function SignIn() {
                     <BootstrapForm.Group className="mb-4">
                       <Link
                         href="/"
-                        className="fw-medium text-primary text-decoration-none"
+                        className="fw-medium text-primary text-decoration-none forgot"
                       >
                         Forgot Password?
                       </Link>

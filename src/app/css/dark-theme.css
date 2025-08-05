@@ -240,9 +240,13 @@
 [data-theme="dark"] .auth-main-content .btn.btn-primary:hover span,
 [data-theme="dark"] .auth-main-content .btn.btn-primary:focus span,
 [data-theme="dark"] .auth-main-content .btn.btn-primary:active span {
-  color: #605dff !important;
+  color: #37BEB0 !important;
 }
-
+[data-theme="dark"] .auth-main-content .btn.btn-primary:hover,
+[data-theme="dark"] .auth-main-content .btn.btn-primary:focus ,
+[data-theme="dark"] .auth-main-content .btn.btn-primary:active{
+background-color: transparent !important;
+} 
 [data-theme="dark"] .bg-success.text-success {
   color: #198754 !important;
 }
@@ -260,3 +264,6 @@
     background: #0a0e19 !important;
 }
 
+[data-theme="dark"] .text-primary.forgot{
+color: #37BEB0 !important;
+}

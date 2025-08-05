@@ -1688,3 +1688,12 @@ table {
   max-width: 450px;
 
 }
+.text-primary.forgot{
+color: #37BEB0 !important;
+}
+
+[data-theme="dark"] .auth-main-content .btn.btn-primary:hover span,
+[data-theme="dark"] .auth-main-content .btn.btn-primary:focus span,
+[data-theme="dark"] .auth-main-content .btn.btn-primary:active span {
+  color: #37BEB0 !important;
+}
