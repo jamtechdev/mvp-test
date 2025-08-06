@@ -54,29 +54,29 @@ export default function TopHeader({ manageToggleButton, setToggleButton }) {
             className="d-flex align-items-center gap-1 icon-dropdown p-0 profile-toggle"
           >
             <Image
-              src="/images/dummy-user.jpg"
+              src="/images/salman-img.png"
               alt="User Avatar"
               width={32}
               height={32}
               className="rounded-circle"
             />
             <div>
-              <span>Olivia</span>
+              <span>Salman</span>
               <i className="ri-arrow-drop-down-line"></i>
             </div>
           </Dropdown.Toggle>
           <Dropdown.Menu>
             <div className="p-2 profile-sec-header">
               <Image
-                src="/images/dummy-user.jpg"
+                src="/images/salman-img.png"
                 alt="User Avatar"
                 width={32}
                 height={32}
                 className="rounded-circle"
               />
               <div>
-                <h3>Olivia</h3>
-                <p>oli@gmail.com</p>
+                <h3>Salman</h3>
+                <p>salman@gmail.com</p>
               </div>
             </div>
             <Dropdown.Item>
